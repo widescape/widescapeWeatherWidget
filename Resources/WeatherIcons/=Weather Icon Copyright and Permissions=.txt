@@ -1,0 +1,18 @@
+/*!
+ * widescapeWeather Icons
+ * Copyright 2005-2011, Robert Wuensch
+ * http://www.widescape.net/widgets
+ * 
+ * Licensed under Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License
+ * http://creativecommons.org/licenses/by-nc-nd/3.0/
+ * 
+ * You are free to share these icons under the following conditions:
+ * - Attribution:
+ *   - Include this file within a dedicated weather icons folder.
+ *   - Include a credit note like "weather icons by Robert Wuensch, www.widescape.net" in your credits.
+ * - Noncommercial — You may not use this work for commercial purposes.
+ * - No Derivative Works — You may not alter, transform, or build upon this work.
+ * 
+ * Permissions beyond the scope of this license may be requested at http://www.widescape.net/widgets/contact/
+ * 
+ */
