@@ -148,10 +148,13 @@ function update ( forceWeatherUpdate ) {
 	//print ("update ()");
 	
 	updateTime ();
+	adjustWindowPosition();
 	
 	// Only update the weather if it's time for it or if it is forced
 	if (updateCount++ % preferences.updateTime.value != 0 && forceWeatherUpdate != true) return;
 	updateCount = 1; // Reset the update count
+	
+	//print ("update () executed");
 	
 	fetchData ("full");
 	updateWeather ();

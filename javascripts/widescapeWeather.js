@@ -5,7 +5,7 @@
 	This Widget grabs the latest current weather data from weather.com and builds
 	it into a nice little iconic representation.
 
-	2.1.16
+	2.1.17
 	
 	Original code from: "The Weather" by Arlo Rose
 	Modified code from: Robert Wünsch
