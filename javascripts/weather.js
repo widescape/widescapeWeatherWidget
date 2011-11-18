@@ -7,9 +7,9 @@
 	Weather Management
 	
 	
-	The partnerID and licenseID MUST NOT be used in 3rd party Widgets.
-	If you make your own Weather Widget, please visit The Weather Channel at:
-	http://www.weather.com/services/xmloap.html
+	The apiKey MUST NOT be used in 3rd party widgets.
+	If you make your own weather widget, please visit World Weather Online at:
+	http://www.worldweatheronline.com/register.aspx
 	
 	You'll need to sign up for an account, and make sure you abide by their
 	license agreement.
@@ -18,9 +18,9 @@
 	(c) 2011 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
 	The Weather Widget: (c) 2003 - 2004 Pixoria
 */
-var geocodeURL = "http://where.yahooapis.com/geocode";
-var weatherURL = "http://weather.yahooapis.com/forecastrss";
-var yahooAppID = "_qTKmy_V34GwOMgpMzM8VhHiZeLuerCWJkxSqKeOwLP4amOXKx5hzPuZW8JN8YRK";
+var weatherURL = "http://free.worldweatheronline.com/feed/weather.ashx";
+var apiKey = "c7ba3b1465133049111811";
+var forecastDays = 4; // Includes the current day
 
 //-------------------------------------------------
 // -- xmlError --
@@ -29,72 +29,64 @@ var yahooAppID = "_qTKmy_V34GwOMgpMzM8VhHiZeLuerCWJkxSqKeOwLP4amOXKx5hzPuZW8JN8Y
 function xmlError (str) { alert (str); };
 
 //-------------------------------------------------
-// -- fetchData --
-/*	The fetchData function is used to populate our global data with XML data from The Weather Channel.
+// -- fetchDataAsync --
+/*	The fetchDataAsync function is used to populate our global data with XML data from World Weather Online.
 	Because we can only ask for certain bits of information with a reduced frequency, I do this to
 	divide up the types of data that gets updated and keep other non-updated bits around so I can
-	still use them in other functions. 
+	still use them in other functions.
 */
-function fetchData (fetchType) {
-	//log ("fetchData ()");
+function fetchDataAsync() {
+	//log ("fetchDataAsync()");
 	
-	var userGeocode = "656958";
-	
-	var userCity = preferences.cityValPref.value;
+	var userCity = preferences.userDisplayPref.value;
 	unitValue = (preferences.unitsPref.value == 1) ? "c" : "f";
 	
-	if (globalLinks == "") fetchType = "full";
-	globalWeather	= "";
-	globalForecasts	= "";
-	globalLinks		= "";
+	var _url = weatherURL+"?q=" + userCity + "&num_of_days=" + forecastDays + "&key=" + apiKey;
 	
-	var _url = "";
-	
-	switch (fetchType) {
-		case "full":
-			_url = weatherURL+"?w=" + userGeocode + "&u=" + unitValue;
-			
-			log ("_url => "+_url);
-			
-			urlData = urlFetch.fetch(_url);
-			if (urlData.length == 0 || urlData == "Could not load URL") {
-				weather.tooltip	= "There was a problem connecting to The Weather Channel.\n\nPlease check your network connection and click here to reload.";
-				weather.onClick	= function() {
-					weather.src		= "Resources/WeatherIcons/waiting.png";
-					updateNow();
-					sleep(150);
-					update (true);
-					}
-				weather.src		= "Resources/WeatherIcons/error.png";
-				weather.reload ();
-				scaleWidget();
-				return;
-			}
-			else {
-				weather.onClick	= null;
-			}
-			urlData = urlData.replace(/[\r]*\n/g,"");
-			globalWeather = "<weather> " + urlData.match(/<loc id(.*?)<\/loc>/g) + urlData.match(/<cc>(.*?)<\/cc>/g) + " </weather>";
-			globalForecasts = "<weather> " + urlData.match(/<dayf>(.*?)<\/dayf>/g) + " </weather>";
-			globalLinks = "<weather> " + urlData.match(/<lnks(.*?)<\/lnks>/g) + " </weather>";
-			break
-		case "forecast":
-			_url = "http://xoap.weather.com/weather/local/" + userCity + "?cc=*&dayf=4&prod=xoap&par=" + partnerID + "&key=" + licenseID + "&u=" + unitValue;
-			urlData = urlFetch.fetch(_url);
-			if (urlData.length == 0 || urlData == "Could not load URL") return;
-			urlData = urlData.replace(/[\r]*\n/g,"");
-			globalWeather = "<weather> " + urlData.match(/<loc id(.*?)<\/loc>/g) + urlData.match(/<cc>(.*?)<\/cc>/g) + " </weather>";
-			globalForecasts = "<weather> " + urlData.match(/<dayf>(.*?)<\/dayf>/g) + " </weather>";
-			break
-		case "weather":
-			_url = "http://xoap.weather.com/weather/local/" + userCity + "?cc=*&link=xoap&par=" + partnerID + "&key=" + licenseID + "&u=" + unitValue;
-			urlData = urlFetch.fetch(_url);
-			if (urlData.length == 0 || urlData == "Could not load URL") return;			
-			urlData = urlData.replace(/[\r]*\n/g,"");
-			globalWeather = "<weather> " + urlData.match(/<loc id(.*?)<\/loc>/g) + urlData.match(/<cc>(.*?)<\/cc>/g) + " </weather>";
-			break
+	var urlFetch = new URL();
+	urlFetch.location = _url;
+	try {
+		urlFetch.fetchAsync(onWeatherDataFetched);
 	}
-	//log(_url);
+	catch (error) {
+		log("Error: " + error);
+		log("On URL: "+_url);
+		displayConnectionError(error);
+	}
+}
+
+function onWeatherDataFetched(fetch) {
+	// Checks if there was a HTTP error
+	if (fetch.response.toString() != "200") {
+		log("HTTP Error: " + fetch.response);
+		log("On URL: "+fetch.location);
+		displayConnectionError(fetch.response);
+		return;
+	}
+	log("URL fetched successfully: "+fetch.location);
+	var result = fetch.result;
+	// Checks if the response doesn't contain a correct result
+	if (result.length == 0 || result == "Could not load URL") {
+		displayConnectionError(response);
+		return;
+	}
+	// Assumes the result is correct
+	globalWeather = result;
+	// Continues with the update
+	onUpdateData();
+}
+
+function displayConnectionError(error) {
+	weather.tooltip	= "There was a problem connecting to World Weather Online.\n\nPlease check your network connection and click here to reload.\n\nError was: "+error.toString().substring(0,70);
+	weather.onClick	= function() {
+		weather.src		= "Resources/WeatherIcons/waiting.png";
+		updateNow();
+		sleep(150);
+		update();
+	};
+	weather.src		= "Resources/WeatherIcons/error.png";
+	weather.reload();
+	scaleWidget();
 }
 
 //-------------------------------------------------
@@ -182,54 +174,43 @@ function updateWeather () {
 	
 	if (globalWeather == "") return;
 	
-	var xml = new XMLDoc(globalWeather, xmlError);
-
-	var xmlFetchedTemp = xml.selectNode("/cc/tmp");
-	var xmlFeelsTemp = xml.selectNode("/cc/flik");
-	var xmlFetchedCity = xml.selectNode("/loc/dnam");
-	var xmlFetchedConditions = xml.selectNode("/cc/icon");
+	try
+	{
+		var xml = XMLDOM.parse( globalWeather );
+		globalWeatherXML = xml;
+		
+		var fetchedCity = xml.evaluate("string(data/request/query)");
+		
+	  var fetchedTime = xml.evaluate("string(data/current_condition/observation_time)");
+		var fetchedTemp = xml.evaluate("string(data/current_condition/temp_C)");
+		var fetchedCode = xml.evaluate("string(data/current_condition/weatherCode)");
+		var fetchedTextCond = xml.evaluate("string(data/current_condition/weatherDesc)");
+		
+		var fetchedWindSpeed = xml.evaluate("string(data/current_condition/windspeedKmph)");
+		var fetchedWindDir = xml.evaluate("string(data/current_condition/winddirDegree)");
+		var fetchedWindPoint = xml.evaluate("string(data/current_condition/winddir16Point)");
+		
+		var fetchedPrec = xml.evaluate("string(data/current_condition/precipMM)");
+		var fetchedHmid = xml.evaluate("string(data/current_condition/humidity)");
+		var fetchedVis = xml.evaluate("string(data/current_condition/visibility)");
+		var fetchedPres = xml.evaluate("string(data/current_condition/pressure)");
+		var fetchedCloudc = xml.evaluate("string(data/current_condition/cloudcover)");
+		
+	}
+	catch(error)
+	{
+	  log(error);
+	}
 	
-	var xmlFetchedTextConditions = xml.selectNode("/cc/t");
-	var xmlFetchedTime = xml.selectNode("/loc/tm");
-	var xmlFetchedTimeZone = xml.selectNode("/loc/zone");
-	var xmlFetchedPresChange = xml.selectNode("/cc/bar/d");
-	var xmlFetchedPressure = xml.selectNode("/cc/bar/r");
-	var xmlFetchedVis = xml.selectNode("/cc/vis");
-	var xmlFetchedDew = xml.selectNode("/cc/dewp");
-	var xmlFetchedHmid = xml.selectNode("/cc/hmid");
-
-	var xmlFetchedWindSpeed = xml.selectNode("/cc/wind/s");
-	var xmlFetchedWindGust = xml.selectNode("/cc/wind/gust");
-	var xmlFetchedWindDir = xml.selectNode("/cc/wind/t");
+	if (fetchedTemp == null) fetchedTemp = "";
 	
-	var fetchedTemp = 0;
-	if (xmlFetchedTemp != null) fetchedTemp = xmlFetchedTemp.getText();
-	var fetchedTimeZone = Number(xmlFetchedTimeZone.getText());
+	newConditionLogText = '\nMain: ' + fetchedCode + ': ' + fetchedTextCond + ' (' + getWeatherIcon(fetchedCode) + '.png)';
+	weather.src		= "Resources/WeatherIcons/" + getWeatherIcon(fetchedCode) + ".png";
 	
-	// Get the time of the selected location
-	var fetchedTimeArr = xmlFetchedTime.getText().split(" ");
-	var fetchedTimeHours = Number(fetchedTimeArr[0].split(":")[0]);
-	var fetchedTimeMinutes = Number(fetchedTimeArr[0].split(":")[1]);
-	if (fetchedTimeArr[1] == "AM" && fetchedTimeHours == 12) fetchedTimeHours = 0;
-	else if (fetchedTimeArr[1] == "PM" && fetchedTimeHours < 12) fetchedTimeHours += 12;
-	fetchedTime = new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate(),fetchedTimeHours,fetchedTimeMinutes,new Date().getSeconds());
-	
-	// Get the user's local time offset (timezone, summer time, date line)
-	localOffsetDate = 0;
-	localOffsetHours = new Date().getHours() - fetchedTimeHours;
-	localOffsetMinutes = new Date().getMinutes() - fetchedTimeMinutes;
-	if (localOffsetHours + fetchedTimeZone > 12)		localOffsetDate = -1;
-	else if (localOffsetHours + fetchedTimeZone <= -12)	localOffsetDate = 1;
-	
-	newConditionLogText = '\nMain: ' + xmlFetchedConditions.getText() + ': ' + xmlFetchedTextConditions.getText() + ' (' + getWeatherIcon (xmlFetchedConditions.getText()) + '.png)';
-	
-	weather.src		= "Resources/WeatherIcons/" + getWeatherIcon (xmlFetchedConditions.getText()) + ".png";
-						
 	if (fetchedTemp == "N/A") fetchedTemp = "?";
 	theTemp.data = fetchedTemp + "°";
 	
 	theCity.data = theDate.data = theTime.data = "";
-	fetchedCity = xmlFetchedCity.getText();
 	fetchedCity = fetchedCity.match(/([^,\/]*).*/);
 	fetchedCityName = fetchedCity[1];
 	
@@ -254,55 +235,37 @@ function updateWeather () {
 	var thePressure = "";
 	var windData = "";
 	
-	if ( xmlFetchedTextConditions.getText() == "N/A" ) {
+	if ( fetchedTextCond == "N/A" ) {
 		theCondition = "Unknown Weather Condition";
 	} else {
-		theCondition = xmlFetchedTextConditions.getText();
+		theCondition = fetchedTextCond;
 	}
 	
-	if ( xmlFeelsTemp.getText() == "N/A" ) {
-		theFeelsLike = "";
-	} else {
-		theFeelsLike = "Feels like " + xmlFeelsTemp.getText() + "°" + unitTemp + " outside.\n";
-	}
-	
-	if ( xmlFetchedDew.getText() == "N/A" ) {
-		theDewPoint = "Dew Point: Unknown";
-	} else {
-		theDewPoint = "Dew Point: " + xmlFetchedDew.getText() + "°" + unitTemp;
-	}
-
-	if ( xmlFetchedHmid.getText() == "N/A" ) {
+	if ( fetchedHmid == "N/A" ) {
 		theHumidity = "Humidity: Unknown";
 	} else {
-		theHumidity = "Humidity: " + xmlFetchedHmid.getText() + "%";
+		theHumidity = "Humidity: " + fetchedHmid + "%";
 	}
 	
-	if (xmlFetchedVis.getText() == "Unlimited") {
+	if (fetchedVis == "Unlimited") {
 		visData = "Unlimited Visibility";
-	} else if (xmlFetchedVis.getText() == "N/A") {
+	} else if (fetchedVis == "N/A") {
 		visData = "Visibility: Unknown";
 	} else {
-		visData = "Visibility: " + xmlFetchedVis.getText() + " " + unitDistance;
+		visData = "Visibility: " + fetchedVis + " " + unitDistance;
 	}
-
-	if (xmlFetchedPresChange.getText() == "steady" || xmlFetchedPresChange.getText() == "N/A") {
-		presChange = "";
-	} else {
-		presChange = " and " + xmlFetchedPresChange.getText();
-	}
-
-	if ( xmlFetchedPressure.getText() == "N/A" ) {
+	
+	if ( fetchedPres == "N/A" ) {
 		thePressure = "Pressure: Unknown";
 	} else {
-		thePressure = "Pressure: " + xmlFetchedPressure.getText() + " " + unitPres + presChange;
+		thePressure = "Pressure: " + fetchedPres;
 	}
-
-	if (xmlFetchedWindDir.getText() == "CALM") {
+/*
+	if (fetchedWindDir == "CALM") {
 		windData = "Calm Winds";
 	} else {
 
-		if 	(xmlFetchedWindDir.getText() == "VAR") {
+		if 	(fetchedWindDir == "VAR") {
 		
 			windData = "Variable winds ";
 			
@@ -310,7 +273,7 @@ function updateWeather () {
 
 			windData = "Wind from ";
 					
-			if (xmlFetchedWindDir.getText().length == 1 || xmlFetchedWindDir.getText().length == 2) {
+			if (fetchedWindDir.length == 1 || fetchedWindDir.getText().length == 2) {
 				dirArray = [xmlFetchedWindDir.getText()];
 			} else {
 				dirArray = [xmlFetchedWindDir.getText().substr(0,1), xmlFetchedWindDir.getText().substr(1,2)];
@@ -355,16 +318,16 @@ function updateWeather () {
 		}
 
 	}	
-
+*/
 	var toolTipData =	theCondition + "\n" +
 					theFeelsLike +
 					"\n" +
-					theHumidity + ", " + theDewPoint + "\n" +
+					theHumidity + "\n" +
 					visData + "\n" +
 					//thePressure + "\n" +
-					windData + "\n" +
+					//windData + "\n" +
 					"\n" +
-					"Updated at " + xmlFetchedTime.getText();
+					"Updated at " + fetchedTime;
 	
 	if (showToolTips) {
 		weather.tooltip = toolTipData;
@@ -372,18 +335,17 @@ function updateWeather () {
 		weather.tooltip = "";
 	}
 	
-	updateForecasts ();
+	updateForecasts(xml);
 }
 
 //-------------------------------------------------
 // -- updateForecasts --
 
-function updateForecasts () {
+function updateForecasts() {
 	//log ("updateForecasts ()");
 	
-	if (globalForecasts == "") return;
-	
-	var xml = new XMLDoc(globalForecasts, xmlError);
+	if (globalWeatherXML == "") return;
+	var xml = globalWeatherXML;
 	
 	var forecastDesc = new Array;
 	
@@ -391,46 +353,30 @@ function updateForecasts () {
 	var forecastHiPath = new Array;
 	var forecastLowPath = new Array;
 	var forecastIconPath = new Array;
-
-	var forcastTonightIcon = '/dayf/day[@d="0"]/part[@p="n"]/icon';
-	var tonightsIcon = xml.selectNode(forcastTonightIcon);
 	
-	var forecastTonightDesc = '/dayf/day[@d="0"]/part[@p="n"]/t';
-	var tonightsDesc = xml.selectNode(forecastTonightDesc);
-
+	var forecastXML = xml.evaluate("data/weather");
+	
 	for (i = 0; i < 4; i++) {
-	
-		forecastPath[i] = '/dayf/day[@d="' + i + '"]';
-		forecastHiPath[i] = '/dayf/day[@d="' + i + '"]/hi';
-		forecastLowPath[i] = '/dayf/day[@d="' + i + '"]/low';
-		forecastIconPath[i] = '/dayf/day[@d="' + i + '"]/part[@p="d"]/icon';
-		forecastDesc[i] = '/dayf/day[@d="' + i + '"]/part[@p="d"]/t';
-
-		var day;
-		var dayTextData = xml.selectNode(forecastDesc[i]);
-		var dayData = xml.selectNode(forecastPath[i]);
-		var hiTempData = xml.selectNode(forecastHiPath[i]);
-		var lowTempData = xml.selectNode(forecastLowPath[i]);
-		var iconData = xml.selectNode(forecastIconPath[i]);
 		
-		day = dayData.getAttribute("t");
-		hiTemp = hiTempData.getText();
-		lowTemp = lowTempData.getText();
-		dayText = dayTextData.getText();
+		var dayXML = forecastXML.item(i);
+		var day;
+		var dayDate = dayXML.evaluate("string(date)");
+		var dayText = dayXML.evaluate("string(weatherDesc)");
+		var hiTemp = dayXML.evaluate("string(tempMaxC)");
+		var lowTemp = dayXML.evaluate("string(tempMinC)");
+		var weatherCode = dayXML.evaluate("string(weatherCode)");
+		
 		dayText = dayText.replace(/ \/ /g,"/");
-		displayTinyIcons(iconData.getText(), i);
+		displayTinyIcons(weatherCode, i);
 		
 		var isNight = false;
 		
 		if (i == 0) {
-			if (hiTemp == "N/A"){
-				day = "Tonight";
-				hiTemp = lowTempData.getText();
-				dayText = tonightsDesc.getText();
-				displayTinyIcons(tonightsIcon.getText(), i);
-			} else {
-				day = "Today";
-			}
+			day = "Today";
+		}
+		else {
+			var dayDateArr = dayDate.split('-');
+			day = weekDays[new Date(dayDateArr[0],dayDateArr[1],dayDateArr[2]).getDay()];
 		}
 
 		forecastText[i][0].data	= hiTemp + "°";
@@ -445,7 +391,8 @@ function updateForecasts () {
 			forecastImage[i][1].tooltip = "";
 		}
 		
-		newConditionLogText += '\nForecast ' + i + ': ' + iconData.getText() + ': ' + dayText + ' (' + getWeatherIcon (iconData.getText()) + '.png)';
+		newConditionLogText += '\nForecast ' + i + ': ' + weatherCode + ': ' + dayText + ' (' + getWeatherIcon(weatherCode) + '.png)';
+		
 	}
 	
 	if (newConditionLogText != currentConditionLogText) {
@@ -465,116 +412,119 @@ function getWeatherIcon (fetchedConditions) {
 	//log ("getWeatherIcon ("+fetchedConditions+")");
 	//return "grid";
 	
-	switch (fetchedConditions){
+	switch (parseInt(fetchedConditions)){
 		
-		case "0":  // Thunder
-		case "3":  // Strong Thunderstorms
-		case "4":  // Thunderstorms
-		case "17": // Hail
-		case "35": // Mixed Rain and Hail
-		case "47": // Night Thunder Storm
+		case 386: // Patchy light rain in area with thunder
+		case 389: // Moderate or heavy rain in area with thunder
+		case 200: // Thundery outbreaks in nearby
 			return "thunderstorms";
+		
+		
+		case 392: // Patchy light snow in area with thunder
+		case 395: // Moderate or heavy snow in area with thunder
+			return "snowythunderstorms"; // TO DO
 			
-		case "1":  // Tropical Storm
-		case "2":  // Windy Showers
-			return "windyshowers";
+		//	return "windyshowers";
 			
-		case "5":  // Rain and Snow
-		case "7":  // Freezing Rain
-			return "icysnowyrain";
+		//	return "icysnowyrain";
 			
-		case "6":  // Rain and Sleet
-		case "18": // Sleet
+		case 365: // Moderate or heavy sleet showers
+		case 362: // Light sleet showers
+		case 320: // Moderate or heavy sleet
+		case 317: // Light sleet
+		case 182: // Patchy sleet nearby
 			return "sleet";
 
-		case "8":  // Freezing Drizzle
+		case 374: // Light showers of ice pellets
+		case 311: // Light freezing rain
+		case 284: // Heavy freezing drizzle
+		case 281: // Freezing drizzle
+		case 185: // Patchy freezing drizzle nearby
 			return "icydrizzle";
 			
-		case "9":  // Drizzle
+		case 296: // Light rain
+		case 293: // Patchy light rain
+		case 266: // Light drizzle
+		case 263: // Patchy light drizzle
 			return "drizzle";
 			
-		case "10": // Freezing Rain
+		case 377: // Moderate or heavy showers of ice pellets
+		case 350: // Ice pellets
+		case 314: // Moderate or Heavy freezing rain
 			return "icyrain";
 			
-		case "11": // Showers
+		case 356: // Moderate or heavy rain shower
+		case 353: // Light rain shower
+		case 305: // Heavy rain at times
+		case 299: // Moderate rain at times
 			return "showers";
 			
-		case "12": // Rain
-		case "40": // Heavy Rain
+		case 359: // Torrential rain shower
+		case 308: // Heavy rain
+		case 302: // Moderate rain
 			return "rain";
 			
-		case "13": // Flurries
+		case 329: // Patchy moderate snow
+		case 326: // Light snow
+		case 323: // Patchy light snow
 			return "lightsnowflurries";
 			
-		case "14": // Snow Showers
+		case 368: // Light snow showers
+		case 332: // Moderate snow
+		case 179: // Patchy snow nearby
 			return "medsnow";
 		
-		case "15": // Blowing Snow
-		case "43": // Blizzard
+		case 230: // Blizzard
+		case 227: // Blowing snow
 			return "windysnow";
 			
-		case "16": // Snow
-		case "41": // Scattered Snow Showers - day
-		case "42": // Heavy Snow
+		case 371: // Moderate or heavy snow showers
+		case 338: // Heavy snow
+		case 335: // Patchy heavy snow
 			return "normalsnow";
 			
-		case "19": // Dust
-		case "20": // Fog
-		case "21": // Hazy
-		case "22": // Smoke
+		case 260: // Freezing fog
+		case 248: // Fog
+		case 143: // Mist
 			return "fog";
 			
-		case "23": // Breezy
-		case "24": // Windy
-			return "windy";
+		//	return "windy";
 			
-		case "25": // Friged (Very Cold)
-			return "fridged";
+		//	return "fridged";
 			
-		case "26": // Cloudy (no sun/moon)
+		case 122: // Overcast
+		case 119: // Cloudy
 			return "cloudy";
 			
-		case "27": // Mostly Cloudy Night
-			return "mostlycloudynight";
+		//	return "mostlycloudynight";
 			
-		case "28": // Mostly Cloudy Day
+		case 116: // Partly Cloudy
 			return "mostlycloudyday";
 			
-		case "29": // Partially Cloudy Night
-			return "partiallycloudynight";
+		//	return "partiallycloudynight";
 			
-		case "30": // Partially Cloudy Day
-			return "partiallycloudyday";
+		//	return "partiallycloudyday";
 			
-		case "31": // Clear Night
-			return "clearnight";
+		//	return "clearnight";
 			
-		case "32": // Sunny Day
+		case 113: // Clear/Sunny
 			return "clearday";
 			
-		case "33": // Tiny bit of clouds at night
-			return "partiallycloudynight";
+		//	return "partiallycloudynight";
 			
-		case "34": // Tiny bit of clouds during the day
-			return "partiallycloudyday";
+		//	return "partiallycloudyday";
 			
-		case "36": // Hot
-			return "hot";
+		//	return "hot";
 			
-		case "37": // Isolated Thunderstorms
-		case "38": // Scattered Thunderstorms Day
-			return "sunnythunderstorm";
+		//	return "sunnythunderstorm";
 			
-		case "39": // Scattered Showers Day
+		case 176: // Patchy rain nearby
 			return "sunnyshowers";
 			
-		case "45": // Scattered Showers Night
-			return "nightrain";
+		//	return "nightrain";
 			
-		case "46": // Scattered Snow Showers Night
-			return "nightsnow";
+		//	return "nightsnow";
 			
-		case "44": // No Feed
 		default:   // 
 			return "unknown";
 	}
@@ -583,9 +533,7 @@ function getWeatherIcon (fetchedConditions) {
 //-------------------------------------------------
 // -- displayTinyIcons --
 
-function displayTinyIcons (fetchedConditions, whichTiny) {
-	//log ("displayTinyIcons ("+whichTiny+": " + fetchedConditions+")");
-	
-	fetchedConditions	= String(fetchedConditions);
-	forecastImage[whichTiny][1].src	= "Resources/WeatherIcons/" + getWeatherIcon (fetchedConditions) + ".png";
+function displayTinyIcons (weatherCode, whichTiny) {
+	//log ("displayTinyIcons ("+whichTiny+": " + weatherCode+")");
+	forecastImage[whichTiny][1].src	= "Resources/WeatherIcons/" + getWeatherIcon(weatherCode) + ".png";
 }

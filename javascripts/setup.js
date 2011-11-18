@@ -18,7 +18,7 @@
 function init () {
 	//log ("init ()");
 	
-	var dayPlaceHolders = ["Tonight", "Wednesday", "Thursday", "Friday"];
+	var dayPlaceHolders = ["Tonight", "Wed", "Thu", "Fri"];
 	
 	// Display the last used city name
 	theCity.data	= preferences.cityName.value;
@@ -88,7 +88,7 @@ function init () {
 	
 	// Fetch the data
 	// And update the weather
-	update ();
+	update();
 	
 	// Start the update timer
 	updateTimer.ticking = true;
@@ -169,13 +169,13 @@ function applyPreferences (startUp, oldTrayOpens) {
 
 function update () {
 	//log ("update ()");
-	
-	suppressUpdates();
-	
 	saveWindowPosition();
-	fetchData ("full");
+	fetchDataAsync();
+}
+
+function onUpdateData() {
+	suppressUpdates();
 	updateWeather();
-	
 	resumeUpdates();
 }
 

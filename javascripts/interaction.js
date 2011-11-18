@@ -161,7 +161,7 @@ function stopMoveTray () {
 		//displayForecast (true);
 		
 		// Update the forecast
-		updateForecasts ();
+		updateForecasts();
 	}
 	else {
 		// Hide the forecast icons and texts

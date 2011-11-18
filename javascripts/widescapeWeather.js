@@ -27,7 +27,7 @@
 */
 
 include("javascripts/settings.js");			// Create the static environment
-include("javascripts/xmldom.js");				// Import XML library
+//include("javascripts/xmldom.js");				// Import XML library
 include("javascripts/weather.js");			// Import weather management
 include("javascripts/design.js");				// Import design management
 include("javascripts/interaction.js");	// Import interaction management

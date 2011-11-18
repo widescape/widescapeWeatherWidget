@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-16"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <widget>
 <!--
 	
@@ -23,9 +23,9 @@
 	
 	
 	*** Please don't steal ***
-	But feel free to learn from the code.
 	
-	For icon usage licences please contact Robert Wünsch at info@widescape.net
+	For icon usage licences see /Resources/WeatherIcons/__Weather Icon Copyright and Permissions__.txt
+	or contact Robert Wünsch at info@widescape.net
 -->
 	<settings>
 		<setting name="defaultTracking" value="rectangle"/>
@@ -250,7 +250,7 @@
 	</window><!-- mainWindow -->
 				
 	<action trigger="onLoad" file="javascripts/widescapeWeather.js"/>
-	<timer name="updateTimer" interval="900" ticking="false"> update(); </timer>
+	<timer name="updateTimer" interval="14400" ticking="false"> update(); </timer>
 	<timer name="timeTimer" interval="1" ticking="false"> updateTime(); saveWindowPosition(); </timer>
 
 	<action trigger="onWakeFromSleep">
