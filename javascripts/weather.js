@@ -1,10 +1,10 @@
 /*
 	
-	widescapeWeather widget
+	widescapeWeather Widget
+
+	Version 2.1.18
 	
 	Weather Management
-
-	2.1.16
 	
 	
 	The partnerID and licenseID MUST NOT be used in 3rd party Widgets.
@@ -15,7 +15,7 @@
 	license agreement.
 	
 	
-	(c) 2007 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+	(c) 2008 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
 	The Weather Widget: (c) 2003 - 2004 Pixoria
 */
 var partnerID	= "1006341644";
@@ -35,34 +35,37 @@ function xmlError (str) { alert (str); };
 	still use them in other functions. 
 */
 function fetchData (fetchType) {
-	//sleep (300);
-	//print ("fetchData ()");
+	//log ("fetchData ()");
 	
 	var userCity = preferences.cityValPref.value;
 	unitValue = (preferences.unitsPref.value == 1) ? "m" : "s";
 	
 	if (globalLinks == "") fetchType = "full";
+	globalWeather	= "";
+	globalForecasts	= "";
+	globalLinks		= "";
 	
 	var _url = "";
 	
 	switch (fetchType) {
 		case "full":
 			_url = "http://xoap.weather.com/weather/local/" + userCity + "?cc=*&dayf=4&prod=xoap&link=xoap&par=" + partnerID + "&key=" + licenseID + "&unit=" + unitValue;
-			urlData = url.fetch(_url);
+			urlData = urlFetch.fetch(_url);
 			if (urlData.length == 0 || urlData == "Could not load URL") {
-				if (globalLinks == "") {
-					//alert("There was a problem connecting to The Weather Channel.\n\nPlease check your network connection or try this Widget again later.");
-					//closeWidget();
-					weather.tooltip	= "There was a problem connecting to The Weather Channel.\n\nPlease check your network connection and click on the reload icon.";
-					weather.src		= "Resources/WeatherIcons/error.png";
-					weather.reload ();
-					globalWeather	= "";
-					globalForecasts	= "";
-					globalLinks		= "";
-					scaleWidget ();
-					designWidget ();
-				}
+				weather.tooltip	= "There was a problem connecting to The Weather Channel.\n\nPlease check your network connection and click here to reload.";
+				weather.onClick	= function() {
+					weather.src		= "Resources/WeatherIcons/waiting.png";
+					updateNow();
+					sleep(150);
+					update (true);
+					}
+				weather.src		= "Resources/WeatherIcons/error.png";
+				weather.reload ();
+				scaleWidget();
 				return;
+			}
+			else {
+				weather.onClick	= null;
 			}
 			urlData = urlData.replace(/[\r]*\n/g,"");
 			globalWeather = "<weather> " + urlData.match(/<loc id(.*?)<\/loc>/g) + urlData.match(/<cc>(.*?)<\/cc>/g) + " </weather>";
@@ -71,7 +74,7 @@ function fetchData (fetchType) {
 			break
 		case "forecast":
 			_url = "http://xoap.weather.com/weather/local/" + userCity + "?cc=*&dayf=4&prod=xoap&par=" + partnerID + "&key=" + licenseID + "&unit=" + unitValue;
-			urlData = url.fetch(_url);
+			urlData = urlFetch.fetch(_url);
 			if (urlData.length == 0 || urlData == "Could not load URL") return;
 			urlData = urlData.replace(/[\r]*\n/g,"");
 			globalWeather = "<weather> " + urlData.match(/<loc id(.*?)<\/loc>/g) + urlData.match(/<cc>(.*?)<\/cc>/g) + " </weather>";
@@ -79,13 +82,13 @@ function fetchData (fetchType) {
 			break
 		case "weather":
 			_url = "http://xoap.weather.com/weather/local/" + userCity + "?cc=*&link=xoap&par=" + partnerID + "&key=" + licenseID + "&unit=" + unitValue;
-			urlData = url.fetch(_url);
+			urlData = urlFetch.fetch(_url);
 			if (urlData.length == 0 || urlData == "Could not load URL") return;			
 			urlData = urlData.replace(/[\r]*\n/g,"");
 			globalWeather = "<weather> " + urlData.match(/<loc id(.*?)<\/loc>/g) + urlData.match(/<cc>(.*?)<\/cc>/g) + " </weather>";
 			break
 	}
-	//print(_url);
+	//log(_url);
 }
 
 //-------------------------------------------------
@@ -94,79 +97,72 @@ function fetchData (fetchType) {
     options for the entered information, suggest which the user can choose from.
 */
 function chooseCity () {
-	//sleep (300);
-	//print ("chooseCity ()");
+	//log ("chooseCity ()");
 	
-	var cityCheck = preferences.userDisplayPref.value;
 	var idArray = new Array();
 	var cityArray = new Array();
 	var locationCount = 0;
 	
-	if (oldUserCity != cityCheck) {
+	var searchResultsData = urlFetch.fetch("http://xoap.weather.com/search/search?where=" + escape(preferences.userDisplayPref.value));
+
+	if (searchResultsData.length == "276"){
+		alert("We were unable to find the city you entered.\n\nIf your city can't be found, try a entering a larger neighboring city.");
+		preferences.userDisplayPref.value = oldUserCity;
+		return;
+	}
+
+	if (urlData.length == 0 || urlData == "Could not load URL") {
+		alert("We are unable to choose your city because we can't connect to The Weather Channel.\n\nPlease check your network connection or try again later.");
+		preferences.userDisplayPref.value = oldUserCity;
+		return;
+	}
+
+	var resultsXML = new XMLDoc(searchResultsData, xmlError);
+	var resultsNode = resultsXML.docNode;
+
+	if (resultsNode == null) {
+		alert("There was a problem parsing search results.");
+	} else {
+		for (n = 0; n < resultsNode.children.length; n++) {
+			if (resultsNode.children[n].tagName == "loc") {
+				cityArray[locationCount] = resultsNode.children[n].getText();
+				idArray[resultsNode.children[n].getText()] = resultsNode.children[n].getAttribute("id");
+				++locationCount;
+			}
+		}
+	}
+
+	if (locationCount > 1) {		  
+		var formFields = new Array();
 		
-		var searchResultsData = url.fetch("http://xoap.weather.com/search/search?where=" + escape(cityCheck));
-	
-		if (searchResultsData.length == "276"){
-			alert("We were unable to find the city you entered.\n\nIf your city can't be found, try a entering a larger neighboring city.");
-			preferences.userDisplayPref.value = oldUserCity;
-			return;
+		formFields[0] = new FormField();
+		formFields[0].name = 'city_popup';
+		formFields[0].title = 'Location:';
+		formFields[0].type = 'popup';
+		formFields[0].option = new Array();
+
+		for (n = 0; n < locationCount; n++) {
+			formFields[0].option[n] =  cityArray[n];
 		}
-	
-		if (urlData.length == 0 || urlData == "Could not load URL") {
-			alert("We are unable to choose your city because we can't connect to The Weather Channel.\n\nPlease check your network connection or try again later.");
-			preferences.userDisplayPref.value = oldUserCity;
-			return;
-		}
-	
-		var resultsXML = new XMLDoc(searchResultsData, xmlError);
-		var resultsNode = resultsXML.docNode;
-	
-		if (resultsNode == null) {
-			alert("There was a problem parsing search results.");
-		} else {
-			for (n = 0; n < resultsNode.children.length; n++) {
-				if (resultsNode.children[n].tagName == "loc") {
-					cityArray[locationCount] = resultsNode.children[n].getText();
-					idArray[resultsNode.children[n].getText()] = resultsNode.children[n].getAttribute("id");
-					++locationCount;
-				}
-			}
-		}
-	
-		if (locationCount > 1) {		  
-			var formFields = new Array();
 			
-			formFields[0] = new FormField();
-			formFields[0].name = 'city_popup';
-			formFields[0].title = 'Location:';
-			formFields[0].type = 'popup';
-			formFields[0].option = new Array();
-	
-			for (n = 0; n < locationCount; n++) {
-				formFields[0].option[n] =  cityArray[n];
-			}
-				
-			formFields[0].defaultValue = formFields[0].option[0];
-			formFields[0].description = "Please choose the city closest to where you live.";
-			
-			formResults = form(formFields, 'Choose a City', 'Choose');
-								
-			if ( formResults != null ) {
-				preferences.userDisplayPref.value = formResults[0].split(" (")[0];
-				preferences.cityValPref.value = idArray[String(formResults[0])];
-			}
-		} else if (locationCount == 1) {
-			preferences.userDisplayPref.value = cityArray[0].split(" (")[0];
-			preferences.cityValPref.value = idArray[cityArray[0]];
-		} else {
-			alert("No results (problem with search data?)");
-		}
+		formFields[0].defaultValue = formFields[0].option[0];
+		formFields[0].description = "Please choose the city closest to where you live.";
 		
-		savePreferences();
+		formResults = form(formFields, 'Choose a City', 'Choose');
+							
+		if ( formResults != null ) {
+			preferences.userDisplayPref.value = formResults[0].split(" (")[0];
+			preferences.cityValPref.value = idArray[String(formResults[0])];
+		}
+	} else if (locationCount == 1) {
+		preferences.userDisplayPref.value = cityArray[0].split(" (")[0];
+		preferences.cityValPref.value = idArray[cityArray[0]];
+	} else {
+		alert("No results (problem with search data?)");
 	}
 	
-	update (true);
-	
+	savePreferences();
+	update();
 }
 
 //-------------------------------------------------
@@ -176,8 +172,7 @@ function chooseCity () {
 	associated with.
 */
 function updateWeather () {
-	//sleep (300);
-	//print ("updateWeather ()");
+	//log ("updateWeather ()");
 	
 	if (globalWeather == "") return;
 	
@@ -200,8 +195,9 @@ function updateWeather () {
 	var xmlFetchedWindSpeed = xml.selectNode("/cc/wind/s");
 	var xmlFetchedWindGust = xml.selectNode("/cc/wind/gust");
 	var xmlFetchedWindDir = xml.selectNode("/cc/wind/t");
-
-	var fetchedTemp = xmlFetchedTemp.getText();
+	
+	var fetchedTemp = 0;
+	if (xmlFetchedTemp != null) fetchedTemp = xmlFetchedTemp.getText();
 	var fetchedTimeZone = Number(xmlFetchedTimeZone.getText());
 	
 	// Get the time of the selected location
@@ -219,7 +215,7 @@ function updateWeather () {
 	if (localOffsetHours + fetchedTimeZone > 12)		localOffsetDate = -1;
 	else if (localOffsetHours + fetchedTimeZone <= -12)	localOffsetDate = 1;
 	
-	//print(fetchedTime.toLocaleString());
+	newConditionLogText = '\nMain: ' + xmlFetchedConditions.getText() + ': ' + xmlFetchedTextConditions.getText() + ' (' + getWeatherIcon (xmlFetchedConditions.getText()) + '.png)';
 	
 	weather.src		= "Resources/WeatherIcons/" + getWeatherIcon (xmlFetchedConditions.getText()) + ".png";
 						
@@ -227,24 +223,30 @@ function updateWeather () {
 	theTemp.data = fetchedTemp + "°";
 	
 	theCity.data = theDate.data = theTime.data = "";
-	if (preferences.showCity.value == 1) {
-		
-		fetchedCity = xmlFetchedCity.getText();
-		fetchedCity = fetchedCity.match(/([^,\/]*).*/);
-		theCity.data = preferences.displayName.value == "" ? fetchedCity[1] : preferences.displayName.value;
-	}
+	fetchedCity = xmlFetchedCity.getText();
+	fetchedCity = fetchedCity.match(/([^,\/]*).*/);
+	fetchedCityName = fetchedCity[1];
+	
 	if (preferences.showDate.value == 1 || preferences.showTime.value == 1) {
 		updateTime ();
 	}
-	
-	// Adjust widget's dimensions, because the City name might be different
-	scaleWidget ();
 	
 	unitTemp = (preferences.unitsPref.value == 1) ? "C" : "F";
 	unitDistance = (preferences.unitsPref.value == 1) ? "Kilometers" : "Miles";
 	unitSpeed = (preferences.unitsPref.value == 1) ? "km/h" : "mph";
 	unitPres = (preferences.unitsPref.value == 1) ? "Millibars" : "Inches";
 	unitMeasure = (preferences.unitsPref.value == 1) ? "Millimeters" : "Inches";	
+	
+	var theCondition = "";
+	var theFeelsLike = "";
+	var theHigh = "";
+	var theLow = "";
+	var theDewPoint = "";
+	var theHumidity = "";
+	var visData = "";
+	var presChange = "";
+	var thePressure = "";
+	var windData = "";
 	
 	if ( xmlFetchedTextConditions.getText() == "N/A" ) {
 		theCondition = "Unknown Weather Condition";
@@ -348,7 +350,7 @@ function updateWeather () {
 
 	}	
 
-	toolTipData =	theCondition + "\n" +
+	var toolTipData =	theCondition + "\n" +
 					theFeelsLike +
 					"\n" +
 					theHumidity + ", " + theDewPoint + "\n" +
@@ -358,7 +360,7 @@ function updateWeather () {
 					"\n" +
 					"Updated at " + xmlFetchedTime.getText();
 	
-	if (showToolTips == 1) {
+	if (showToolTips) {
 		weather.tooltip = toolTipData;
 	} else {
 		weather.tooltip = "";
@@ -371,8 +373,7 @@ function updateWeather () {
 // -- updateForecasts --
 
 function updateForecasts () {
-	//sleep (300);
-	//print ("updateForecasts ()");
+	//log ("updateForecasts ()");
 	
 	if (globalForecasts == "") return;
 	
@@ -429,7 +430,7 @@ function updateForecasts () {
 		forecastText[i][0].data	= hiTemp + "°";
 		forecastImage[i][0].src	= "Resources/Day-" + day + ".png";
 
-		if (showToolTips == "1") {
+		if (showToolTips) {
 			forecastImage[i][1].tooltip = dayText;
 			if (i != 0) {
 				forecastImage[i][1].tooltip += "\nDay: " + hiTemp + "°"+unitTemp + "\nNight: " + lowTemp + "°"+unitTemp;
@@ -438,7 +439,16 @@ function updateForecasts () {
 			forecastImage[i][1].tooltip = "";
 		}
 		
+		newConditionLogText += '\nForecast ' + i + ': ' + iconData.getText() + ': ' + dayText + ' (' + getWeatherIcon (iconData.getText()) + '.png)';
 	}
+	
+	if (newConditionLogText != currentConditionLogText) {
+		currentConditionLogText = newConditionLogText;
+		newConditionLogText = fetchedTime.toLocaleString() + newConditionLogText;
+		log( newConditionLogText );
+	}
+	
+	scaleWidget();
 	
 }
 
@@ -446,67 +456,60 @@ function updateForecasts () {
 // -- getWeatherIcon --
 
 function getWeatherIcon (fetchedConditions) {
-	//sleep (300);
-	//print ("getWeatherIcon ("+fetchedConditions+")");
+	//log ("getWeatherIcon ("+fetchedConditions+")");
 	//return "grid";
 	
 	switch (fetchedConditions){
-
-		case "-":  // Unknown Weather
-			return "unknown";
-			
-		case "0": // 
-		case "3": // 
-		case "4": // Thunder
-		case "17": // 
-		case "35": // Thunder Storms
+		
+		case "0":  // Thunder
+		case "3":  // Strong Thunderstorms
+		case "4":  // Thunderstorms
+		case "17": // Hail
+		case "35": // Mixed Rain and Hail
 		case "47": // Night Thunder Storm
 			return "thunderstorms";
 			
-		case "1": // 
+		case "1":  // Tropical Storm
 		case "2":  // Windy Showers
 			return "windyshowers";
 			
-		case "5": // 
-		case "7":  // Icy Snowy Rain
+		case "5":  // Rain and Snow
+		case "7":  // Freezing Rain
 			return "icysnowyrain";
 			
-		case "6": // 
+		case "6":  // Rain and Sleet
 		case "18": // Sleet
 			return "sleet";
 
-		case "8":  // Icy Drizzle
+		case "8":  // Freezing Drizzle
 			return "icydrizzle";
 			
 		case "9":  // Drizzle
 			return "drizzle";
 			
-		case "10": // Icy Rain
+		case "10": // Freezing Rain
 			return "icyrain";
 			
-		case "11": // 
-		case "40": // Showers
+		case "11": // Showers
 			return "showers";
 			
 		case "12": // Rain
+		case "40": // Heavy Rain
 			return "rain";
 			
-		case "13": // Light Snow Flurries
+		case "13": // Flurries
 			return "lightsnowflurries";
 			
-		case "14": // Med Snow
+		case "14": // Snow Showers
 			return "medsnow";
-			
-		case "25": // Friged (Very Cold)
-			return "fridged";
 		
-		case "15": // 
-		case "43": // Blowing/Windy Snow
+		case "15": // Blowing Snow
+		case "43": // Blizzard
 			return "windysnow";
 			
-		case "16": // 
-		case "41": // 
-		case "42": // Normal Snow
+		case "16": // Snow
+		case "41": // Scattered Snow Showers - day
+		case "42": // Heavy Snow
 			return "normalsnow";
 			
 		case "19": // Dust
@@ -515,9 +518,12 @@ function getWeatherIcon (fetchedConditions) {
 		case "22": // Smoke
 			return "fog";
 			
-		case "23": // 
+		case "23": // Breezy
 		case "24": // Windy
 			return "windy";
+			
+		case "25": // Friged (Very Cold)
+			return "fridged";
 			
 		case "26": // Cloudy (no sun/moon)
 			return "cloudy";
@@ -537,7 +543,7 @@ function getWeatherIcon (fetchedConditions) {
 		case "31": // Clear Night
 			return "clearnight";
 			
-		case "32": // Clear Day
+		case "32": // Sunny Day
 			return "clearday";
 			
 		case "33": // Tiny bit of clouds at night
@@ -549,23 +555,21 @@ function getWeatherIcon (fetchedConditions) {
 		case "36": // Hot
 			return "hot";
 			
-		case "37":
-		case "38": // Sunny Thunder Storm
+		case "37": // Isolated Thunderstorms
+		case "38": // Scattered Thunderstorms Day
 			return "sunnythunderstorm";
 			
-		case "39": // Sunny Showers
+		case "39": // Scattered Showers Day
 			return "sunnyshowers";
 			
-		case "44": // Partially Cloudy Day
-			// Looks like the default widget state, no change.
-			return "partiallycloudyday";
-			
-		case "45": // Night Rain
+		case "45": // Scattered Showers Night
 			return "nightrain";
 			
-		case "46": // Night Snow
+		case "46": // Scattered Snow Showers Night
+			return "nightsnow";
 			
-		default: // 
+		case "44": // No Feed
+		default:   // 
 			return "unknown";
 	}
 }
@@ -574,8 +578,7 @@ function getWeatherIcon (fetchedConditions) {
 // -- displayTinyIcons --
 
 function displayTinyIcons (fetchedConditions, whichTiny) {
-	//sleep (300);
-	//print ("displayTinyIcons ("+whichTiny+": " + fetchedConditions+")");
+	//log ("displayTinyIcons ("+whichTiny+": " + fetchedConditions+")");
 	
 	fetchedConditions	= String(fetchedConditions);
 	forecastImage[whichTiny][1].src	= "Resources/WeatherIcons/" + getWeatherIcon (fetchedConditions) + ".png";

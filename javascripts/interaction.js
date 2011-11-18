@@ -1,13 +1,13 @@
 /*
 	
-	widescapeWeather widget
+	widescapeWeather Widget
+
+	Version 2.1.18
 	
 	Interaction
 
-	2.1.16
-
 	
-	(c) 2007 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+	(c) 2008 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
 	The Weather Widget: (c) 2003 - 2004 Pixoria
 */
 
@@ -20,8 +20,8 @@ function startMoveTray () {
 	// If the movement is running, return
 	if (movementTimer.ticking == true) return;
 	
-	//sleep (300);
-	//print ("startMoveTray ()");
+	//log ("startMoveTray ()");
+	saveWindowPosition();
 	
 	// If the large images are used and the tray will be opened
 	if (scaleModName == "" && trayState == "closed") {
@@ -57,7 +57,7 @@ function startMoveTray () {
 // Animates the movement of the opening and closing of the tray
 
 function moveTray () {
-	//print ("moveTray ()");
+	//log ("moveTray ()");
 	
 	// Calculate the position of the current movement
 	var movementRatio	= (Math.cos (Math.PI * (moveTrayTrigger + movementCounter / movementDuration)) + 1) / 2;
@@ -145,8 +145,7 @@ function moveTray () {
 // Quits the tray movement
 
 function stopMoveTray () {
-	//sleep (300);
-	//print ("stopMoveTray ()");
+	//log ("stopMoveTray ()");
 	
 	// Stop the movement
 	movementTimer.ticking	= false;
@@ -199,8 +198,7 @@ function stopMoveTray () {
 // Displays the tray button according to the trayState
 
 function displayTrayButton (startup) {
-	//sleep (300);
-	//print ("displayTrayButton ()");
+	//log ("displayTrayButton ()");
 	
 	// Load the image
 	trayButton.src	= "Resources/trayButton-" + preferences.trayState.value + ".png";
@@ -218,8 +216,7 @@ function displayTrayButton (startup) {
 // -- displayForecast --
 /*	Turns the forecast images and texts on or off. */
 function displayForecast (switchTo) {
-	//sleep (300);
-	//print ("displayForecast ()");
+	//log ("displayForecast ()");
 	
 	if (switchTo == true) {
 		for (obj = 0; obj < 4; obj++) {
@@ -241,35 +238,39 @@ function displayForecast (switchTo) {
 }
 
 //-------------------------------------------------
-// -- onWillChangePreferences --
+// -- willChangePreferences --
 // Called before preferences will be changed
 
-function onWillChangePreferences () {
-	//sleep (300);
-	//print ("onWillChangePreferences ()");
+function willChangePreferences () {
+	//log ("onWillChangePreferences ()");
 	
+	selectedTheme	= preferences.theme.value;
 	oldUserCity		= preferences.userDisplayPref.value;
-	oldMainWindowX	= Number(mainWindow.hOffset);
-	oldMainWindowY	= Number(mainWindow.vOffset);
-	oldBaseAddition	= Number(metrics.baseAddition);
-	basePositionX	= Number(mainWindow.hOffset) + Number(metrics.baseAddition);
-	basePositionY	= Number(mainWindow.vOffset);
+	oldMetrics		= preferences.unitsPref.value;
 	
+	saveWindowPosition();
 }
 
 //-------------------------------------------------
-// -- onPreferencesChanged --
+// -- preferencesChanged --
 // Called when preferences were changed
 
-function onPreferencesChanged () {
-	//sleep (300);
-	//print ("onPreferencesChanged ()");
+function preferencesChanged () {
+	//log ("onPreferencesChanged ()");
 	
 	// Apply changed preferences
 	applyPreferences (false, oldTrayOpens);
 	
+	updateNow();
+	
 	// Choose the city to update the weather accordingly
-	chooseCity ();
+	if (preferences.userDisplayPref.value != oldUserCity || preferences.unitsPref.value != oldMetrics) {
+		chooseCity();
+	}
+	else {
+		// Update the scale and design
+		scaleWidget();
+	}
 	
 	// Remember current setting of trayOpens
 	oldTrayOpens	= preferences.trayOpens.value;
@@ -277,12 +278,11 @@ function onPreferencesChanged () {
 }
 
 //-------------------------------------------------
-// -- onGainFocus --
+// -- gainFocus --
 // Fired when the widget gains the user's focus
 	
-function onGainFocus () {
-	//sleep (300);
-	//print ("onGainFocus ()");
+function gainFocus () {
+	//log ("gainFocus ()");
 	
 	// Register the focus
 	widgetFocused	= true;
@@ -292,12 +292,11 @@ function onGainFocus () {
 }
 
 //-------------------------------------------------
-// -- onGainFocus --
+// -- loseFocus --
 // Fired when the widget loses the user's focus
 	
-function onLoseFocus () {
-	//sleep (300);
-	//print ("onLoseFocus ()");
+function loseFocus () {
+	//log ("loseFocus ()");
 	
 	// Register the lost focus
 	widgetFocused	= false;
@@ -311,8 +310,7 @@ function onLoseFocus () {
 // Fades the buttons
 	
 function fadeButtons () {
-	//sleep (300);
-	//print ("fadeButtons ()");
+	//log ("fadeButtons ()");
 	
 	trayButton.opacity	= fadeFrom + fadeCounter / fadeDuration * fadeDiff;
 	
@@ -331,8 +329,7 @@ function fadeButtons () {
 // Initiate the fading of the buttons
 	
 function fadeButtonsStart () {
-	//sleep (300);
-	//print ("fadeButtonsStart ()");
+	//log ("fadeButtonsStart ()");
 
 	fadeCounter		= 0;
 	fadeFrom		= trayButton.opacity;

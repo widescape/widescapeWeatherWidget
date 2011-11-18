@@ -1,13 +1,13 @@
 /*
 	
-	widescapeWeather widget
+	widescapeWeather Widget
+
+	Version 2.1.18
 	
 	Setup
 
-	2.1.16
-
 	
-	(c) 2007 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+	(c) 2008 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
 	The Weather Widget: (c) 2003 - 2004 Pixoria
 */
 
@@ -16,10 +16,12 @@
 // Create and initialize the basics
 
 function init () {
-	//sleep (300);
-	//print ("init ()");
+	//log ("init ()");
 	
 	var dayPlaceHolders = ["Tonight", "Wednesday", "Thursday", "Friday"];
+	
+	// Display the last used city name
+	theCity.data	= preferences.cityName.value;
 	
 	// Create the forecast layout
 	for ( obj = 0; obj < 4; obj++ ) {
@@ -57,13 +59,13 @@ function init () {
 	movementTimer	= new Timer ();
 	movementTimer.interval		= movementInterval;
 	movementTimer.ticking		= false;
-	movementTimer.onTimerFired	= "moveTray ();";
+	movementTimer.onTimerFired	= function() { moveTray(); }
 	
 	// Create the fade timer
 	fadeTimer	= new Timer ();
 	fadeTimer.interval	= fadeInterval;
 	fadeTimer.ticking		= false;
-	fadeTimer.onTimerFired	= "fadeButtons ();";
+	fadeTimer.onTimerFired	= function() { fadeButtons(); }
 	
 	// Apply given preferences
 	applyPreferences (true, false);
@@ -87,6 +89,9 @@ function init () {
 	// Fetch the data
 	// And update the weather
 	update ();
+	
+	// Start the update timer
+	updateTimer.ticking = true;
 }
 
 //-------------------------------------------------
@@ -94,8 +99,34 @@ function init () {
 // Modify the basic values with the given preferences
 
 function applyPreferences (startUp, oldTrayOpens) {
-	//sleep (300);
-	//print ("applyPreferences ()");
+	//log ("applyPreferences ()");
+	
+	// Set the update check interval according to the showSeconds setting
+	updateTimer.interval = preferences.updateTime.value;
+	timeTimer.ticking = preferences.showDate.value == 1 || preferences.showTime.value == 1;
+	
+	// Set the colors and opacities to a requested theme
+	var themeItems = new Array( 'iconColor', 'iconOpacity', 'textColor', 'textOpacity', 'backgroundColor', 'backgroundOpacity', 'borderColor', 'borderOpacity' );
+	if (preferences.theme.value != 'custom' && preferences.theme.value != selectedTheme && typeof themes[preferences.theme.value] != 'undefined') {
+		for (var i = 0; i < themeItems.length; i++) {
+			preferences[themeItems[i]].value = themes[preferences.theme.value][themeItems[i]];
+		}
+	}
+	else if (preferences.theme.value != 'custom') {
+		var notTheTheme = false;
+		if (typeof themes[preferences.theme.value] != 'undefined') {
+			for (var i = 0; i < themeItems.length; i++) {
+				if (preferences[themeItems[i]].value != themes[preferences.theme.value][themeItems[i]]) {
+					notTheTheme = true;
+					break;
+				}
+			}
+		}
+		if (notTheTheme) {
+			preferences.theme.value = 'custom';
+		}
+		
+	}
 	
 	// Hide the main window so that the strange repositioning effect is not visible
 	// (Occurs when switching trayOpens from right to left or vice-versa with closed trayState)
@@ -104,35 +135,28 @@ function applyPreferences (startUp, oldTrayOpens) {
 		reposition			= true;
 	}
 	if (startUp == false && oldTrayOpens != preferences.trayOpens.value) {
-		//mainWindow.visible	= false; // DEBUGGING
 		reposition			= true;
-	}
-	
-	// Set the colors and opacities to a requested theme
-	if (preferences.theme.value != "custom") {
-		preferences.iconColor.value		= themes[preferences.theme.value].iconColor;
-		preferences.textColor.value		= themes[preferences.theme.value].textColor;
-		preferences.textOpacity.value		= themes[preferences.theme.value].textOpacity;
-		preferences.backgroundColor.value	= themes[preferences.theme.value].backgroundColor;
-		preferences.backgroundOpacity.value	= themes[preferences.theme.value].backgroundOpacity;
-		preferences.borderColor.value		= themes[preferences.theme.value].borderColor;
-		preferences.borderOpacity.value	= themes[preferences.theme.value].borderOpacity;
 	}
 	
 	sliding = (preferences.trayOpens.value == "up" || preferences.trayOpens.value == "down") ? "vertical" : "horizontal";
 	
+	if (sliding == "vertical" && preferences.showInfo.value != "outside") {
+		preferences.showInfo.value = "outside";
+		//alert( "The info text (like the location) cannot be displayed outside the box, if the forecast tray slides vertically." );
+	}
+	
 	// Calculate widget scale
 	widgetScale	= 1 + Math.round (preferences.widgetSize.value) / 12;
-	//print ("widgetScale = " + widgetScale);
+	//log ("widgetScale = " + widgetScale);
 	
 	// Scale the widget
-	scaleWidget (reposition, oldTrayOpens);
+	scaleWidget(reposition, oldTrayOpens);
 	
-	// Design the widget
-	designWidget ();
+	// Bring it to the visible area
+	adjustWindowPosition();
 	
 	// Display the tray button
-	displayTrayButton (startUp);
+	displayTrayButton(startUp);
 	
 	// Show the widget again
 	if (startUp == false) mainWindow.visible	= true;
@@ -143,20 +167,85 @@ function applyPreferences (startUp, oldTrayOpens) {
 // -- update --
 // Initiate the updating of the weather
 
-function update ( forceWeatherUpdate ) {
-	//sleep (300);
-	//print ("update ()");
+function update () {
+	//log ("update ()");
 	
-	updateTime ();
-	adjustWindowPosition();
+	suppressUpdates();
 	
-	// Only update the weather if it's time for it or if it is forced
-	if (updateCount++ % preferences.updateTime.value != 0 && forceWeatherUpdate != true) return;
-	updateCount = 1; // Reset the update count
-	
-	//print ("update () executed");
-	
+	saveWindowPosition();
 	fetchData ("full");
-	updateWeather ();
-	checkVersion();
+	updateWeather();
+	
+	resumeUpdates();
+}
+
+//-------------------------------------------------
+// -- updateTime --
+
+function updateTime (givenDate) {
+	//log ("updateTime ()");
+	
+	var nowTime = new Date();
+	
+	if (typeof givenDate != "undefined") {
+		nowTime = givenDate;
+	}
+	if (preferences.dateAndTimeSource.value == "location") {
+		nowTime	= new Date ( nowTime.getFullYear(),nowTime.getMonth(),nowTime.getDate() - localOffsetDate,nowTime.getHours() - localOffsetHours,nowTime.getMinutes() - localOffsetMinutes,nowTime.getSeconds());
+	}
+	
+	if (preferences.showDate.value == 1) {
+		
+		// Display date of the location
+		switch(preferences.dateFormat.value) {
+			
+			case "D, M d":
+				theDate.data = weekDays[nowTime.getDay()]+", "+months[nowTime.getMonth()]+" "+nowTime.getDate();
+				break;
+			
+			case "D, d. M":
+				theDate.data = weekDays[nowTime.getDay()]+", "+nowTime.getDate()+". "+months[nowTime.getMonth()];
+				break;
+			
+			case "yyyy-mm-dd":
+				theDate.data = nowTime.getFullYear()+"-"+twoDigits(nowTime.getMonth()+1)+"-"+twoDigits(nowTime.getDate());
+				break;
+			
+			case "dd.mm.yyyy":
+				theDate.data = twoDigits(nowTime.getDate())+"."+twoDigits(nowTime.getMonth()+1)+"."+nowTime.getFullYear();
+				break;
+			
+			case "m/d/yy":
+				theDate.data = (nowTime.getMonth()+1)+"/"+nowTime.getDate()+"/"+nowTime.getFullYear();
+				break;
+			
+			default:
+				theDate.data = "";
+		}
+	}
+	else {
+		theDate.data = "";
+	}
+	
+	if (preferences.showTime.value == 1) {
+		// Display time of the location
+		var nowTimeH	= nowTime.getHours ();
+		var nowTimeM	= nowTime.getMinutes ();
+		var nowTimeS	= nowTime.getSeconds ();
+		var nowTimeSuffix	= "";
+		if (preferences.use24hours.value == 0) {
+			if (nowTimeH < 12) {
+				if (nowTimeH == 0) nowTimeH = 12;
+				nowTimeSuffix	= " am";
+			}
+			else {
+				if (nowTimeH > 12) nowTimeH -= 12;
+				nowTimeSuffix	= " pm";
+			}
+		}
+		theTime.data = nowTimeH + ":" + twoDigits(nowTimeM) + (preferences.showSeconds.value == 1 ? ":" + twoDigits(nowTimeS) : "") + nowTimeSuffix;
+	}
+	else {
+		theTime.data = "";
+	}
 }

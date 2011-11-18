@@ -1,13 +1,13 @@
 /*
 	
-	widescapeWeather widget
+	widescapeWeather Widget
+
+	Version 2.1.18
 	
 	Design
 
-	2.1.16
-
 	
-	(c) 2007 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+	(c) 2008 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
 	The Weather Widget: (c) 2003 - 2004 Pixoria
 */
 
@@ -16,8 +16,7 @@
 // Scale the widget
 
 function scaleWidget (reposition, oldTrayOpens) {
-	//sleep (300);
-	//print ("scaleWidget ()");
+	//log ("scaleWidget ()");
 	
 	var insideBaseAddition	= 0;
 	var trayInnerHOffset	= -1;
@@ -32,6 +31,12 @@ function scaleWidget (reposition, oldTrayOpens) {
 	metrics.baseAddition	= 0;
 	metrics.baseAdditionLeft= 0;
 	
+	// Assign the city name
+	theCity.data = preferences.displayNameEnabled.value == 0 ? fetchedCityName : preferences.displayName.value;
+	
+	// Store this value as a preset for the next init()
+	preferences.cityName.value = theCity.data;
+	
 	if (widgetScale < scaleSwitch) {
 		scaleModName	= "Small";
 		baseWidthMod	= 0;
@@ -43,13 +48,18 @@ function scaleWidget (reposition, oldTrayOpens) {
 		baseHeightMod	= -.5;
 	}
 	
-	if (sliding == "vertical" && preferences.showInfo.value != "outside") {
-		preferences.showInfo.value = "outside";
-	}
-	
 	if (preferences.showCity.value == 1 || preferences.showDate.value == 1 || preferences.showTime.value == 1) {
+		
+		var theCityWidth = 0;
+		var theDateWidth = 0;
+		var theTimeWidth = 0;
+		
 		if (preferences.showCity.value == 1) {
 			theCity.size	= metrics.info[infoCount].Size * widgetScale;
+			
+			updateNow();
+			
+			theCityWidth	= theCity.width;
 			infoCount++;
 		}
 		if (preferences.showDate.value == 1) {
@@ -59,6 +69,7 @@ function scaleWidget (reposition, oldTrayOpens) {
 			}
 			else theDate.style = "bold";
 			theDate.size	= (metrics.info[infoCount].Size - infoSizeMod) * widgetScale + infoSizeMod;
+			theDateWidth	= metrics.dateFormatWidthFactor[ preferences.dateFormat.value ] * theDate.size;
 			infoCount++;
 		}
 		if (preferences.showTime.value == 1) {
@@ -68,22 +79,18 @@ function scaleWidget (reposition, oldTrayOpens) {
 			}
 			else theTime.style = "bold";
 			theTime.size	= (metrics.info[infoCount].Size - infoSizeMod) * widgetScale + infoSizeMod;
+			theTimeWidth	= metrics.timeFormatWidthFactor[ (preferences.showSeconds.value == 1 ? 's': 'm') + Number(preferences.use24hours.value) ] * theTime.size;
 		}
 		
-		updateNow();
-		
 		if (preferences.showInfo.value == "inside") {
-			infoPadding = 8 * widgetScale - 8;
+			infoPadding = 6 * widgetScale - 4;
 		}
 		else {
 			infoPadding = 4 * widgetScale - 2;
 		}
 		
-		// Fill date and time with biggest numbers
-		updateTime(new Date (2222,12,22,22,22));
-		
 		// Get the maximum width
-		metrics.baseAddition		= Math.max (theCity.width, Math.max (theDate.width, theTime.width)) + infoPadding;
+		metrics.baseAddition		= Math.max (theCityWidth, Math.max (theDateWidth, theTimeWidth)) + infoPadding;
 		metrics.baseAdditionLeft	= metrics.baseAddition;
 		
 		// Reset the date and time
@@ -258,19 +265,21 @@ function scaleWidget (reposition, oldTrayOpens) {
 	var infoHeightMod		= 0;
 	var infoHeightAdjust	= 0;
 	if (preferences.showCity.value == 1) {
-		theCity.vOffset		= theTemp.vOffset;
 		infoCount++;
 	}
 	else {
 		theCity.data		= "";
-		theCity.vOffset		= theTemp.vOffset - metrics.info[infoCount].Height * widgetScale;
 	}
+	theCity.vOffset		= theTemp.vOffset;
 	if (preferences.showDate.value == 1) {
-		if (infoCount > 0) {
+		if (infoCount == 0) {
+			theDate.vOffset	= theTemp.vOffset;
+		}
+		else if (infoCount > 0) {
 			infoHeightMod = 5;
 			infoHeightAdjust = 2;
+			theDate.vOffset	= theCity.vOffset + (metrics.info[infoCount].Height - infoHeightMod) * widgetScale + infoHeightMod - infoHeightAdjust;
 		}
-		theDate.vOffset	= theCity.vOffset + (metrics.info[infoCount].Height - infoHeightMod) * widgetScale + infoHeightMod - infoHeightAdjust;
 		infoCount++;
 	}
 	else {
@@ -278,11 +287,14 @@ function scaleWidget (reposition, oldTrayOpens) {
 		theDate.vOffset		= theCity.vOffset;
 	}
 	if (preferences.showTime.value == 1) {
-		if (infoCount > 0) {
+		if (infoCount == 0) {
+			theTime.vOffset	= theTemp.vOffset;
+		}
+		else if (infoCount > 0) {
 			infoHeightMod = 5;
 			infoHeightAdjust = 2;
+			theTime.vOffset	= theDate.vOffset + (metrics.info[infoCount].Height - infoHeightMod) * widgetScale + infoHeightMod - infoHeightAdjust;
 		}
-		theTime.vOffset		= theDate.vOffset + (metrics.info[infoCount].Height - infoHeightMod) * widgetScale + infoHeightMod - infoHeightAdjust;
 	}
 	
 	if (system.platform == "windows") {
@@ -346,7 +358,6 @@ function scaleWidget (reposition, oldTrayOpens) {
 		}
 		
 		if (reposition == true) {
-			//print("reposition: " + shiftX + "," + shiftY );
 			basePositionX += shiftX * Math.ceil(widgetScale * metrics.tray["width" + scaleModName]);
 			basePositionY += shiftY * Math.ceil(widgetScale * metrics.trayVertical["height" + scaleModName]);
 		}
@@ -365,9 +376,9 @@ function scaleWidget (reposition, oldTrayOpens) {
 	mainWindow.hOffset			= Number(basePositionX) - Number(metrics.baseAddition);
 	mainWindow.vOffset			= Number(basePositionY);
 	
-	adjustWindowPosition();
+	saveWindowPosition();
 	
-	updateNow ();
+	designWidget();
 }
 
 //-------------------------------------------------
@@ -375,8 +386,7 @@ function scaleWidget (reposition, oldTrayOpens) {
 // Place the basic objects, that are altered during the tray movement
 
 function placeBasicObjects (modifier, moving) {
-	//sleep (300);
-	//print ("placeBasicObjects ()");
+	//log ("placeBasicObjects ()");
 	
 	if (moving == false) {
 		
@@ -428,33 +438,85 @@ function placeBasicObjects (modifier, moving) {
 }
 
 //-------------------------------------------------
+// -- saveWindowPosition --
+// Saves the window position
+
+function saveWindowPosition() {
+	//log ("saveWindowPosition ()");
+	
+	// Save base position
+	basePositionX	= Number(mainWindow.hOffset) + Number(metrics.baseAddition);
+	basePositionY	= Number(mainWindow.vOffset);
+	
+	// Save window position
+	preferences.windowX.value	= Number(mainWindow.hOffset);
+	preferences.windowY.value	= Number(mainWindow.vOffset);
+	
+	savePreferences();
+}
+
+//-------------------------------------------------
 // -- adjustWindowPosition --
-// Adjust the window position if it leaves the screen
+// Adjusts the window position if it leaves all displays
 
 function adjustWindowPosition() {
-	//sleep (300);
-	//print ("adjustWindowPosition ()");
+	//log ("adjustWindowPosition ()");
 	
-	// Adjust window position, if widget leaves screen
-	if (mainWindow.hOffset + baseBackground.hOffset + baseBackground.width - metrics.grabMargin < screen.availLeft) {
-		//print("adjustWindowPosition x:" + mainWindow.hOffset + " <");
-		mainWindow.hOffset = screen.availLeft - info.hOffset;
+	function isOnScreenLeft( display ) {
+		if (mainWindow.hOffset + baseBackground.hOffset + baseBackground.width - metrics.grabMargin < display.workRect.x) {
+			return false;
+		}
+		return true;
 	}
-	else if (mainWindow.hOffset + baseBackground.hOffset + metrics.grabMargin > screen.availLeft + screen.availWidth) {
-		//print("adjustWindowPosition x:" + mainWindow.hOffset + " >");
-		mainWindow.hOffset = screen.availLeft + screen.availWidth - mainWindow.width + metrics.outerMargin;
+	function isOnScreenRight( display ) {
+		if (mainWindow.hOffset + baseBackground.hOffset + metrics.grabMargin > display.workRect.x + display.workRect.width) {
+			return false;
+		}
+		return true;
 	}
-	if (mainWindow.vOffset + baseBackground.vOffset + baseBackground.height - metrics.grabMargin < screen.availTop) {
-		//print("adjustWindowPosition y:" + mainWindow.vOffset + " <");
-		mainWindow.vOffset = screen.availTop - baseBackground.vOffset;
+	function isOnScreenTop( display ) {
+		if (mainWindow.vOffset + baseBackground.vOffset + baseBackground.height - metrics.grabMargin < display.workRect.y) {
+			return false;
+		}
+		return true;
 	}
-	else if (mainWindow.vOffset + baseBackground.vOffset + metrics.grabMargin > screen.availTop + screen.availHeight) {
-		//print("adjustWindowPosition y:" + mainWindow.vOffset + " >");
-		mainWindow.vOffset = screen.availTop + screen.availHeight - mainWindow.height + metrics.outerMargin;
+	function isOnScreenBottom( display ) {
+		if (mainWindow.vOffset + baseBackground.vOffset + metrics.grabMargin > display.workRect.y + display.workRect.height) {
+			return false;
+		}		
+		return true;
 	}
-	// Save base position
-	basePositionX = Number(mainWindow.hOffset) + Number(metrics.baseAddition);
-	basePositionY = Number(mainWindow.vOffset);
+	
+	// Check if the widget is on screen
+	var displays = getDisplays();
+	for (var i = 0; i < displays.length; i++) {
+		if (isOnScreenLeft( displays[i] ) && isOnScreenRight( displays[i] ) && isOnScreenTop( displays[i] ) && isOnScreenBottom( displays[i] )) {
+			//log( 'widget is on screen' );
+			return;
+		}
+	}
+	
+	// Bring the widget back to the closest display
+	var closestDisplay = mainWindow.getBestDisplay();
+	
+	if ( !isOnScreenLeft( closestDisplay ) ) {
+		//log( 'bringing back from left' );
+		mainWindow.hOffset = closestDisplay.workRect.x - info.hOffset;
+	}
+	else if ( !isOnScreenRight( closestDisplay ) ) {
+		//log( 'bringing back from right' );
+		mainWindow.hOffset = closestDisplay.workRect.x + closestDisplay.workRect.width - mainWindow.width + metrics.outerMargin;
+	}
+	if ( !isOnScreenTop( closestDisplay ) ) {
+		//log( 'bringing back from top' );
+		mainWindow.vOffset = closestDisplay.workRect.y - baseBackground.vOffset;
+	}
+	else if ( !isOnScreenBottom( closestDisplay ) ) {
+		//log( 'bringing back from bottom' );
+		mainWindow.vOffset = closestDisplay.workRect.y + closestDisplay.workRect.height - mainWindow.height + metrics.outerMargin;
+	}
+		
+	saveWindowPosition();
 }
 
 //-------------------------------------------------
@@ -462,14 +524,15 @@ function adjustWindowPosition() {
 // Design the widget
 
 function designWidget () {
-	//sleep (300);
-	//print ("designWidget ()");
+	//log ("designWidget ()");
+	
+	mainWindow.opacity	= 255;
 	
 	theTemp.color		= preferences.textColor.value;
 	theTemp.opacity		= preferences.textOpacity.value;
 	
 	weather.colorize		= preferences.iconColor.value;
-	weather.opacity		= 255;
+	weather.opacity		= preferences.iconOpacity.value;
 	
 	theCity.color		= theDate.color		= theTime.color		= preferences.textColor.value;
 	theCity.opacity		= theDate.opacity		= theTime.opacity		= preferences.textOpacity.value;
@@ -489,86 +552,11 @@ function designWidget () {
 		
 		forecastText[obj][0].opacity	= preferences.textOpacity.value;
 		forecastImage[obj][0].opacity	= preferences.textOpacity.value;
-		forecastImage[obj][1].opacity	= 255;
+		forecastImage[obj][1].opacity	= preferences.iconOpacity.value;
 		
 		forecastText[obj][0].color	= preferences.textColor.value;
 		forecastImage[obj][0].colorize= preferences.textColor.value;
 		forecastImage[obj][1].colorize= preferences.iconColor.value;
-	}
-	
-	updateNow ();
-}
-
-//-------------------------------------------------
-// -- updateTime --
-
-function updateTime (givenDate) {
-	//sleep (300);
-	//print ("updateTime ()");
-	
-	var nowTime = new Date();
-	
-	if (typeof givenDate != "undefined") {
-		nowTime = givenDate;
-	}
-	if (preferences.dateAndTimeSource.value == "location")
-		nowTime		= new Date ( nowTime.getFullYear(),nowTime.getMonth(),nowTime.getDate() - localOffsetDate,nowTime.getHours() - localOffsetHours,nowTime.getMinutes() - localOffsetMinutes,nowTime.getSeconds());
-	
-	var months		= new Array ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
-	var weekDays	= new Array ("Sun","Mon","Tue","Wed","Thu","Fri","Sat");
-	
-	if (preferences.showDate.value == 1) {
-		
-		// Display date of the location
-		switch(preferences.dateFormat.value) {
-			
-			case "D, M d":
-				theDate.data = weekDays[nowTime.getDay()]+", "+months[nowTime.getMonth()]+" "+nowTime.getDate();
-				break;
-			
-			case "D, d. M":
-				theDate.data = weekDays[nowTime.getDay()]+", "+nowTime.getDate()+". "+months[nowTime.getMonth()];
-				break;
-			
-			case "yyyy-mm-dd":
-				theDate.data = nowTime.getFullYear()+"-"+twoDigits(nowTime.getMonth()+1)+"-"+twoDigits(nowTime.getDate());
-				break;
-			
-			case "dd.mm.yyyy":
-				theDate.data = twoDigits(nowTime.getDate())+"."+twoDigits(nowTime.getMonth()+1)+"."+nowTime.getFullYear();
-				break;
-			
-			case "m/d/yy":
-				theDate.data = (nowTime.getMonth()+1)+"/"+nowTime.getDate()+"/"+nowTime.getFullYear();
-				break;
-			
-			default:
-				theDate.data = "";
-		}
-	}
-	else {
-		theDate.data = "";
-	}
-	if (preferences.showTime.value == 1) {
-		// Display time of the location
-		var nowTimeH	= nowTime.getHours ();
-		var nowTimeM	= nowTime.getMinutes ();
-		var nowTimeS	= nowTime.getSeconds ();
-		var nowTimeSuffix	= "";
-		if (preferences.use24hours.value == 0) {
-			if (nowTimeH < 12) {
-				if (nowTimeH == 0) nowTimeH = 12;
-				nowTimeSuffix	= " am";
-			}
-			else {
-				if (nowTimeH > 12) nowTimeH -= 12;
-				nowTimeSuffix	= " pm";
-			}
-		}
-		theTime.data = nowTimeH + ":" + twoDigits(nowTimeM) + (preferences.showSeconds.value == 1 ? ":" + twoDigits(nowTimeS) : "") + nowTimeSuffix;
-	}
-	else {
-		theTime.data = "";
 	}
 }
 
