@@ -2,7 +2,7 @@
 	
 	widescapeWeather Widget
 
-	Version 2.1.18
+	Version 2.1.19
 	
 	Weather Management
 	
@@ -15,11 +15,12 @@
 	license agreement.
 	
 	
-	(c) 2008 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+	(c) 2011 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
 	The Weather Widget: (c) 2003 - 2004 Pixoria
 */
-var partnerID	= "1006341644";
-var licenseID	= "0647abc97052c741";
+var geocodeURL = "http://where.yahooapis.com/geocode";
+var weatherURL = "http://weather.yahooapis.com/forecastrss";
+var yahooAppID = "_qTKmy_V34GwOMgpMzM8VhHiZeLuerCWJkxSqKeOwLP4amOXKx5hzPuZW8JN8YRK";
 
 //-------------------------------------------------
 // -- xmlError --
@@ -37,8 +38,10 @@ function xmlError (str) { alert (str); };
 function fetchData (fetchType) {
 	//log ("fetchData ()");
 	
+	var userGeocode = "656958";
+	
 	var userCity = preferences.cityValPref.value;
-	unitValue = (preferences.unitsPref.value == 1) ? "m" : "s";
+	unitValue = (preferences.unitsPref.value == 1) ? "c" : "f";
 	
 	if (globalLinks == "") fetchType = "full";
 	globalWeather	= "";
@@ -49,7 +52,10 @@ function fetchData (fetchType) {
 	
 	switch (fetchType) {
 		case "full":
-			_url = "http://xoap.weather.com/weather/local/" + userCity + "?cc=*&dayf=4&prod=xoap&link=xoap&par=" + partnerID + "&key=" + licenseID + "&unit=" + unitValue;
+			_url = weatherURL+"?w=" + userGeocode + "&u=" + unitValue;
+			
+			log ("_url => "+_url);
+			
 			urlData = urlFetch.fetch(_url);
 			if (urlData.length == 0 || urlData == "Could not load URL") {
 				weather.tooltip	= "There was a problem connecting to The Weather Channel.\n\nPlease check your network connection and click here to reload.";
@@ -73,7 +79,7 @@ function fetchData (fetchType) {
 			globalLinks = "<weather> " + urlData.match(/<lnks(.*?)<\/lnks>/g) + " </weather>";
 			break
 		case "forecast":
-			_url = "http://xoap.weather.com/weather/local/" + userCity + "?cc=*&dayf=4&prod=xoap&par=" + partnerID + "&key=" + licenseID + "&unit=" + unitValue;
+			_url = "http://xoap.weather.com/weather/local/" + userCity + "?cc=*&dayf=4&prod=xoap&par=" + partnerID + "&key=" + licenseID + "&u=" + unitValue;
 			urlData = urlFetch.fetch(_url);
 			if (urlData.length == 0 || urlData == "Could not load URL") return;
 			urlData = urlData.replace(/[\r]*\n/g,"");
@@ -81,7 +87,7 @@ function fetchData (fetchType) {
 			globalForecasts = "<weather> " + urlData.match(/<dayf>(.*?)<\/dayf>/g) + " </weather>";
 			break
 		case "weather":
-			_url = "http://xoap.weather.com/weather/local/" + userCity + "?cc=*&link=xoap&par=" + partnerID + "&key=" + licenseID + "&unit=" + unitValue;
+			_url = "http://xoap.weather.com/weather/local/" + userCity + "?cc=*&link=xoap&par=" + partnerID + "&key=" + licenseID + "&u=" + unitValue;
 			urlData = urlFetch.fetch(_url);
 			if (urlData.length == 0 || urlData == "Could not load URL") return;			
 			urlData = urlData.replace(/[\r]*\n/g,"");
