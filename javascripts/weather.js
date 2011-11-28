@@ -18,8 +18,8 @@
 	(c) 2011 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
 	The Weather Widget: (c) 2003 - 2004 Pixoria
 */
-var weatherURL = "http://free.worldweatheronline.com/feed/weather.ashx";
-var apiKey = "c7ba3b1465133049111811";
+var weatherURL = "http://api.wunderground.com/api/";
+var apiKey = "eb6eabce8e630d4e";
 var forecastDays = 4; // Includes the current day
 
 //-------------------------------------------------
@@ -41,7 +41,7 @@ function fetchDataAsync() {
 	var userCity = preferences.userDisplayPref.value;
 	unitValue = (preferences.unitsPref.value == 1) ? "c" : "f";
 	
-	var _url = weatherURL+"?q=" + userCity + "&num_of_days=" + forecastDays + "&key=" + apiKey;
+	var _url = weatherURL + apiKey + "/conditions/forecast/q/" + escape(userCity) + ".xml";
 	
 	var urlFetch = new URL();
 	urlFetch.location = _url;
@@ -77,7 +77,7 @@ function onWeatherDataFetched(fetch) {
 }
 
 function displayConnectionError(error) {
-	weather.tooltip	= "There was a problem connecting to World Weather Online.\n\nPlease check your network connection and click here to reload.\n\nError was: "+error.toString().substring(0,70);
+	weather.tooltip	= "There was a problem connecting to Wunderground.com.\n\nPlease check your network connection and click here to reload.\n\nError was: "+error.toString().substring(0,70);
 	weather.onClick	= function() {
 		weather.src		= "Resources/WeatherIcons/waiting.png";
 		updateNow();
@@ -179,11 +179,11 @@ function updateWeather () {
 		var xml = XMLDOM.parse( globalWeather );
 		globalWeatherXML = xml;
 		
-		var fetchedCity = xml.evaluate("string(data/request/query)");
+		var fetchedCity = xml.evaluate("string(response/current_observation/display_location)");
 		
-	  var fetchedTime = xml.evaluate("string(data/current_condition/observation_time)");
-		var fetchedTemp = xml.evaluate("string(data/current_condition/temp_C)");
-		var fetchedCode = xml.evaluate("string(data/current_condition/weatherCode)");
+	  var fetchedTime = xml.evaluate("string(response/current_observation/observation_epoch)");
+		var fetchedTemp = xml.evaluate("string(response/current_observation/temp_c)");
+		var fetchedCode = xml.evaluate("string(response/current_observation/icon)");
 		var fetchedTextCond = xml.evaluate("string(data/current_condition/weatherDesc)");
 		
 		var fetchedWindSpeed = xml.evaluate("string(data/current_condition/windspeedKmph)");
@@ -196,146 +196,146 @@ function updateWeather () {
 		var fetchedPres = xml.evaluate("string(data/current_condition/pressure)");
 		var fetchedCloudc = xml.evaluate("string(data/current_condition/cloudcover)");
 		
+		if (fetchedTemp == null) fetchedTemp = "";
+	
+		newConditionLogText = '\nMain: ' + fetchedCode + ': ' + fetchedTextCond + ' (' + getWeatherIcon(fetchedCode) + '.png)';
+		weather.src		= "Resources/WeatherIcons/" + getWeatherIcon(fetchedCode) + ".png";
+	
+		if (fetchedTemp == "N/A") fetchedTemp = "?";
+		theTemp.data = fetchedTemp + "°";
+	
+		theCity.data = theDate.data = theTime.data = "";
+		fetchedCity = fetchedCity.match(/([^,\/]*).*/);
+		fetchedCityName = fetchedCity[1];
+	
+		if (preferences.showDate.value == 1 || preferences.showTime.value == 1) {
+			updateTime ();
+		}
+	
+		unitTemp = (preferences.unitsPref.value == 1) ? "C" : "F";
+		unitDistance = (preferences.unitsPref.value == 1) ? "Kilometers" : "Miles";
+		unitSpeed = (preferences.unitsPref.value == 1) ? "km/h" : "mph";
+		unitPres = (preferences.unitsPref.value == 1) ? "Millibars" : "Inches";
+		unitMeasure = (preferences.unitsPref.value == 1) ? "Millimeters" : "Inches";	
+	
+		var theCondition = "";
+		var theFeelsLike = "";
+		var theHigh = "";
+		var theLow = "";
+		var theDewPoint = "";
+		var theHumidity = "";
+		var visData = "";
+		var presChange = "";
+		var thePressure = "";
+		var windData = "";
+	
+		if ( fetchedTextCond == "N/A" ) {
+			theCondition = "Unknown Weather Condition";
+		} else {
+			theCondition = fetchedTextCond;
+		}
+	
+		if ( fetchedHmid == "N/A" ) {
+			theHumidity = "Humidity: Unknown";
+		} else {
+			theHumidity = "Humidity: " + fetchedHmid + "%";
+		}
+	
+		if (fetchedVis == "Unlimited") {
+			visData = "Unlimited Visibility";
+		} else if (fetchedVis == "N/A") {
+			visData = "Visibility: Unknown";
+		} else {
+			visData = "Visibility: " + fetchedVis + " " + unitDistance;
+		}
+	
+		if ( fetchedPres == "N/A" ) {
+			thePressure = "Pressure: Unknown";
+		} else {
+			thePressure = "Pressure: " + fetchedPres;
+		}
+/*
+		if (fetchedWindDir == "CALM") {
+			windData = "Calm Winds";
+		} else {
+
+			if 	(fetchedWindDir == "VAR") {
+		
+				windData = "Variable winds ";
+			
+			} else {
+
+				windData = "Wind from ";
+					
+				if (fetchedWindDir.length == 1 || fetchedWindDir.getText().length == 2) {
+					dirArray = [xmlFetchedWindDir.getText()];
+				} else {
+					dirArray = [xmlFetchedWindDir.getText().substr(0,1), xmlFetchedWindDir.getText().substr(1,2)];
+				}
+			
+				for (item in dirArray) {
+					switch (dirArray[item]) {
+						case "N":
+							windData = windData + "North ";
+							break;			
+						case "S":
+							windData = windData + "South ";
+							break;			
+						case "E":
+							windData = windData + "East ";
+							break;			
+						case "W":
+							windData = windData + "West ";
+							break;			
+						case "NE":
+							windData = windData + "Northeast ";
+							break;			
+						case "SE":
+							windData = windData + "Southeast ";
+							break;			
+						case "NW":
+							windData = windData + "Northwest ";
+							break;			
+						case "SW":
+							windData = windData + "Southwest ";
+							break;			
+					}
+			
+				}
+			
+			}
+		
+			windData = windData + "at " + xmlFetchedWindSpeed.getText() + " " + unitSpeed;
+		
+			if (xmlFetchedWindGust.getText() != "N/A"){
+				windData = windData + "\nwith gusts up to " + xmlFetchedWindGust.getText() + " " + unitSpeed;
+			}
+
+		}	
+*/
+		var toolTipData =	theCondition + "\n" +
+						theFeelsLike +
+						"\n" +
+						theHumidity + "\n" +
+						visData + "\n" +
+						//thePressure + "\n" +
+						//windData + "\n" +
+						"\n" +
+						"Updated at " + fetchedTime;
+	
+		if (showToolTips) {
+			weather.tooltip = toolTipData;
+		} else {
+			weather.tooltip = "";
+		}
+		
+		updateForecasts(xml);
+	
 	}
 	catch(error)
 	{
 	  log(error);
 	}
-	
-	if (fetchedTemp == null) fetchedTemp = "";
-	
-	newConditionLogText = '\nMain: ' + fetchedCode + ': ' + fetchedTextCond + ' (' + getWeatherIcon(fetchedCode) + '.png)';
-	weather.src		= "Resources/WeatherIcons/" + getWeatherIcon(fetchedCode) + ".png";
-	
-	if (fetchedTemp == "N/A") fetchedTemp = "?";
-	theTemp.data = fetchedTemp + "°";
-	
-	theCity.data = theDate.data = theTime.data = "";
-	fetchedCity = fetchedCity.match(/([^,\/]*).*/);
-	fetchedCityName = fetchedCity[1];
-	
-	if (preferences.showDate.value == 1 || preferences.showTime.value == 1) {
-		updateTime ();
-	}
-	
-	unitTemp = (preferences.unitsPref.value == 1) ? "C" : "F";
-	unitDistance = (preferences.unitsPref.value == 1) ? "Kilometers" : "Miles";
-	unitSpeed = (preferences.unitsPref.value == 1) ? "km/h" : "mph";
-	unitPres = (preferences.unitsPref.value == 1) ? "Millibars" : "Inches";
-	unitMeasure = (preferences.unitsPref.value == 1) ? "Millimeters" : "Inches";	
-	
-	var theCondition = "";
-	var theFeelsLike = "";
-	var theHigh = "";
-	var theLow = "";
-	var theDewPoint = "";
-	var theHumidity = "";
-	var visData = "";
-	var presChange = "";
-	var thePressure = "";
-	var windData = "";
-	
-	if ( fetchedTextCond == "N/A" ) {
-		theCondition = "Unknown Weather Condition";
-	} else {
-		theCondition = fetchedTextCond;
-	}
-	
-	if ( fetchedHmid == "N/A" ) {
-		theHumidity = "Humidity: Unknown";
-	} else {
-		theHumidity = "Humidity: " + fetchedHmid + "%";
-	}
-	
-	if (fetchedVis == "Unlimited") {
-		visData = "Unlimited Visibility";
-	} else if (fetchedVis == "N/A") {
-		visData = "Visibility: Unknown";
-	} else {
-		visData = "Visibility: " + fetchedVis + " " + unitDistance;
-	}
-	
-	if ( fetchedPres == "N/A" ) {
-		thePressure = "Pressure: Unknown";
-	} else {
-		thePressure = "Pressure: " + fetchedPres;
-	}
-/*
-	if (fetchedWindDir == "CALM") {
-		windData = "Calm Winds";
-	} else {
-
-		if 	(fetchedWindDir == "VAR") {
-		
-			windData = "Variable winds ";
-			
-		} else {
-
-			windData = "Wind from ";
-					
-			if (fetchedWindDir.length == 1 || fetchedWindDir.getText().length == 2) {
-				dirArray = [xmlFetchedWindDir.getText()];
-			} else {
-				dirArray = [xmlFetchedWindDir.getText().substr(0,1), xmlFetchedWindDir.getText().substr(1,2)];
-			}
-			
-			for (item in dirArray) {
-				switch (dirArray[item]) {
-					case "N":
-						windData = windData + "North ";
-						break;			
-					case "S":
-						windData = windData + "South ";
-						break;			
-					case "E":
-						windData = windData + "East ";
-						break;			
-					case "W":
-						windData = windData + "West ";
-						break;			
-					case "NE":
-						windData = windData + "Northeast ";
-						break;			
-					case "SE":
-						windData = windData + "Southeast ";
-						break;			
-					case "NW":
-						windData = windData + "Northwest ";
-						break;			
-					case "SW":
-						windData = windData + "Southwest ";
-						break;			
-				}
-			
-			}
-			
-		}
-		
-		windData = windData + "at " + xmlFetchedWindSpeed.getText() + " " + unitSpeed;
-		
-		if (xmlFetchedWindGust.getText() != "N/A"){
-			windData = windData + "\nwith gusts up to " + xmlFetchedWindGust.getText() + " " + unitSpeed;
-		}
-
-	}	
-*/
-	var toolTipData =	theCondition + "\n" +
-					theFeelsLike +
-					"\n" +
-					theHumidity + "\n" +
-					visData + "\n" +
-					//thePressure + "\n" +
-					//windData + "\n" +
-					"\n" +
-					"Updated at " + fetchedTime;
-	
-	if (showToolTips) {
-		weather.tooltip = toolTipData;
-	} else {
-		weather.tooltip = "";
-	}
-	
-	updateForecasts(xml);
 }
 
 //-------------------------------------------------

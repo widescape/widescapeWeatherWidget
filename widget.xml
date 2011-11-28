@@ -10,6 +10,6 @@
 	<description>This Widget displays your weather and forecast in a minimal way.</description> 
 	<platform minVersion="4.5"/>
 	<security> 
-		<http name="free.worldweatheronline.com">free.worldweatheronline.com</http>
+		<http name="wunderground.com">wunderground.com</http>
 	</security>
 </metadata>
