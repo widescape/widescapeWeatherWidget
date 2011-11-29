@@ -179,37 +179,61 @@ function updateWeather () {
 		var xml = XMLDOM.parse( globalWeather );
 		globalWeatherXML = xml;
 		
-		var fetchedCity = xml.evaluate("string(response/current_observation/display_location)");
+		var fetchedLocation = xml.evaluate("string(response/current_observation/display_location/full)");
+		var fetchedCity = xml.evaluate("string(response/current_observation/display_location/city)");
 		
 	  var fetchedTime = xml.evaluate("string(response/current_observation/observation_epoch)");
 		var fetchedTemp = xml.evaluate("string(response/current_observation/temp_c)");
 		var fetchedCode = xml.evaluate("string(response/current_observation/icon)");
-		var fetchedTextCond = xml.evaluate("string(data/current_condition/weatherDesc)");
+		var fetchedTextCond = xml.evaluate("string(response/current_observation/weather)");
 		
-		var fetchedWindSpeed = xml.evaluate("string(data/current_condition/windspeedKmph)");
-		var fetchedWindDir = xml.evaluate("string(data/current_condition/winddirDegree)");
-		var fetchedWindPoint = xml.evaluate("string(data/current_condition/winddir16Point)");
+		var fetchedWindSpeed = xml.evaluate("string(response/current_observation/wind_mph)");
+		var fetchedWindDir = xml.evaluate("string(response/current_observation/wind_degrees)");
+		var fetchedWindPoint = xml.evaluate("string(response/current_observation/wind_dir)");
 		
-		var fetchedPrec = xml.evaluate("string(data/current_condition/precipMM)");
-		var fetchedHmid = xml.evaluate("string(data/current_condition/humidity)");
-		var fetchedVis = xml.evaluate("string(data/current_condition/visibility)");
-		var fetchedPres = xml.evaluate("string(data/current_condition/pressure)");
-		var fetchedCloudc = xml.evaluate("string(data/current_condition/cloudcover)");
+		var fetchedPrec = xml.evaluate("string(response/current_observation/precip_today_metric)");
+		var fetchedHmid = xml.evaluate("string(response/current_observation/relative_humidity)");
+		var fetchedVis = xml.evaluate("string(response/current_observation/visibility_km)");
+		var fetchedPres = xml.evaluate("string(response/current_observation/pressure_mb)");
+		
+		var fetchedCurrentHour = xml.evaluate("string(response/moon_phase/current_time/hour)");
+		var fetchedCurrentMinute = xml.evaluate("string(response/moon_phase/current_time/minute)");
+		var fetchedSunsetHour = xml.evaluate("string(response/moon_phase/sunset/hour)");
+		var fetchedSunsetMinute = xml.evaluate("string(response/moon_phase/sunset/minute)");
+		var fetchedSunriseHour = xml.evaluate("string(response/moon_phase/sunrise/hour)");
+		var fetchedSunriseMinute = xml.evaluate("string(response/moon_phase/sunrise/minute)");
 		
 		if (fetchedTemp == null) fetchedTemp = "";
-	
-		newConditionLogText = '\nMain: ' + fetchedCode + ': ' + fetchedTextCond + ' (' + getWeatherIcon(fetchedCode) + '.png)';
-		weather.src		= "Resources/WeatherIcons/" + getWeatherIcon(fetchedCode) + ".png";
-	
+		
+		var nowTime = new Date();
+		
+		var observationDatetime = new Date(fetchedTime*1000);
+		
+		var currentDatetime = new Date(nowTime.getTime());
+		currentDatetime.setHours(fetchedCurrentHour);
+		currentDatetime.setMinutes(fetchedCurrentMinute);
+		
+		var sunsetDatetime = new Date(nowTime.getTime());
+		sunsetDatetime.setHours(fetchedSunsetHour);
+		sunsetDatetime.setMinutes(fetchedSunsetMinute);
+		
+		var sunriseDatetime = new Date(nowTime.getTime());
+		sunriseDatetime.setHours(fetchedSunriseHour);
+		sunriseDatetime.setMinutes(fetchedSunriseMinute);
+		
+		var dayTime = (currentDatetime.getTime() > sunriseDatetime.getTime() && currentDatetime.getTime() < sunsetDatetime.getTime()) ? 'day' : 'night';
+		
+		var iconName = getWeatherIcon(fetchedCode, dayTime);
+		
+		newConditionLogText = '\nMain: ' + fetchedCode + ': ' + fetchedTextCond + ' (' + iconName + '.png)';
+		weather.src		= "Resources/WeatherIcons/" + iconName + ".png";
+		
 		if (fetchedTemp == "N/A") fetchedTemp = "?";
 		theTemp.data = fetchedTemp + "°";
-	
 		theCity.data = theDate.data = theTime.data = "";
-		fetchedCity = fetchedCity.match(/([^,\/]*).*/);
-		fetchedCityName = fetchedCity[1];
 	
 		if (preferences.showDate.value == 1 || preferences.showTime.value == 1) {
-			updateTime ();
+			updateTime();
 		}
 	
 		unitTemp = (preferences.unitsPref.value == 1) ? "C" : "F";
@@ -329,7 +353,7 @@ function updateWeather () {
 			weather.tooltip = "";
 		}
 		
-		updateForecasts(xml);
+		updateForecasts(dayTime);
 	
 	}
 	catch(error)
@@ -341,7 +365,7 @@ function updateWeather () {
 //-------------------------------------------------
 // -- updateForecasts --
 
-function updateForecasts() {
+function updateForecasts(currentDayTime) {
 	//log ("updateForecasts ()");
 	
 	if (globalWeatherXML == "") return;
@@ -354,30 +378,30 @@ function updateForecasts() {
 	var forecastLowPath = new Array;
 	var forecastIconPath = new Array;
 	
-	var forecastXML = xml.evaluate("data/weather");
+	var forecastXML = xml.evaluate("response/forecast/simpleforecast/forecastdays/forecastday");
 	
 	for (i = 0; i < 4; i++) {
 		
 		var dayXML = forecastXML.item(i);
 		var day;
-		var dayDate = dayXML.evaluate("string(date)");
-		var dayText = dayXML.evaluate("string(weatherDesc)");
-		var hiTemp = dayXML.evaluate("string(tempMaxC)");
-		var lowTemp = dayXML.evaluate("string(tempMinC)");
-		var weatherCode = dayXML.evaluate("string(weatherCode)");
+		var dayDate = dayXML.evaluate("string(date/epoch)");
+		var dayText = dayXML.evaluate("string(conditions)");
+		var hiTemp = dayXML.evaluate("string(high/celsius)");
+		var lowTemp = dayXML.evaluate("string(low/celsius)");
+		var weatherCode = dayXML.evaluate("string(icon)");
+		
+		var dayTime = 'day';
 		
 		dayText = dayText.replace(/ \/ /g,"/");
-		displayTinyIcons(weatherCode, i);
-		
-		var isNight = false;
 		
 		if (i == 0) {
+			dayTime = currentDayTime;
 			day = "Today";
 		}
 		else {
-			var dayDateArr = dayDate.split('-');
-			day = weekDays[new Date(dayDateArr[0],dayDateArr[1],dayDateArr[2]).getDay()];
+			day = weekDays[new Date(dayDate*1000).getDay()];
 		}
+		displayTinyIcons(weatherCode, dayTime, i);
 
 		forecastText[i][0].data	= hiTemp + "°";
 		forecastImage[i][0].src	= "Resources/Day-" + day + ".png";
@@ -391,7 +415,7 @@ function updateForecasts() {
 			forecastImage[i][1].tooltip = "";
 		}
 		
-		newConditionLogText += '\nForecast ' + i + ': ' + weatherCode + ': ' + dayText + ' (' + getWeatherIcon(weatherCode) + '.png)';
+		newConditionLogText += '\nForecast ' + i + ': ' + weatherCode + ': ' + dayText + ' (' + getWeatherIcon(weatherCode,dayTime) + '.png)';
 		
 	}
 	
@@ -408,132 +432,23 @@ function updateForecasts() {
 //-------------------------------------------------
 // -- getWeatherIcon --
 
-function getWeatherIcon (fetchedConditions) {
-	//log ("getWeatherIcon ("+fetchedConditions+")");
-	//return "grid";
+function getWeatherIcon(iconName,dayTime) {
+	log ("getWeatherIcon("+iconName+", "+dayTime+")");
 	
-	switch (parseInt(fetchedConditions)){
-		
-		case 386: // Patchy light rain in area with thunder
-		case 389: // Moderate or heavy rain in area with thunder
-		case 200: // Thundery outbreaks in nearby
-			return "thunderstorms";
-		
-		
-		case 392: // Patchy light snow in area with thunder
-		case 395: // Moderate or heavy snow in area with thunder
-			return "snowythunderstorms"; // TO DO
-			
-		//	return "windyshowers";
-			
-		//	return "icysnowyrain";
-			
-		case 365: // Moderate or heavy sleet showers
-		case 362: // Light sleet showers
-		case 320: // Moderate or heavy sleet
-		case 317: // Light sleet
-		case 182: // Patchy sleet nearby
-			return "sleet";
-
-		case 374: // Light showers of ice pellets
-		case 311: // Light freezing rain
-		case 284: // Heavy freezing drizzle
-		case 281: // Freezing drizzle
-		case 185: // Patchy freezing drizzle nearby
-			return "icydrizzle";
-			
-		case 296: // Light rain
-		case 293: // Patchy light rain
-		case 266: // Light drizzle
-		case 263: // Patchy light drizzle
-			return "drizzle";
-			
-		case 377: // Moderate or heavy showers of ice pellets
-		case 350: // Ice pellets
-		case 314: // Moderate or Heavy freezing rain
-			return "icyrain";
-			
-		case 356: // Moderate or heavy rain shower
-		case 353: // Light rain shower
-		case 305: // Heavy rain at times
-		case 299: // Moderate rain at times
-			return "showers";
-			
-		case 359: // Torrential rain shower
-		case 308: // Heavy rain
-		case 302: // Moderate rain
-			return "rain";
-			
-		case 329: // Patchy moderate snow
-		case 326: // Light snow
-		case 323: // Patchy light snow
-			return "lightsnowflurries";
-			
-		case 368: // Light snow showers
-		case 332: // Moderate snow
-		case 179: // Patchy snow nearby
-			return "medsnow";
-		
-		case 230: // Blizzard
-		case 227: // Blowing snow
-			return "windysnow";
-			
-		case 371: // Moderate or heavy snow showers
-		case 338: // Heavy snow
-		case 335: // Patchy heavy snow
-			return "normalsnow";
-			
-		case 260: // Freezing fog
-		case 248: // Fog
-		case 143: // Mist
-			return "fog";
-			
-		//	return "windy";
-			
-		//	return "fridged";
-			
-		case 122: // Overcast
-		case 119: // Cloudy
-			return "cloudy";
-			
-		//	return "mostlycloudynight";
-			
-		case 116: // Partly Cloudy
-			return "mostlycloudyday";
-			
-		//	return "partiallycloudynight";
-			
-		//	return "partiallycloudyday";
-			
-		//	return "clearnight";
-			
-		case 113: // Clear/Sunny
-			return "clearday";
-			
-		//	return "partiallycloudynight";
-			
-		//	return "partiallycloudyday";
-			
-		//	return "hot";
-			
-		//	return "sunnythunderstorm";
-			
-		case 176: // Patchy rain nearby
-			return "sunnyshowers";
-			
-		//	return "nightrain";
-			
-		//	return "nightsnow";
-			
-		default:   // 
-			return "unknown";
+	switch(iconName) {
+		case 'clear':
+		case 'mostlycloudy':
+		case 'partiallycloudy':
+		case 'snow':
+			return iconName+dayTime;
 	}
+	return iconName;
 }
 
 //-------------------------------------------------
 // -- displayTinyIcons --
 
-function displayTinyIcons (weatherCode, whichTiny) {
-	//log ("displayTinyIcons ("+whichTiny+": " + weatherCode+")");
-	forecastImage[whichTiny][1].src	= "Resources/WeatherIcons/" + getWeatherIcon(weatherCode) + ".png";
+function displayTinyIcons(iconName,dayTime,whichTiny) {
+	log ("displayTinyIcons("+whichTiny+": "+iconName+", "+dayTime+")");
+	forecastImage[whichTiny][1].src	= "Resources/WeatherIcons/" + getWeatherIcon(iconName,dayTime) + ".png";
 }

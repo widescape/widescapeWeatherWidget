@@ -182,7 +182,7 @@ function onUpdateData() {
 //-------------------------------------------------
 // -- updateTime --
 
-function updateTime (givenDate) {
+function updateTime(givenDate) {
 	//log ("updateTime ()");
 	
 	var nowTime = new Date();
