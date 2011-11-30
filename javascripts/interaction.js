@@ -265,7 +265,7 @@ function preferencesChanged () {
 	
 	// Choose the city to update the weather accordingly
 	if (preferences.userDisplayPref.value != oldUserCity || preferences.unitsPref.value != oldMetrics) {
-		chooseCity();
+		chooseLocation();
 	}
 	else {
 		// Update the scale and design

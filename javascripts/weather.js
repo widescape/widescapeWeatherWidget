@@ -1,47 +1,37 @@
 /*
-	
-	widescapeWeather Widget
-
-	Version 2.1.19
-	
-	Weather Management
-	
-	
-	The apiKey MUST NOT be used in 3rd party widgets.
-	If you make your own weather widget, please visit World Weather Online at:
-	http://www.worldweatheronline.com/register.aspx
-	
-	You'll need to sign up for an account, and make sure you abide by their
-	license agreement.
-	
-	
-	(c) 2011 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
-	The Weather Widget: (c) 2003 - 2004 Pixoria
-*/
+ * widescapeWeather Widget
+ * 
+ * Version 2.1.19
+ * 
+ * Weather Management
+ * 
+ * 
+ * The apiKey MUST NOT be used in 3rd party widgets.
+ * If you make your own weather widget, please visit Weather Underground at:
+ * http://www.wunderground.com/weather/api/
+ * 
+ * You'll need to sign up for an account, 
+ * and make sure you abide by their license agreement.
+ * 
+ * (c) 2011 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+ * The Weather Widget: (c) 2003 - 2004 Pixoria
+ */
 var weatherURL = "http://api.wunderground.com/api/";
 var apiKey = "eb6eabce8e630d4e";
-var forecastDays = 4; // Includes the current day
 
-//-------------------------------------------------
-// -- xmlError --
-/*	Displays an alert with the xml error.
-*/
+//	Displays an alert with the xml error.
 function xmlError (str) { alert (str); };
 
-//-------------------------------------------------
-// -- fetchDataAsync --
-/*	The fetchDataAsync function is used to populate our global data with XML data from World Weather Online.
-	Because we can only ask for certain bits of information with a reduced frequency, I do this to
-	divide up the types of data that gets updated and keep other non-updated bits around so I can
-	still use them in other functions.
-*/
+//	Asynchronically fetches the weather data from Weather Underground.
 function fetchDataAsync() {
-	//log ("fetchDataAsync()");
-	
+	log("fetchDataAsync()");
 	var userCity = preferences.userDisplayPref.value;
-	unitValue = (preferences.unitsPref.value == 1) ? "c" : "f";
+	var cityVal = preferences.cityValPref.value;
+	if (cityVal) userCity = "zmw:"+cityVal;
 	
-	var _url = weatherURL + apiKey + "/conditions/forecast/q/" + escape(userCity) + ".xml";
+	var _url = weatherURL + apiKey + "/conditions/forecast/astronomy/q/" + escape(userCity) + ".xml";
+	
+	log("Trying to fetch: "+_url);
 	
 	var urlFetch = new URL();
 	urlFetch.location = _url;
@@ -49,88 +39,181 @@ function fetchDataAsync() {
 		urlFetch.fetchAsync(onWeatherDataFetched);
 	}
 	catch (error) {
-		log("Error: " + error);
-		log("On URL: "+_url);
-		displayConnectionError(error);
+		displayConnectionError(error,_url);
 	}
 }
 
-function onWeatherDataFetched(fetch) {
-	// Checks if there was a HTTP error
-	if (fetch.response.toString() != "200") {
-		log("HTTP Error: " + fetch.response);
-		log("On URL: "+fetch.location);
-		displayConnectionError(fetch.response);
-		return;
-	}
-	log("URL fetched successfully: "+fetch.location);
-	var result = fetch.result;
-	// Checks if the response doesn't contain a correct result
-	if (result.length == 0 || result == "Could not load URL") {
-		displayConnectionError(response);
-		return;
-	}
-	// Assumes the result is correct
-	globalWeather = result;
-	// Continues with the update
-	onUpdateData();
-}
-
-function displayConnectionError(error) {
-	weather.tooltip	= "There was a problem connecting to Wunderground.com.\n\nPlease check your network connection and click here to reload.\n\nError was: "+error.toString().substring(0,70);
-	weather.onClick	= function() {
-		weather.src		= "Resources/WeatherIcons/waiting.png";
-		updateNow();
-		sleep(150);
-		update();
-	};
+// Displays an error with icon and tooltip.
+function displayError(error,message,clickAction) {
+	log("Error: " + error);
+	weather.tooltip	= message;
+	weather.onClick	= clickAction;
 	weather.src		= "Resources/WeatherIcons/error.png";
 	weather.reload();
 	scaleWidget();
 }
 
-//-------------------------------------------------
-// -- chooseCity --
-/*	The chooseCity function will look at changed preference data and if there are multiple
-    options for the entered information, suggest which the user can choose from.
-*/
-function chooseCity () {
-	//log ("chooseCity ()");
+// Displays the connection error.
+function displayConnectionError(error,url,message) {
+	log("Error: " + error);
+	if (typeof url != "undefined") log("On URL: "+url);
+	if (typeof message == "undefined") {
+		message = "There was a problem connecting to Wunderground.com.\n\nPlease check your network connection and click here to reload.\n\nError was: "+error.toString().substring(0,70);
+	}
+	var clickAction = onClickReload;
+	displayError(error,message,clickAction);
+}
+
+function onClickReload() {
+	log("onClickReload()");
+	weather.src		= "Resources/WeatherIcons/waiting.png";
+	updateNow();
+	sleep(150);
+	update();
+}
+
+// Receives the fetched weather data and looks for errors.
+function onWeatherDataFetched(fetch) {
+	log("onWeatherDataFetched()");
+	
+	// Checks location data (false = passively)
+	var result = parseAndCheckFetchedData(fetch,false);
+	if (!result) return false;
+	
+	// Assumes the result contains weather data.
+	globalWeather = result;
+	// Continues with the update
+	onUpdateData();
+}
+
+// Receives the fetched weather data and looks for errors.
+function onLocationDataFetched(fetch) {
+	log("onLocationDataFetched()");
+	
+	// Checks location data (false = actively)
+	var result = parseAndCheckFetchedData(fetch,true);
+	if (!result) return false;
+	
+	// Assumes the result contains location data.
+	savePreferences();
+	update();
+}
+
+function parseAndCheckFetchedData(fetch,alertPassively) {
+	log("parseAndCheckFetchedData()");
+	
+	// Checks if there was an HTTP error
+	if (fetch.response.toString() != "200") {
+		displayConnectionError(fetch.response,fetch.location);
+		return false;
+	}
+	// Assumes we have a valid result.
+	var result = fetch.result;
+	
+	// Tries to parse the XML
+	try {
+		xml = XMLDOM.parse(result);
+	}
+	catch (error) {
+		displayConnectionError(error,fetch.location,"Retrieved XML could not be parsed. Please contact support at www.widescape.net/widgets");
+		return false;
+	}
+	
+	// Checks if the response doesn't contain a correct result
+	if (result.length == 0 || result == "Could not load URL") {
+		displayConnectionError(response,fetch.location);
+		return false;
+	}
+	
+	// Checks if an error was returned.
+	if (xml.evaluate("string(response/error)")) {
+		
+		// Checks if no location was found.
+		if (xml.evaluate("string(response/error/type)") == "querynotfound") {
+			if (alertPassively) {
+				var message = "We were unable to find the location \""+oldUserCity+"\".\n\nClick here to change the location.";
+				displayError("querynotfound",message,showWidgetPreferences);
+			}
+			else {
+				alert("We were unable to find the location \""+oldUserCity+"\".\n\nIf your location can't be found, try a entering a larger neighboring city.");
+			}
+			preferences.userDisplayPref.value = oldUserCity;
+			return false;
+		}
+		// Handles any other error.
+		else {
+			var message = "There was a problem retrieving data from Weather Underground.\n\nError was: "+xml.evaluate("string(response/error/description)");
+			if (alertPassively) {
+				displayError(xml.evaluate("string(response/error/type)"),message,onClickReload);
+			}
+			else {
+				alert(message);
+			}
+		}
+	}
+	
+	// Checks if the result contains location options instead of weather data
+	if (xml.evaluate("string(response/results)")) {
+		showLocationOptions(xml);
+		return false;
+	}
+	
+	// Assumes the result is valid and correct.
+	//log("URL fetched successfully: "+fetch.location);
+	return xml;
+}
+
+// Offers the returned location options to the user.
+function chooseLocation() {
+	log("chooseLocation()");
 	
 	var idArray = new Array();
 	var cityArray = new Array();
 	var locationCount = 0;
 	
-	var searchResultsData = urlFetch.fetch("http://xoap.weather.com/search/search?where=" + escape(preferences.userDisplayPref.value));
-
-	if (searchResultsData.length == "276"){
-		alert("We were unable to find the city you entered.\n\nIf your city can't be found, try a entering a larger neighboring city.");
-		preferences.userDisplayPref.value = oldUserCity;
-		return;
+	var _url = weatherURL + apiKey + "/geolookup/q/" + escape(preferences.userDisplayPref.value) + ".xml";
+	var urlFetch = new URL();
+	urlFetch.location = _url;
+	try {
+		urlFetch.fetchAsync(onLocationDataFetched);
 	}
-
-	if (urlData.length == 0 || urlData == "Could not load URL") {
-		alert("We are unable to choose your city because we can't connect to The Weather Channel.\n\nPlease check your network connection or try again later.");
-		preferences.userDisplayPref.value = oldUserCity;
-		return;
+	catch (error) {
+		displayConnectionError(error,_url);
 	}
+}
 
-	var resultsXML = new XMLDoc(searchResultsData, xmlError);
-	var resultsNode = resultsXML.docNode;
-
-	if (resultsNode == null) {
-		alert("There was a problem parsing search results.");
-	} else {
-		for (n = 0; n < resultsNode.children.length; n++) {
-			if (resultsNode.children[n].tagName == "loc") {
-				cityArray[locationCount] = resultsNode.children[n].getText();
-				idArray[resultsNode.children[n].getText()] = resultsNode.children[n].getAttribute("id");
-				++locationCount;
-			}
-		}
+function showLocationOptions(xml) {
+	log("showLocationOptions()");
+	
+	var locations = xml.evaluate("response/results/result");
+	var locationCount = locations.length;
+	
+	if (locationCount < 1) {
+		alert("No results (problem with search data?)");
+		return false;
 	}
-
-	if (locationCount > 1) {		  
+	
+	var i, location, city, state, country, name, zmw;
+	var locationOptions = new Array();
+	var locationZmws = new Array();
+	
+	for (i = 0; i < locationCount; i++) {
+		location = locations.item(i);
+		
+		city = location.evaluate("string(city)");
+		state = location.evaluate("string(state)");
+		country = location.evaluate("string(country)");
+		zmw = location.evaluate("string(zmw)");
+		
+		name = city;
+		if (state) name += ", "+state;
+		if (country) name += ", "+country;
+		
+		locationOptions.push(name);
+		locationZmws[name] = zmw;
+	}
+	
+	if (locationOptions.length > 1) {		  
 		var formFields = new Array();
 		
 		formFields[0] = new FormField();
@@ -138,26 +221,28 @@ function chooseCity () {
 		formFields[0].title = 'Location:';
 		formFields[0].type = 'popup';
 		formFields[0].option = new Array();
-
+		
 		for (n = 0; n < locationCount; n++) {
-			formFields[0].option[n] =  cityArray[n];
+			formFields[0].option[n] = locationOptions[n];
 		}
 			
 		formFields[0].defaultValue = formFields[0].option[0];
-		formFields[0].description = "Please choose the city closest to where you live.";
+		formFields[0].description = "Please choose the city closest to your location.";
 		
 		formResults = form(formFields, 'Choose a City', 'Choose');
-							
-		if ( formResults != null ) {
-			preferences.userDisplayPref.value = formResults[0].split(" (")[0];
-			preferences.cityValPref.value = idArray[String(formResults[0])];
+						
+		if (formResults != null) {
+			preferences.userDisplayPref.value = formResults[0];
+			preferences.cityValPref.value = locationZmws[formResults[0]];
 		}
-	} else if (locationCount == 1) {
-		preferences.userDisplayPref.value = cityArray[0].split(" (")[0];
-		preferences.cityValPref.value = idArray[cityArray[0]];
-	} else {
-		alert("No results (problem with search data?)");
 	}
+	else {
+		preferences.userDisplayPref.value = locationOptions[0];
+		preferences.cityValPref.value = locationZmws[locationOptions[0]];
+	}
+	
+	//log("preferences.userDisplayPref: "+preferences.userDisplayPref.value);
+	//log("preferences.cityValPref: "+preferences.cityValPref.value);
 	
 	savePreferences();
 	update();
@@ -176,9 +261,7 @@ function updateWeather () {
 	
 	try
 	{
-		var xml = XMLDOM.parse( globalWeather );
-		globalWeatherXML = xml;
-		
+		var xml = globalWeather;
 		var fetchedLocation = xml.evaluate("string(response/current_observation/display_location/full)");
 		var fetchedCity = xml.evaluate("string(response/current_observation/display_location/city)");
 		
@@ -368,8 +451,8 @@ function updateWeather () {
 function updateForecasts(currentDayTime) {
 	//log ("updateForecasts ()");
 	
-	if (globalWeatherXML == "") return;
-	var xml = globalWeatherXML;
+	if (globalWeather == "") return;
+	var xml = globalWeather;
 	
 	var forecastDesc = new Array;
 	

@@ -31,7 +31,6 @@ var scaleModName		= "Small";
 var sliding			= "horizontal";
 
 var urlData			= "";
-var urlFetch		= new URL();
 
 var widgetScale		= 1 + Math.round (preferences.widgetSize.value) / 12;
 var trayState		= preferences.trayState.value;
