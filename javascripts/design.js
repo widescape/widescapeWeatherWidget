@@ -2,18 +2,14 @@
 	
 	widescapeWeather Widget
 
-	Version 2.1.18
+	Version 2.1.19
 	
 	Design
 
 	
-	(c) 2008 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+	(c) 2011 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
 	The Weather Widget: (c) 2003 - 2004 Pixoria
 */
-
-//-------------------------------------------------
-// -- scaleWidget --
-// Scale the widget
 
 function scaleWidget (reposition, oldTrayOpens) {
 	//log ("scaleWidget ()");
@@ -32,10 +28,10 @@ function scaleWidget (reposition, oldTrayOpens) {
 	metrics.baseAdditionLeft= 0;
 	
 	// Assign the city name
-	theCity.data = preferences.displayNameEnabled.value == 0 ? fetchedCityName : preferences.displayName.value;
+	theCity.data = preferences.displayNameEnabled.value == 0 ? preferences.cityName.value : preferences.displayName.value;
 	
 	// Store this value as a preset for the next init()
-	preferences.cityName.value = theCity.data;
+	//preferences.cityName.value = theCity.data;
 	
 	if (widgetScale < scaleSwitch) {
 		scaleModName	= "Small";
@@ -378,13 +374,10 @@ function scaleWidget (reposition, oldTrayOpens) {
 	
 	saveWindowPosition();
 	
-	designWidget();
+	colorWidget();
 }
 
-//-------------------------------------------------
-// -- placeBasicObjects --
-// Place the basic objects, that are altered during the tray movement
-
+// Places the basic objects that are altered during the tray movement.
 function placeBasicObjects (modifier, moving) {
 	//log ("placeBasicObjects ()");
 	
@@ -437,10 +430,6 @@ function placeBasicObjects (modifier, moving) {
 	
 }
 
-//-------------------------------------------------
-// -- saveWindowPosition --
-// Saves the window position
-
 function saveWindowPosition() {
 	//log ("saveWindowPosition ()");
 	
@@ -455,10 +444,7 @@ function saveWindowPosition() {
 	savePreferences();
 }
 
-//-------------------------------------------------
-// -- adjustWindowPosition --
-// Adjusts the window position if it leaves all displays
-
+// Adjusts the window position if it leaves all computer displays.
 function adjustWindowPosition() {
 	//log ("adjustWindowPosition ()");
 	
@@ -519,12 +505,9 @@ function adjustWindowPosition() {
 	saveWindowPosition();
 }
 
-//-------------------------------------------------
-// -- designWidget --
-// Design the widget
-
-function designWidget () {
-	//log ("designWidget ()");
+// Colors the widget
+function colorWidget () {
+	//log ("colorWidget ()");
 	
 	mainWindow.opacity	= 255;
 	
@@ -558,13 +541,4 @@ function designWidget () {
 		forecastImage[obj][0].colorize= preferences.textColor.value;
 		forecastImage[obj][1].colorize= preferences.iconColor.value;
 	}
-}
-
-//-------------------------------------------------
-// -- twoDigits --
-// Convert a number to a two digit string
-	
-function twoDigits(num) {
-	if (num < 10) return "0" + num.toString ();
-	return num.toString ();
 }

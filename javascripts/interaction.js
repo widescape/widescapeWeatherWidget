@@ -2,19 +2,16 @@
 	
 	widescapeWeather Widget
 
-	Version 2.1.18
+	Version 2.1.19
 	
 	Interaction
 
 	
-	(c) 2008 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+	(c) 2011 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
 	The Weather Widget: (c) 2003 - 2004 Pixoria
 */
 
-//-------------------------------------------------
-// -- startMoveTray --
 // Initiates the tray movement
-
 function startMoveTray () {
 	
 	// If the movement is running, return
@@ -52,10 +49,7 @@ function startMoveTray () {
 	movementTimer.ticking	= true;
 }
 
-//-------------------------------------------------
-// -- moveTray --
 // Animates the movement of the opening and closing of the tray
-
 function moveTray () {
 	//log ("moveTray ()");
 	
@@ -140,10 +134,7 @@ function moveTray () {
 	
 }
 
-//-------------------------------------------------
-// -- stopMoveTray --
 // Quits the tray movement
-
 function stopMoveTray () {
 	//log ("stopMoveTray ()");
 	
@@ -193,10 +184,7 @@ function stopMoveTray () {
 	adjustWindowPosition();
 }
 
-//-------------------------------------------------
-// -- displayTrayButton --
 // Displays the tray button according to the trayState
-
 function displayTrayButton (startup) {
 	//log ("displayTrayButton ()");
 	
@@ -212,9 +200,7 @@ function displayTrayButton (startup) {
 	fadeButtonsStart ();
 }
 
-//-------------------------------------------------
-// -- displayForecast --
-/*	Turns the forecast images and texts on or off. */
+//	Turns the forecast images and texts on or off.
 function displayForecast (switchTo) {
 	//log ("displayForecast ()");
 	
@@ -237,24 +223,18 @@ function displayForecast (switchTo) {
 	}
 }
 
-//-------------------------------------------------
-// -- willChangePreferences --
 // Called before preferences will be changed
-
 function willChangePreferences () {
 	//log ("onWillChangePreferences ()");
 	
-	selectedTheme	= preferences.theme.value;
-	oldUserCity		= preferences.userDisplayPref.value;
-	oldMetrics		= preferences.unitsPref.value;
+	selectedTheme				= preferences.theme.value;
+	oldUserDisplayPref	= preferences.userDisplayPref.value;
+	oldCityName					= preferences.cityName.value;
 	
 	saveWindowPosition();
 }
 
-//-------------------------------------------------
-// -- preferencesChanged --
 // Called when preferences were changed
-
 function preferencesChanged () {
 	//log ("onPreferencesChanged ()");
 	
@@ -264,12 +244,12 @@ function preferencesChanged () {
 	updateNow();
 	
 	// Choose the city to update the weather accordingly
-	if (preferences.userDisplayPref.value != oldUserCity || preferences.unitsPref.value != oldMetrics) {
+	if (preferences.userDisplayPref.value != oldUserDisplayPref) {
 		chooseLocation();
 	}
 	else {
 		// Update the scale and design
-		scaleWidget();
+		updateWeather();
 	}
 	
 	// Remember current setting of trayOpens
@@ -277,10 +257,7 @@ function preferencesChanged () {
 	
 }
 
-//-------------------------------------------------
-// -- gainFocus --
-// Fired when the widget gains the user's focus
-	
+// Called when the widget gains the user's focus
 function gainFocus () {
 	//log ("gainFocus ()");
 	
@@ -291,10 +268,7 @@ function gainFocus () {
 	fadeButtonsStart ();
 }
 
-//-------------------------------------------------
-// -- loseFocus --
-// Fired when the widget loses the user's focus
-	
+// Called when the widget loses the user's focus
 function loseFocus () {
 	//log ("loseFocus ()");
 	
@@ -305,10 +279,7 @@ function loseFocus () {
 	fadeButtonsStart ();
 }
 
-//-------------------------------------------------
-// -- fadeButtons --
 // Fades the buttons
-	
 function fadeButtons () {
 	//log ("fadeButtons ()");
 	
@@ -324,10 +295,7 @@ function fadeButtons () {
 	
 }
 
-//-------------------------------------------------
-// -- fadeButtonsStart --
-// Initiate the fading of the buttons
-	
+// Initiates the fading of the buttons
 function fadeButtonsStart () {
 	//log ("fadeButtonsStart ()");
 

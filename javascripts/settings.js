@@ -2,12 +2,12 @@
 	
 	widescapeWeather Widget
 
-	Version 2.1.18
+	Version 2.1.19
 	
 	Settings
 
 	
-	(c) 2008 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+	(c) 2011 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
 	The Weather Widget: (c) 2003 - 2004 Pixoria
 */
 
@@ -32,14 +32,14 @@ var sliding			= "horizontal";
 
 var urlData			= "";
 
-var widgetScale		= 1 + Math.round (preferences.widgetSize.value) / 12;
-var trayState		= preferences.trayState.value;
-var showToolTips		= true;
-var oldTrayOpens		= preferences.trayOpens.value;
-var oldUserCity		= preferences.userDisplayPref.value;
-var fetchedCityName	= '';
-var basePositionX		= Number(preferences.windowX.value == 'undefined' ? mainWindow.hOffset : preferences.windowX.value) + Number(preferences.baseAddition.value);
-var basePositionY		= Number(preferences.windowY.value == 'undefined' ? mainWindow.vOffset : preferences.windowY.value);
+var widgetScale					= 1 + Math.round (preferences.widgetSize.value) / 12;
+var trayState						= preferences.trayState.value;
+var showToolTips				= true;
+var oldTrayOpens				= preferences.trayOpens.value;
+var oldUserDisplayPref	= preferences.userDisplayPref.value;
+var oldCityName					= preferences.cityName.value;
+var basePositionX				= Number(preferences.windowX.value == 'undefined' ? mainWindow.hOffset : preferences.windowX.value) + Number(preferences.baseAddition.value);
+var basePositionY				= Number(preferences.windowY.value == 'undefined' ? mainWindow.vOffset : preferences.windowY.value);
 
 var forecastText		= new Array();
 var forecastImage		= new Array();

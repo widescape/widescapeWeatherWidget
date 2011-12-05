@@ -4,7 +4,7 @@
 	
 	widescapeWeather Widget
 
-	Version 2.1.18
+	Version 2.1.19
 	
 	This Widget grabs the latest current weather data from weather.com and builds
 	it into a nice little iconic representation.
@@ -280,7 +280,7 @@
 	</preference>
 	
 	<preference name="displayNameEnabled">
-		<title>Use Display Name</title>
+		<title>Use Display Name instead of Location</title>
 		<type>checkbox</type>
 		<defaultValue>0</defaultValue>
 		<description>Check this box, if you would like to display the name below instead of the location above.</description>
@@ -400,11 +400,11 @@
 		<optionValue>D, M d</optionValue>
 		<option>Sat, 30. Dec</option>
 		<optionValue>D, d. M</optionValue>
-		<option>2008-12-30</option>
+		<option>2011-12-30</option>
 		<optionValue>yyyy-mm-dd</optionValue>
-		<option>30.12.2008</option>
+		<option>30.12.2011</option>
 		<optionValue>dd.mm.yyyy</optionValue>
-		<option>12/30/08</option>
+		<option>12/30/11</option>
 		<optionValue>m/d/yy</optionValue>
 		<defaultValue>D, M d</defaultValue>
 	</preference>

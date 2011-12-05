@@ -19,9 +19,6 @@
 var weatherURL = "http://api.wunderground.com/api/";
 var apiKey = "eb6eabce8e630d4e";
 
-//	Displays an alert with the xml error.
-function xmlError (str) { alert (str); };
-
 //	Asynchronically fetches the weather data from Weather Underground.
 function fetchDataAsync() {
 	log("fetchDataAsync()");
@@ -41,35 +38,6 @@ function fetchDataAsync() {
 	catch (error) {
 		displayConnectionError(error,_url);
 	}
-}
-
-// Displays an error with icon and tooltip.
-function displayError(error,message,clickAction) {
-	log("Error: " + error);
-	weather.tooltip	= message;
-	weather.onClick	= clickAction;
-	weather.src		= "Resources/WeatherIcons/error.png";
-	weather.reload();
-	scaleWidget();
-}
-
-// Displays the connection error.
-function displayConnectionError(error,url,message) {
-	log("Error: " + error);
-	if (typeof url != "undefined") log("On URL: "+url);
-	if (typeof message == "undefined") {
-		message = "There was a problem connecting to Wunderground.com.\n\nPlease check your network connection and click here to reload.\n\nError was: "+error.toString().substring(0,70);
-	}
-	var clickAction = onClickReload;
-	displayError(error,message,clickAction);
-}
-
-function onClickReload() {
-	log("onClickReload()");
-	weather.src		= "Resources/WeatherIcons/waiting.png";
-	updateNow();
-	sleep(150);
-	update();
 }
 
 // Receives the fetched weather data and looks for errors.
@@ -131,13 +99,13 @@ function parseAndCheckFetchedData(fetch,alertPassively) {
 		// Checks if no location was found.
 		if (xml.evaluate("string(response/error/type)") == "querynotfound") {
 			if (alertPassively) {
-				var message = "We were unable to find the location \""+oldUserCity+"\".\n\nClick here to change the location.";
+				var message = "We were unable to find the location \""+oldUserDisplayPref+"\".\n\nClick here to change the location.";
 				displayError("querynotfound",message,showWidgetPreferences);
 			}
 			else {
-				alert("We were unable to find the location \""+oldUserCity+"\".\n\nIf your location can't be found, try a entering a larger neighboring city.");
+				alert("We were unable to find the location \""+oldUserDisplayPref+"\".\n\nIf your location can't be found, try a entering a larger neighboring city.");
 			}
-			preferences.userDisplayPref.value = oldUserCity;
+			preferences.userDisplayPref.value = oldUserDisplayPref;
 			return false;
 		}
 		// Handles any other error.
@@ -163,15 +131,20 @@ function parseAndCheckFetchedData(fetch,alertPassively) {
 	return xml;
 }
 
-// Offers the returned location options to the user.
+// Fetches matching locations
 function chooseLocation() {
 	log("chooseLocation()");
 	
 	var idArray = new Array();
 	var cityArray = new Array();
 	var locationCount = 0;
+	var newCityName = preferences.userDisplayPref.value;
 	
-	var _url = weatherURL + apiKey + "/geolookup/q/" + escape(preferences.userDisplayPref.value) + ".xml";
+	// Displays the entered city name right now
+	preferences.cityName.value = newCityName;
+	scaleWidget();
+	
+	var _url = weatherURL + apiKey + "/geolookup/q/" + escape(newCityName) + ".xml";
 	var urlFetch = new URL();
 	urlFetch.location = _url;
 	try {
@@ -182,6 +155,7 @@ function chooseLocation() {
 	}
 }
 
+// Offers the fetched locations to the user.
 function showLocationOptions(xml) {
 	log("showLocationOptions()");
 	
@@ -196,7 +170,9 @@ function showLocationOptions(xml) {
 	var i, location, city, state, country, name, zmw;
 	var locationOptions = new Array();
 	var locationZmws = new Array();
+	var locationCities = new Array();
 	
+	// Prepares fetched location data for easier access later on
 	for (i = 0; i < locationCount; i++) {
 		location = locations.item(i);
 		
@@ -211,8 +187,10 @@ function showLocationOptions(xml) {
 		
 		locationOptions.push(name);
 		locationZmws[name] = zmw;
+		locationCities[name] = city;
 	}
 	
+	// Displays more than 1 location as a form dialog
 	if (locationOptions.length > 1) {		  
 		var formFields = new Array();
 		
@@ -230,16 +208,27 @@ function showLocationOptions(xml) {
 		formFields[0].description = "Please choose the city closest to your location.";
 		
 		formResults = form(formFields, 'Choose a City', 'Choose');
-						
-		if (formResults != null) {
+		
+		// Checks if action was canceled
+		if (formResults == null) {
+			preferences.userDisplayPref.value = oldUserDisplayPref;
+			preferences.cityName.value = oldCityName;
+		}
+		else {
 			preferences.userDisplayPref.value = formResults[0];
 			preferences.cityValPref.value = locationZmws[formResults[0]];
+			preferences.cityName.value = locationCities[formResults[0]];
 		}
 	}
+	// Assumes that only 1 location was returned
+	// Directly assigns the fetched location
 	else {
 		preferences.userDisplayPref.value = locationOptions[0];
 		preferences.cityValPref.value = locationZmws[locationOptions[0]];
+		preferences.cityName.value = locationCities[locationOptions[0]];
 	}
+	
+	scaleWidget();
 	
 	//log("preferences.userDisplayPref: "+preferences.userDisplayPref.value);
 	//log("preferences.cityValPref: "+preferences.cityValPref.value);
@@ -248,12 +237,7 @@ function showLocationOptions(xml) {
 	update();
 }
 
-//-------------------------------------------------
-// -- updateWeather --
-/*	The updateWeather function will look at the city and location XML blocks
-	and display the temperature, an icon, and the city name that the data is
-	associated with.
-*/
+// Parses the fetched weather data (xml) and updates the icon and text information accordingly.
 function updateWeather () {
 	//log ("updateWeather ()");
 	
@@ -261,14 +245,25 @@ function updateWeather () {
 	
 	try
 	{
+		var modTemp = 'f';
+		var modSpeed = 'mph';
+		var modDistance = 'mi';
+		
+		if (preferences.unitsPref.value == 1) {
+			modTemp = 'c';
+			modSpeed = 'kph';
+			modDistance = 'km';
+		}
+		
 		var xml = globalWeather;
 		var fetchedLocation = xml.evaluate("string(response/current_observation/display_location/full)");
 		var fetchedCity = xml.evaluate("string(response/current_observation/display_location/city)");
+		preferences.cityName.value = fetchedCity;
 		
-	  var fetchedTime = xml.evaluate("string(response/current_observation/observation_epoch)");
-		var fetchedTemp = xml.evaluate("string(response/current_observation/temp_c)");
+	  var fetchedTime = Math.round(xml.evaluate("string(response/current_observation/observation_epoch)"));
+		var fetchedTemp = Math.round(xml.evaluate("string(response/current_observation/temp_"+modTemp+")"));
 		var fetchedCode = xml.evaluate("string(response/current_observation/icon)");
-		var fetchedTextCond = xml.evaluate("string(response/current_observation/weather)");
+		var fetchedCondPhrase = xml.evaluate("string(response/current_observation/weather)");
 		
 		var fetchedWindSpeed = xml.evaluate("string(response/current_observation/wind_mph)");
 		var fetchedWindDir = xml.evaluate("string(response/current_observation/wind_degrees)");
@@ -276,7 +271,7 @@ function updateWeather () {
 		
 		var fetchedPrec = xml.evaluate("string(response/current_observation/precip_today_metric)");
 		var fetchedHmid = xml.evaluate("string(response/current_observation/relative_humidity)");
-		var fetchedVis = xml.evaluate("string(response/current_observation/visibility_km)");
+		var fetchedVis = xml.evaluate("string(response/current_observation/visibility_"+modDistance+")");
 		var fetchedPres = xml.evaluate("string(response/current_observation/pressure_mb)");
 		
 		var fetchedCurrentHour = xml.evaluate("string(response/moon_phase/current_time/hour)");
@@ -304,11 +299,15 @@ function updateWeather () {
 		sunriseDatetime.setHours(fetchedSunriseHour);
 		sunriseDatetime.setMinutes(fetchedSunriseMinute);
 		
+		log("currentDatetime: "+currentDatetime+" ("+fetchedCurrentHour+":"+fetchedCurrentMinute+")");
+		log("sunriseDatetime: "+sunriseDatetime);
+		log("sunsetDatetime: "+sunsetDatetime);
+		
 		var dayTime = (currentDatetime.getTime() > sunriseDatetime.getTime() && currentDatetime.getTime() < sunsetDatetime.getTime()) ? 'day' : 'night';
 		
-		var iconName = getWeatherIcon(fetchedCode, dayTime);
+		var iconName = getWeatherIcon(fetchedCode, fetchedCondPhrase, dayTime);
 		
-		newConditionLogText = '\nMain: ' + fetchedCode + ': ' + fetchedTextCond + ' (' + iconName + '.png)';
+		newConditionLogText = '\nMain: ' + fetchedCode + ': ' + fetchedCondPhrase + ' (' + iconName + '.png)';
 		weather.src		= "Resources/WeatherIcons/" + iconName + ".png";
 		
 		if (fetchedTemp == "N/A") fetchedTemp = "?";
@@ -318,9 +317,9 @@ function updateWeather () {
 		if (preferences.showDate.value == 1 || preferences.showTime.value == 1) {
 			updateTime();
 		}
-	
+		
 		unitTemp = (preferences.unitsPref.value == 1) ? "C" : "F";
-		unitDistance = (preferences.unitsPref.value == 1) ? "Kilometers" : "Miles";
+		unitDistance = (preferences.unitsPref.value == 1) ? "kilometers" : "miles";
 		unitSpeed = (preferences.unitsPref.value == 1) ? "km/h" : "mph";
 		unitPres = (preferences.unitsPref.value == 1) ? "Millibars" : "Inches";
 		unitMeasure = (preferences.unitsPref.value == 1) ? "Millimeters" : "Inches";	
@@ -336,16 +335,16 @@ function updateWeather () {
 		var thePressure = "";
 		var windData = "";
 	
-		if ( fetchedTextCond == "N/A" ) {
+		if ( fetchedCondPhrase == "N/A" ) {
 			theCondition = "Unknown Weather Condition";
 		} else {
-			theCondition = fetchedTextCond;
+			theCondition = fetchedCondPhrase;
 		}
 	
 		if ( fetchedHmid == "N/A" ) {
 			theHumidity = "Humidity: Unknown";
 		} else {
-			theHumidity = "Humidity: " + fetchedHmid + "%";
+			theHumidity = "Humidity: " + fetchedHmid;
 		}
 	
 		if (fetchedVis == "Unlimited") {
@@ -428,7 +427,7 @@ function updateWeather () {
 						//thePressure + "\n" +
 						//windData + "\n" +
 						"\n" +
-						"Updated at " + fetchedTime;
+						"Updated at " + formattedDateAndTime(observationDatetime);
 	
 		if (showToolTips) {
 			weather.tooltip = toolTipData;
@@ -445,11 +444,9 @@ function updateWeather () {
 	}
 }
 
-//-------------------------------------------------
-// -- updateForecasts --
 
 function updateForecasts(currentDayTime) {
-	//log ("updateForecasts ()");
+	log("updateForecasts("+currentDayTime+")");
 	
 	if (globalWeather == "") return;
 	var xml = globalWeather;
@@ -479,12 +476,12 @@ function updateForecasts(currentDayTime) {
 		
 		if (i == 0) {
 			dayTime = currentDayTime;
-			day = "Today";
+			day = dayTime == 'day' ? 'Today' : 'Tonight';
 		}
 		else {
 			day = weekDays[new Date(dayDate*1000).getDay()];
 		}
-		displayTinyIcons(weatherCode, dayTime, i);
+		displayTinyIcons(weatherCode, dayText, dayTime, i);
 
 		forecastText[i][0].data	= hiTemp + "°";
 		forecastImage[i][0].src	= "Resources/Day-" + day + ".png";
@@ -497,9 +494,6 @@ function updateForecasts(currentDayTime) {
 		} else {
 			forecastImage[i][1].tooltip = "";
 		}
-		
-		newConditionLogText += '\nForecast ' + i + ': ' + weatherCode + ': ' + dayText + ' (' + getWeatherIcon(weatherCode,dayTime) + '.png)';
-		
 	}
 	
 	if (newConditionLogText != currentConditionLogText) {
@@ -512,26 +506,28 @@ function updateForecasts(currentDayTime) {
 	
 }
 
-//-------------------------------------------------
-// -- getWeatherIcon --
-
-function getWeatherIcon(iconName,dayTime) {
-	log ("getWeatherIcon("+iconName+", "+dayTime+")");
+function getWeatherIcon(iconName, dayText, dayTime) {
+	log ("getWeatherIcon("+iconName+", "+dayText+", "+dayTime+")");
 	
-	switch(iconName) {
+	switch(dayText.toLowerCase()) {
+		
+		case 'chance of rain':
+		case 'chance of flurries':
+		case 'chance of sleet':
+			dayText = dayText.replace('chance of','');
+			iconName = iconName.replace('chance','');
+		
 		case 'clear':
-		case 'mostlycloudy':
-		case 'partiallycloudy':
+		case 'mostly cloudy':
+		case 'partly cloudy':
 		case 'snow':
+		case 'rain':
 			return iconName+dayTime;
 	}
 	return iconName;
 }
 
-//-------------------------------------------------
-// -- displayTinyIcons --
-
-function displayTinyIcons(iconName,dayTime,whichTiny) {
-	log ("displayTinyIcons("+whichTiny+": "+iconName+", "+dayTime+")");
-	forecastImage[whichTiny][1].src	= "Resources/WeatherIcons/" + getWeatherIcon(iconName,dayTime) + ".png";
+function displayTinyIcons(iconName, dayText, dayTime, whichTiny) {
+	//log ("displayTinyIcons("+whichTiny+": "+iconName+", "+dayTime+")");
+	forecastImage[whichTiny][1].src	= "Resources/WeatherIcons/" + getWeatherIcon(iconName, dayText, dayTime) + ".png";
 }

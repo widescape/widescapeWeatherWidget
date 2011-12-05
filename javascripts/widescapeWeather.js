@@ -2,7 +2,7 @@
 	
 	widescapeWeather Widget
 
-	Version 2.1.18
+	Version 2.1.19
 	
 	This Widget grabs the latest current weather data from weather.com and builds
 	it into a nice little iconic representation.
@@ -16,23 +16,23 @@
 	Design: Robert Wünsch ("widescape")
 
 
-	(c) 2008 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+	(c) 2011 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
 	The Weather Widget: (c) 2003 - 2004 Pixoria
 	
 	
 	*** Please don't steal ***
-	But feel free to learn from the code.
 	
-	For icon usage licences please contact Robert Wünsch at info@widescape.net
+	For icon usage licences see /Resources/WeatherIcons/__Weather Icon Copyright and Permissions__.txt
+	or contact Robert Wünsch at info@widescape.net
 */
 
-include("javascripts/settings.js");			// Create the static environment
-//include("javascripts/xmldom.js");				// Import XML library
-include("javascripts/weather.js");			// Import weather management
-include("javascripts/design.js");				// Import design management
-include("javascripts/interaction.js");	// Import interaction management
-include("javascripts/setup.js");				// Prepare for setup
+include("javascripts/settings.js");			// Creates the static environment
+include("javascripts/weather.js");			// Loads weather management
+include("javascripts/design.js");				// Loads design management
+include("javascripts/interaction.js");	// Loads interaction management
+include("javascripts/helpers.js");			// Loads helper methods
+include("javascripts/setup.js");				// Prepares for setup
 
 //-------------------------------------------------
 // Initialize the widget
-init ();
+init();

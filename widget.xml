@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <metadata>
 	<name>widescapeWeather</name>
-	<version>2.1.18</version>
+	<version>2.1.19</version>
 	<identifier>78605a40-3e4c-11dd-ae16-0800200c9a66</identifier>
 	<image usage="dock" src="Resources/DockIcon.png"/>
 	<image usage="security" src="Resources/Icon150.png"/>
 	<author name="Robert Wünsch" organization="widescape" href="http://www.widescape.net"/> 
-	<copyright>(c) 2008 Robert Wünsch / widescape</copyright> 
+	<copyright>(c) 2011 Robert Wünsch / widescape</copyright> 
 	<description>This Widget displays your weather and forecast in a minimal way.</description> 
 	<platform minVersion="4.5"/>
 	<security> 

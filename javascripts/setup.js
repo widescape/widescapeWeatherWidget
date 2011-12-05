@@ -2,19 +2,16 @@
 	
 	widescapeWeather Widget
 
-	Version 2.1.18
+	Version 2.1.19
 	
 	Setup
 
 	
-	(c) 2008 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+	(c) 2011 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
 	The Weather Widget: (c) 2003 - 2004 Pixoria
 */
 
-//-------------------------------------------------
-// -- init --
-// Create and initialize the basics
-
+// Creates and initializes the basics
 function init () {
 	//log ("init ()");
 	
@@ -94,10 +91,7 @@ function init () {
 	updateTimer.ticking = true;
 }
 
-//-------------------------------------------------
-// -- applyPreferences --
-// Modify the basic values with the given preferences
-
+// Modifies the basic values with the given preferences
 function applyPreferences (startUp, oldTrayOpens) {
 	//log ("applyPreferences ()");
 	
@@ -163,12 +157,9 @@ function applyPreferences (startUp, oldTrayOpens) {
 	
 }
 
-//-------------------------------------------------
-// -- update --
-// Initiate the updating of the weather
-
-function update () {
-	//log ("update ()");
+// Initiates the updating of the weather
+function update() {
+	log ("update()");
 	saveWindowPosition();
 	fetchDataAsync();
 }
@@ -178,9 +169,6 @@ function onUpdateData() {
 	updateWeather();
 	resumeUpdates();
 }
-
-//-------------------------------------------------
-// -- updateTime --
 
 function updateTime(givenDate) {
 	//log ("updateTime ()");
@@ -197,31 +185,7 @@ function updateTime(givenDate) {
 	if (preferences.showDate.value == 1) {
 		
 		// Display date of the location
-		switch(preferences.dateFormat.value) {
-			
-			case "D, M d":
-				theDate.data = weekDays[nowTime.getDay()]+", "+months[nowTime.getMonth()]+" "+nowTime.getDate();
-				break;
-			
-			case "D, d. M":
-				theDate.data = weekDays[nowTime.getDay()]+", "+nowTime.getDate()+". "+months[nowTime.getMonth()];
-				break;
-			
-			case "yyyy-mm-dd":
-				theDate.data = nowTime.getFullYear()+"-"+twoDigits(nowTime.getMonth()+1)+"-"+twoDigits(nowTime.getDate());
-				break;
-			
-			case "dd.mm.yyyy":
-				theDate.data = twoDigits(nowTime.getDate())+"."+twoDigits(nowTime.getMonth()+1)+"."+nowTime.getFullYear();
-				break;
-			
-			case "m/d/yy":
-				theDate.data = (nowTime.getMonth()+1)+"/"+nowTime.getDate()+"/"+nowTime.getFullYear();
-				break;
-			
-			default:
-				theDate.data = "";
-		}
+		theDate.data = formattedDate(nowTime);
 	}
 	else {
 		theDate.data = "";
@@ -229,21 +193,7 @@ function updateTime(givenDate) {
 	
 	if (preferences.showTime.value == 1) {
 		// Display time of the location
-		var nowTimeH	= nowTime.getHours ();
-		var nowTimeM	= nowTime.getMinutes ();
-		var nowTimeS	= nowTime.getSeconds ();
-		var nowTimeSuffix	= "";
-		if (preferences.use24hours.value == 0) {
-			if (nowTimeH < 12) {
-				if (nowTimeH == 0) nowTimeH = 12;
-				nowTimeSuffix	= " am";
-			}
-			else {
-				if (nowTimeH > 12) nowTimeH -= 12;
-				nowTimeSuffix	= " pm";
-			}
-		}
-		theTime.data = nowTimeH + ":" + twoDigits(nowTimeM) + (preferences.showSeconds.value == 1 ? ":" + twoDigits(nowTimeS) : "") + nowTimeSuffix;
+		theTime.data = formattedTime(nowTime);
 	}
 	else {
 		theTime.data = "";
