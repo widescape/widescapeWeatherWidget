@@ -248,11 +248,25 @@ function updateWeather () {
 		var modTemp = 'f';
 		var modSpeed = 'mph';
 		var modDistance = 'mi';
+		var modPressure = 'in';
+		
+		unitTemp = "F";
+		unitDistance = "miles";
+		unitSpeed = "mph";
+		unitPres = "Inches";
+		unitMeasure = "Inches";
 		
 		if (preferences.unitsPref.value == 1) {
 			modTemp = 'c';
 			modSpeed = 'kph';
 			modDistance = 'km';
+			modPressure = 'mb';
+			
+			unitTemp = "C";
+			unitDistance = "kilometers";
+			unitSpeed = "km/h";
+			unitPres = "Millibars";
+			unitMeasure = "Millimeters";
 		}
 		
 		var xml = globalWeather;
@@ -260,19 +274,31 @@ function updateWeather () {
 		var fetchedCity = xml.evaluate("string(response/current_observation/display_location/city)");
 		preferences.cityName.value = fetchedCity;
 		
-	  var fetchedTime = Math.round(xml.evaluate("string(response/current_observation/observation_epoch)"));
+	  var fetchedObservationTime = Math.round(xml.evaluate("string(response/current_observation/observation_epoch)"));
+		var fetchedLocalTime = Math.round(xml.evaluate("string(response/current_observation/local_epoch)"));
+		var fetchedLocalTimeRfc822 = xml.evaluate("string(response/current_observation/local_time_rfc822)");
+		
 		var fetchedTemp = Math.round(xml.evaluate("string(response/current_observation/temp_"+modTemp+")"));
 		var fetchedCode = xml.evaluate("string(response/current_observation/icon)");
 		var fetchedCondPhrase = xml.evaluate("string(response/current_observation/weather)");
 		
-		var fetchedWindSpeed = xml.evaluate("string(response/current_observation/wind_mph)");
-		var fetchedWindDir = xml.evaluate("string(response/current_observation/wind_degrees)");
-		var fetchedWindPoint = xml.evaluate("string(response/current_observation/wind_dir)");
+		var fetchedWindSpeedMph = xml.evaluate("string(response/current_observation/wind_mph)");
+		var fetchedWindDir = xml.evaluate("string(response/current_observation/wind_dir)");
+		var fetchedWindPoint = xml.evaluate("string(response/current_observation/wind_degrees)");
+		var fetchedWindGustMph = xml.evaluate("string(response/current_observation/wind_gust_mph)");
+		
+		var fetchedWindSpeed = fetchedWindSpeedMph;
+		var fetchedWindGust = fetchedWindGustMph;
+		if (preferences.unitsPref.value == 1) {
+			fetchedWindSpeed = Math.round(milesToKm(fetchedWindSpeedMph));
+			fetchedWindGust = Math.round(milesToKm(fetchedWindGustMph));
+		}
 		
 		var fetchedPrec = xml.evaluate("string(response/current_observation/precip_today_metric)");
 		var fetchedHmid = xml.evaluate("string(response/current_observation/relative_humidity)");
 		var fetchedVis = xml.evaluate("string(response/current_observation/visibility_"+modDistance+")");
-		var fetchedPres = xml.evaluate("string(response/current_observation/pressure_mb)");
+		var fetchedPres = xml.evaluate("string(response/current_observation/pressure_"+modPressure+")");
+		var fetchedDewPoint = Math.round(xml.evaluate("string(response/current_observation/dewpoint_"+modTemp+")"));
 		
 		var fetchedCurrentHour = xml.evaluate("string(response/moon_phase/current_time/hour)");
 		var fetchedCurrentMinute = xml.evaluate("string(response/moon_phase/current_time/minute)");
@@ -285,7 +311,7 @@ function updateWeather () {
 		
 		var nowTime = new Date();
 		
-		var observationDatetime = new Date(fetchedTime*1000);
+		var observationDatetime = new Date(fetchedObservationTime*1000);
 		
 		var currentDatetime = new Date(nowTime.getTime());
 		currentDatetime.setHours(fetchedCurrentHour);
@@ -299,7 +325,38 @@ function updateWeather () {
 		sunriseDatetime.setHours(fetchedSunriseHour);
 		sunriseDatetime.setMinutes(fetchedSunriseMinute);
 		
-		log("currentDatetime: "+currentDatetime+" ("+fetchedCurrentHour+":"+fetchedCurrentMinute+")");
+		log("computerDatetime: "+(new Date()));
+		
+		// getTimezoneOffset()...
+		
+		/*
+		// Get the time zone of the selected location
+		fetchedTimeZoneHours = Number(fetchedLocalTimeRfc822.substr(-4,2));
+		fetchedTimeZoneMinutes = Number(fetchedLocalTimeRfc822.substr(-2,2));
+		
+		log("fetchedLocalTimeRfc822: "+fetchedLocalTimeRfc822);
+		log("fetchedTimeZoneHours: "+fetchedTimeZoneHours);
+		log("fetchedTimeZoneMinutes: "+fetchedTimeZoneMinutes);
+		
+		// Get the time of the selected location
+		var localTime = new Date(fetchedLocalTime + fetchedTimeZoneHours * 1000);
+		var localTimeHours = localTime.getHours();
+		var localTimeMinutes = localTime.getMinutes();
+		
+		log("localTime: "+localTime);
+		log("localTimeHours: "+localTimeHours);
+		log("localTimeMinutes: "+localTimeMinutes);
+		
+		// Get the user's local time offset (timezone, summer time, date line)
+		localOffsetDate = 0;
+		localOffsetHours = new Date().getHours() - localTimeHours;
+		localOffsetMinutes = new Date().getMinutes() - localTimeMinutes;
+		if (localOffsetHours + fetchedTimeZoneHours > 12)		localOffsetDate = -1;
+		else if (localOffsetHours + fetchedTimeZoneHours <= -12)	localOffsetDate = 1;
+		
+		log("localOffsetHours: "+localOffsetHours);
+		log("localOffsetMinutes: "+localOffsetMinutes);
+		*/
 		log("sunriseDatetime: "+sunriseDatetime);
 		log("sunsetDatetime: "+sunsetDatetime);
 		
@@ -318,12 +375,6 @@ function updateWeather () {
 			updateTime();
 		}
 		
-		unitTemp = (preferences.unitsPref.value == 1) ? "C" : "F";
-		unitDistance = (preferences.unitsPref.value == 1) ? "kilometers" : "miles";
-		unitSpeed = (preferences.unitsPref.value == 1) ? "km/h" : "mph";
-		unitPres = (preferences.unitsPref.value == 1) ? "Millibars" : "Inches";
-		unitMeasure = (preferences.unitsPref.value == 1) ? "Millimeters" : "Inches";	
-	
 		var theCondition = "";
 		var theFeelsLike = "";
 		var theHigh = "";
@@ -358,25 +409,33 @@ function updateWeather () {
 		if ( fetchedPres == "N/A" ) {
 			thePressure = "Pressure: Unknown";
 		} else {
-			thePressure = "Pressure: " + fetchedPres;
+			thePressure = "Pressure: " + fetchedPres + " " + unitPres;
 		}
-/*
+		
+		if ( fetchedDewPoint == "N/A" ) {
+			theDewPoint = "Dewpoint: Unknown";
+		} else {
+			theDewPoint = "Dewpoint: " + fetchedDewPoint + "°" + unitTemp;
+		}
+		
 		if (fetchedWindDir == "CALM") {
 			windData = "Calm Winds";
-		} else {
+		}
+		else {
 
-			if 	(fetchedWindDir == "VAR") {
+			if (fetchedWindDir == "VAR") {
 		
 				windData = "Variable winds ";
 			
-			} else {
+			}
+			else {
 
 				windData = "Wind from ";
 					
-				if (fetchedWindDir.length == 1 || fetchedWindDir.getText().length == 2) {
-					dirArray = [xmlFetchedWindDir.getText()];
+				if (fetchedWindDir.length == 1 || fetchedWindDir.length == 2) {
+					dirArray = [fetchedWindDir];
 				} else {
-					dirArray = [xmlFetchedWindDir.getText().substr(0,1), xmlFetchedWindDir.getText().substr(1,2)];
+					dirArray = [fetchedWindDir.substr(0,1), fetchedWindDir.substr(1,2)];
 				}
 			
 				for (item in dirArray) {
@@ -411,23 +470,24 @@ function updateWeather () {
 			
 			}
 		
-			windData = windData + "at " + xmlFetchedWindSpeed.getText() + " " + unitSpeed;
+			windData = windData + "at " + fetchedWindSpeed + " " + unitSpeed;
 		
-			if (xmlFetchedWindGust.getText() != "N/A"){
-				windData = windData + "\nwith gusts up to " + xmlFetchedWindGust.getText() + " " + unitSpeed;
+			if (fetchedWindGust != "0"){
+				windData = windData + "\nwith gusts up to " + fetchedWindGust + " " + unitSpeed;
 			}
 
 		}	
-*/
+		
 		var toolTipData =	theCondition + "\n" +
 						theFeelsLike +
 						"\n" +
 						theHumidity + "\n" +
 						visData + "\n" +
-						//thePressure + "\n" +
-						//windData + "\n" +
+						thePressure + "\n" +
+						theDewPoint + "\n" +
+						windData + "\n" +
 						"\n" +
-						"Updated at " + formattedDateAndTime(observationDatetime);
+						"Updated at " + formattedDateAndTime(observationDatetime, false);
 	
 		if (showToolTips) {
 			weather.tooltip = toolTipData;
@@ -468,6 +528,7 @@ function updateForecasts(currentDayTime) {
 		var dayText = dayXML.evaluate("string(conditions)");
 		var hiTemp = dayXML.evaluate("string(high/celsius)");
 		var lowTemp = dayXML.evaluate("string(low/celsius)");
+		var probPrec = Math.round(dayXML.evaluate("string(pop)")); // Probability of Precipitation
 		var weatherCode = dayXML.evaluate("string(icon)");
 		
 		var dayTime = 'day';
@@ -485,20 +546,30 @@ function updateForecasts(currentDayTime) {
 
 		forecastText[i][0].data	= hiTemp + "°";
 		forecastImage[i][0].src	= "Resources/Day-" + day + ".png";
-
+		
+		var tooltipText = "";
+		var tooltipContainsPop = false;
+		
 		if (showToolTips) {
-			forecastImage[i][1].tooltip = dayText;
-			if (i != 0) {
-				forecastImage[i][1].tooltip += "\nDay: " + hiTemp + "°"+unitTemp + "\nNight: " + lowTemp + "°"+unitTemp;
+			tooltipText = dayText;
+			if (dayText.match(/rain|drizzle|snow|ice|hail/i)) {
+				tooltipText += ": "+probPrec+"%";
+				tooltipContainsPop = true;
 			}
-		} else {
-			forecastImage[i][1].tooltip = "";
+			if (i != 0) {
+				tooltipText += "\nDay: " + hiTemp + "°"+unitTemp + "\nNight: " + lowTemp + "°"+unitTemp;
+			}
+			if (!tooltipContainsPop) {
+				if (i != 0) tooltipText += "\n";
+				tooltipText += "\nChance of Precipitation: "+probPrec+"%";
+			}
 		}
+		forecastImage[i][1].tooltip = tooltipText;
 	}
 	
 	if (newConditionLogText != currentConditionLogText) {
 		currentConditionLogText = newConditionLogText;
-		newConditionLogText = fetchedTime.toLocaleString() + newConditionLogText;
+		newConditionLogText = fetchedObservationTime.toLocaleString() + newConditionLogText;
 		log( newConditionLogText );
 	}
 	
@@ -506,24 +577,46 @@ function updateForecasts(currentDayTime) {
 	
 }
 
-function getWeatherIcon(iconName, dayText, dayTime) {
-	log ("getWeatherIcon("+iconName+", "+dayText+", "+dayTime+")");
+function getWeatherIcon(iconName, dayText, dayTime, iteration) {
+	if (typeof iteration == "undefined") iteration = 0;
+	log ("getWeatherIcon("+iconName+", "+dayText+", "+dayTime+", iteration: "+iteration+")");
+	iteration++;
 	
-	switch(dayText.toLowerCase()) {
+	switch(iconName.toLowerCase()) {
 		
-		case 'chance of rain':
-		case 'chance of flurries':
-		case 'chance of sleet':
-			dayText = dayText.replace('chance of','');
-			iconName = iconName.replace('chance','');
+		case 'chanceflurries':
+		case 'chancerain':
+		case 'chancesleet':
+		case 'chancesnow':
+		case 'chancetstorms':
+			return getWeatherIcon(iconName.replace('chance',''), dayText, dayTime, iteration);
+		
+		case 'mostlysunny':
+			return getWeatherIcon('partlycloudy', dayText, dayTime, iteration);
+		
+		case 'partlysunny':
+			return getWeatherIcon('mostlycloudy', dayText, dayTime, iteration);
+		
+		case 'sunny':
+			if (dayTime == 'night') return getWeatherIcon('clear', dayText, dayTime, iteration);
+			return getWeatherIcon('hot', dayText, dayTime, iteration);
 		
 		case 'clear':
-		case 'mostly cloudy':
-		case 'partly cloudy':
+		case 'mostlycloudy':
+		case 'partlycloudy':
 		case 'snow':
 		case 'rain':
-			return iconName+dayTime;
+			return iconName + dayTime;
 	}
+	
+	// cloudy
+	// flurries
+	// fog
+	// hazy
+	// sleet
+	// sunny
+	// tstorms
+	// unknown
 	return iconName;
 }
 

@@ -39,7 +39,7 @@ function formattedDate(date) {
 	return "";
 }
 
-function formattedTime(date) {
+function formattedTime(date, includeSeconds) {
 	
 	var hours	= date.getHours ();
 	var minutes	= date.getMinutes ();
@@ -55,11 +55,15 @@ function formattedTime(date) {
 			suffix	= " pm";
 		}
 	}
-	return hours + ":" + twoDigits(minutes) + (preferences.showSeconds.value == 1 ? ":" + twoDigits(seconds) : "") + suffix;
+	return hours + ":" + twoDigits(minutes) + ((preferences.showSeconds.value == 1 && includeSeconds != false) ? ":" + twoDigits(seconds) : "") + suffix;
 }
 
-function formattedDateAndTime(date) {
-	return formattedDate(date)+" "+formattedTime(date);
+function formattedDateAndTime(date, includeSeconds) {
+	return formattedDate(date)+" "+formattedTime(date, includeSeconds);
+}
+
+function milesToKm(miles) {
+	return miles * MILES_TO_KM;
 }
 
 // Displays an error with icon and tooltip.

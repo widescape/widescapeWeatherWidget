@@ -30,6 +30,13 @@ var scaleSwitch		= 1.51;
 var scaleModName		= "Small";
 var sliding			= "horizontal";
 
+var unitTemp;
+var unitDistance;
+var unitSpeed;
+var unitPres;
+var unitMeasure;
+var MILES_TO_KM = 1.6093440006;
+
 var urlData			= "";
 
 var widgetScale					= 1 + Math.round (preferences.widgetSize.value) / 12;
@@ -197,7 +204,7 @@ themes.transparent.borderColor		= "#FFFFFF";
 themes.transparent.borderOpacity		= 0;
 themes.transparent.windowOpacity		= 255;
 
-var fetchedTime = new Date();
+var fetchedObservationTime = new Date();
 var localOffsetDate = 0;
 var localOffsetHours = 0;
 var localOffsetMinutes = 0;
