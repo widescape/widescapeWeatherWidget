@@ -61,9 +61,9 @@
 			items.push(item);
 			
 			item		= new MenuItem();
-			item.title		= "Visit weather.com &#8230;";
+			item.title		= "Weather data provided by wunderground.com &#8230;";
 			item.enabled	= true;
-			item.onSelect	= function() { openURL("http://www.weather.com/?par=xoap&site=wx_logo&cm_ven=bd_oap&cm_cat=1006341644&cm_pla=HomePage&cm_ite=Logo"); }
+			item.onSelect	= function() { openURL("http://www.wunderground.com/"); }
 			items.push(item);
 			
 			item		= new MenuItem();
