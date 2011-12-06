@@ -173,19 +173,19 @@ function onUpdateData() {
 function updateTime(givenDate) {
 	//log ("updateTime ()");
 	
-	var nowTime = new Date();
+	var localTime = new Date();
 	
 	if (typeof givenDate != "undefined") {
-		nowTime = givenDate;
+		localTime = givenDate;
 	}
 	if (preferences.dateAndTimeSource.value == "location") {
-		nowTime	= new Date ( nowTime.getFullYear(),nowTime.getMonth(),nowTime.getDate() - localOffsetDate,nowTime.getHours() - localOffsetHours,nowTime.getMinutes() - localOffsetMinutes,nowTime.getSeconds());
+		localTime	= new Date( localTime.getTime() + (localLocationTimeOffset * 60 * 1000));
 	}
 	
 	if (preferences.showDate.value == 1) {
 		
 		// Display date of the location
-		theDate.data = formattedDate(nowTime);
+		theDate.data = formattedDate(localTime);
 	}
 	else {
 		theDate.data = "";
@@ -193,7 +193,7 @@ function updateTime(givenDate) {
 	
 	if (preferences.showTime.value == 1) {
 		// Display time of the location
-		theTime.data = formattedTime(nowTime);
+		theTime.data = formattedTime(localTime);
 	}
 	else {
 		theTime.data = "";

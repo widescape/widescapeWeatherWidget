@@ -275,8 +275,8 @@ function updateWeather () {
 		preferences.cityName.value = fetchedCity;
 		
 	  var fetchedObservationTime = Math.round(xml.evaluate("string(response/current_observation/observation_epoch)"));
-		var fetchedLocalTime = Math.round(xml.evaluate("string(response/current_observation/local_epoch)"));
-		var fetchedLocalTimeRfc822 = xml.evaluate("string(response/current_observation/local_time_rfc822)");
+		var fetchedLocationTimeEpoch = Math.round(xml.evaluate("string(response/current_observation/local_epoch)"));
+		var fetchedLocationTimeRfc822 = xml.evaluate("string(response/current_observation/local_time_rfc822)");
 		
 		var fetchedTemp = Math.round(xml.evaluate("string(response/current_observation/temp_"+modTemp+")"));
 		var fetchedCode = xml.evaluate("string(response/current_observation/icon)");
@@ -309,56 +309,30 @@ function updateWeather () {
 		
 		if (fetchedTemp == null) fetchedTemp = "";
 		
-		var nowTime = new Date();
+		var localTime = new Date();
+		var localTimeTimezoneOffset = localTime.getTimezoneOffset();
 		
-		var observationDatetime = new Date(fetchedObservationTime*1000);
+		observationTime = new Date(fetchedObservationTime*1000);
 		
-		var currentDatetime = new Date(nowTime.getTime());
+		var currentDatetime = new Date(localTime.getTime());
 		currentDatetime.setHours(fetchedCurrentHour);
 		currentDatetime.setMinutes(fetchedCurrentMinute);
 		
-		var sunsetDatetime = new Date(nowTime.getTime());
+		var sunsetDatetime = new Date(localTime.getTime());
 		sunsetDatetime.setHours(fetchedSunsetHour);
 		sunsetDatetime.setMinutes(fetchedSunsetMinute);
 		
-		var sunriseDatetime = new Date(nowTime.getTime());
+		var sunriseDatetime = new Date(localTime.getTime());
 		sunriseDatetime.setHours(fetchedSunriseHour);
 		sunriseDatetime.setMinutes(fetchedSunriseMinute);
 		
-		log("computerDatetime: "+(new Date()));
+		// Gets the time zone of the selected location
+		var fetchedLocationTimezoneHours = Number(fetchedLocationTimeRfc822.substr(-4,2));
+		var fetchedLocationTimezoneMinutes = Number(fetchedLocationTimeRfc822.substr(-2,2));
+		fetchedLocationTimezoneOffset = -fetchedLocationTimezoneHours * 60 - fetchedLocationTimezoneMinutes;
 		
-		// getTimezoneOffset()...
-		
-		/*
-		// Get the time zone of the selected location
-		fetchedTimeZoneHours = Number(fetchedLocalTimeRfc822.substr(-4,2));
-		fetchedTimeZoneMinutes = Number(fetchedLocalTimeRfc822.substr(-2,2));
-		
-		log("fetchedLocalTimeRfc822: "+fetchedLocalTimeRfc822);
-		log("fetchedTimeZoneHours: "+fetchedTimeZoneHours);
-		log("fetchedTimeZoneMinutes: "+fetchedTimeZoneMinutes);
-		
-		// Get the time of the selected location
-		var localTime = new Date(fetchedLocalTime + fetchedTimeZoneHours * 1000);
-		var localTimeHours = localTime.getHours();
-		var localTimeMinutes = localTime.getMinutes();
-		
-		log("localTime: "+localTime);
-		log("localTimeHours: "+localTimeHours);
-		log("localTimeMinutes: "+localTimeMinutes);
-		
-		// Get the user's local time offset (timezone, summer time, date line)
-		localOffsetDate = 0;
-		localOffsetHours = new Date().getHours() - localTimeHours;
-		localOffsetMinutes = new Date().getMinutes() - localTimeMinutes;
-		if (localOffsetHours + fetchedTimeZoneHours > 12)		localOffsetDate = -1;
-		else if (localOffsetHours + fetchedTimeZoneHours <= -12)	localOffsetDate = 1;
-		
-		log("localOffsetHours: "+localOffsetHours);
-		log("localOffsetMinutes: "+localOffsetMinutes);
-		*/
-		log("sunriseDatetime: "+sunriseDatetime);
-		log("sunsetDatetime: "+sunsetDatetime);
+		// Calculates the offset between the local time and the time at the location
+		localLocationTimeOffset = localTimeTimezoneOffset - fetchedLocationTimezoneOffset;
 		
 		var dayTime = (currentDatetime.getTime() > sunriseDatetime.getTime() && currentDatetime.getTime() < sunsetDatetime.getTime()) ? 'day' : 'night';
 		
@@ -424,12 +398,9 @@ function updateWeather () {
 		else {
 
 			if (fetchedWindDir == "VAR") {
-		
 				windData = "Variable winds ";
-			
 			}
 			else {
-
 				windData = "Wind from ";
 					
 				if (fetchedWindDir.length == 1 || fetchedWindDir.length == 2) {
@@ -441,28 +412,28 @@ function updateWeather () {
 				for (item in dirArray) {
 					switch (dirArray[item]) {
 						case "N":
-							windData = windData + "North ";
+							windData += "North ";
 							break;			
 						case "S":
-							windData = windData + "South ";
+							windData += "South ";
 							break;			
 						case "E":
-							windData = windData + "East ";
+							windData += "East ";
 							break;			
 						case "W":
-							windData = windData + "West ";
+							windData += "West ";
 							break;			
 						case "NE":
-							windData = windData + "Northeast ";
+							windData += "Northeast ";
 							break;			
 						case "SE":
-							windData = windData + "Southeast ";
+							windData += "Southeast ";
 							break;			
 						case "NW":
-							windData = windData + "Northwest ";
+							windData += "Northwest ";
 							break;			
 						case "SW":
-							windData = windData + "Southwest ";
+							windData += "Southwest ";
 							break;			
 					}
 			
@@ -470,10 +441,10 @@ function updateWeather () {
 			
 			}
 		
-			windData = windData + "at " + fetchedWindSpeed + " " + unitSpeed;
+			windData += "at " + fetchedWindSpeed + " " + unitSpeed;
 		
 			if (fetchedWindGust != "0"){
-				windData = windData + "\nwith gusts up to " + fetchedWindGust + " " + unitSpeed;
+				windData += "\nwith gusts up to " + fetchedWindGust + " " + unitSpeed;
 			}
 
 		}	
@@ -487,7 +458,7 @@ function updateWeather () {
 						theDewPoint + "\n" +
 						windData + "\n" +
 						"\n" +
-						"Updated at " + formattedDateAndTime(observationDatetime, false);
+						"Updated at " + formattedDateAndTime(observationTime, false);
 	
 		if (showToolTips) {
 			weather.tooltip = toolTipData;
@@ -569,7 +540,7 @@ function updateForecasts(currentDayTime) {
 	
 	if (newConditionLogText != currentConditionLogText) {
 		currentConditionLogText = newConditionLogText;
-		newConditionLogText = fetchedObservationTime.toLocaleString() + newConditionLogText;
+		newConditionLogText = observationTime.toLocaleString() + newConditionLogText;
 		log( newConditionLogText );
 	}
 	

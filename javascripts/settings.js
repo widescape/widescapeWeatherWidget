@@ -204,10 +204,8 @@ themes.transparent.borderColor		= "#FFFFFF";
 themes.transparent.borderOpacity		= 0;
 themes.transparent.windowOpacity		= 255;
 
-var fetchedObservationTime = new Date();
-var localOffsetDate = 0;
-var localOffsetHours = 0;
-var localOffsetMinutes = 0;
+var observationTime = new Date();
+var localLocationTimeOffset = 0;
 var months		= new Array ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
 var weekDays	= new Array ("Sun","Mon","Tue","Wed","Thu","Fri","Sat");
 
