@@ -523,7 +523,7 @@ function updateForecasts(currentDayTime) {
 		
 		if (showToolTips) {
 			tooltipText = dayText;
-			if (dayText.match(/rain|drizzle|snow|ice|hail/i)) {
+			if (dayText.match(/chance/i)) {
 				tooltipText += ": "+probPrec+"%";
 				tooltipContainsPop = true;
 			}
@@ -532,7 +532,9 @@ function updateForecasts(currentDayTime) {
 			}
 			if (!tooltipContainsPop) {
 				if (i != 0) tooltipText += "\n";
-				tooltipText += "\nChance of Precipitation: "+probPrec+"%";
+				tooltipText += "\nChance of ";
+				tooltipText += dayText.match(/rain|drizzle|snow|ice|hail/i) ? dayText : "Precipitation";
+				tooltipText += ": "+probPrec+"%";
 			}
 		}
 		forecastImage[i][1].tooltip = tooltipText;
