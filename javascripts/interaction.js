@@ -151,8 +151,8 @@ function stopMoveTray () {
 		// Show the forecast icons and texts
 		//displayForecast (true);
 		
-		// Update the forecast
-		updateForecasts();
+		// Update the icons and info
+		updateWeather();
 	}
 	else {
 		// Hide the forecast icons and texts

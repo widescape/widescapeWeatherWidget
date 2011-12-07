@@ -238,7 +238,7 @@ function showLocationOptions(xml) {
 }
 
 // Parses the fetched weather data (xml) and updates the icon and text information accordingly.
-function updateWeather () {
+function updateWeather() {
 	//log ("updateWeather ()");
 	
 	if (globalWeather == "") return;
