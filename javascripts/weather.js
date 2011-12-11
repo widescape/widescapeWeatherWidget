@@ -20,8 +20,8 @@ var weatherURL = "http://api.wunderground.com/api/";
 var apiKey = "eb6eabce8e630d4e";
 
 //	Asynchronically fetches the weather data from Weather Underground.
-function fetchDataAsync() {
-	log("fetchDataAsync()");
+function fetchWeather() {
+	log("fetchWeather()");
 	var userCity = preferences.userDisplayPref.value;
 	var cityVal = preferences.cityValPref.value;
 	if (cityVal) userCity = "zmw:"+cityVal;
@@ -44,14 +44,15 @@ function fetchDataAsync() {
 function onWeatherDataFetched(fetch) {
 	log("onWeatherDataFetched()");
 	
-	// Checks location data (false = passively)
+	// Checks location data (false = alert passively)
 	var result = parseAndCheckFetchedData(fetch,false);
 	if (!result) return false;
 	
 	// Assumes the result contains weather data.
 	globalWeather = result;
+	
 	// Continues with the update
-	onUpdateData();
+	updateWeather();
 }
 
 // Receives the fetched weather data and looks for errors.
@@ -65,70 +66,6 @@ function onLocationDataFetched(fetch) {
 	// Assumes the result contains location data.
 	savePreferences();
 	update();
-}
-
-function parseAndCheckFetchedData(fetch,alertPassively) {
-	log("parseAndCheckFetchedData()");
-	
-	// Checks if there was an HTTP error
-	if (fetch.response.toString() != "200") {
-		displayConnectionError(fetch.response,fetch.location);
-		return false;
-	}
-	// Assumes we have a valid result.
-	var result = fetch.result;
-	
-	// Tries to parse the XML
-	try {
-		xml = XMLDOM.parse(result);
-	}
-	catch (error) {
-		displayConnectionError(error,fetch.location,"Retrieved XML could not be parsed. Please contact support at www.widescape.net/widgets");
-		return false;
-	}
-	
-	// Checks if the response doesn't contain a correct result
-	if (result.length == 0 || result == "Could not load URL") {
-		displayConnectionError(response,fetch.location);
-		return false;
-	}
-	
-	// Checks if an error was returned.
-	if (xml.evaluate("string(response/error)")) {
-		
-		// Checks if no location was found.
-		if (xml.evaluate("string(response/error/type)") == "querynotfound") {
-			if (alertPassively) {
-				var message = "We were unable to find the location \""+oldUserDisplayPref+"\".\n\nClick here to change the location.";
-				displayError("querynotfound",message,showWidgetPreferences);
-			}
-			else {
-				alert("We were unable to find the location \""+oldUserDisplayPref+"\".\n\nIf your location can't be found, try a entering a larger neighboring city.");
-			}
-			preferences.userDisplayPref.value = oldUserDisplayPref;
-			return false;
-		}
-		// Handles any other error.
-		else {
-			var message = "There was a problem retrieving data from Weather Underground.\n\nError was: "+xml.evaluate("string(response/error/description)");
-			if (alertPassively) {
-				displayError(xml.evaluate("string(response/error/type)"),message,onClickReload);
-			}
-			else {
-				alert(message);
-			}
-		}
-	}
-	
-	// Checks if the result contains location options instead of weather data
-	if (xml.evaluate("string(response/results)")) {
-		showLocationOptions(xml);
-		return false;
-	}
-	
-	// Assumes the result is valid and correct.
-	//log("URL fetched successfully: "+fetch.location);
-	return xml;
 }
 
 // Fetches matching locations
@@ -242,6 +179,7 @@ function updateWeather() {
 	//log ("updateWeather ()");
 	
 	if (globalWeather == "") return;
+	suppressUpdates();
 	
 	try
 	{
@@ -473,6 +411,7 @@ function updateWeather() {
 	{
 	  log(error);
 	}
+	resumeUpdates();
 }
 
 

@@ -31,6 +31,7 @@ include("javascripts/weather.js");			// Loads weather management
 include("javascripts/design.js");				// Loads design management
 include("javascripts/interaction.js");	// Loads interaction management
 include("javascripts/helpers.js");			// Loads helper methods
+include("javascripts/versioncheck.js");	// Checks for new widget versions
 include("javascripts/setup.js");				// Prepares for setup
 
 //-------------------------------------------------

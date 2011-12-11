@@ -11,5 +11,6 @@
 	<platform minVersion="4.5"/>
 	<security> 
 		<http name="wunderground.com">wunderground.com</http>
+		<http name="widescape.net">widescape.net</http>
 	</security>
 </metadata>

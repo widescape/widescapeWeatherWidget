@@ -159,15 +159,10 @@ function applyPreferences (startUp, oldTrayOpens) {
 
 // Initiates the updating of the weather
 function update() {
-	log ("update()");
+	log("update()");
 	saveWindowPosition();
-	fetchDataAsync();
-}
-
-function onUpdateData() {
-	suppressUpdates();
-	updateWeather();
-	resumeUpdates();
+	fetchWeather();
+	checkVersion();
 }
 
 function updateTime(givenDate) {

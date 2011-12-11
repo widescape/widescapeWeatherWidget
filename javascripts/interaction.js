@@ -305,3 +305,45 @@ function fadeButtonsStart () {
 	fadeDiff		= fadeTo - fadeFrom;
 	fadeTimer.ticking	= true;
 }
+
+function setContextMenuItems() {
+	var items	= new Array();
+	
+	item		= new MenuItem();
+	item.title		= "Update weather now";
+	item.enabled	= true;
+	item.onSelect	= function() { weather.src='Resources/WeatherIcons/waiting.png';update(); };
+	items.push(item);
+	
+	item		= new MenuItem();
+	item.title		= "Display forecast tray";
+	item.enabled	= true;
+	item.checked	= preferences.trayState.value == "open";
+	item.onSelect	= startMoveTray;
+	items.push(item);
+	
+	item		= new MenuItem();
+	item.title		= "-";
+	item.enabled	= false;
+	items.push(item);
+	
+	item		= new MenuItem();
+	item.title		= "Weather data provided by wunderground.com...";
+	item.enabled	= true;
+	item.onSelect	= function() { openURL("http://www.wunderground.com/"); };
+	items.push(item);
+	
+	item		= new MenuItem();
+	item.title		= "Visit developer's website...";
+	item.enabled	= true;
+	item.onSelect	= function() { openURL("http://www.widescape.net/widgets/?ref=weather-2.1.19-menu"); };
+	items.push(item);
+	
+	item		= new MenuItem();
+	item.title		= "Check for widget updates...";
+	item.enabled	= true;
+	item.onSelect	= function() { checkVersion(true); };
+	items.push(item);
+	
+	mainWindow.contextMenuItems	= items;
+}

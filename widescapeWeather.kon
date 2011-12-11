@@ -40,39 +40,7 @@
 		<visible>1</visible>
 		<shadow>0</shadow>
 		<onContextMenu>
-			var items	= new Array();
-			
-			item		= new MenuItem();
-			item.title		= "Update weather now";
-			item.enabled	= true;
-			item.onSelect	= function() { weather.src='Resources/WeatherIcons/waiting.png';update(); }
-			items.push(item);
-			
-			item		= new MenuItem();
-			item.title		= "Display forecast tray";
-			item.enabled	= true;
-			item.checked	= preferences.trayState.value == "open";
-			item.onSelect	= function() { startMoveTray(); }
-			items.push(item);
-			
-			item		= new MenuItem();
-			item.title		= "-";
-			item.enabled	= false;
-			items.push(item);
-			
-			item		= new MenuItem();
-			item.title		= "Weather data provided by wunderground.com &#8230;";
-			item.enabled	= true;
-			item.onSelect	= function() { openURL("http://www.wunderground.com/"); }
-			items.push(item);
-			
-			item		= new MenuItem();
-			item.title		= "Visit developer's website &#8230;";
-			item.enabled	= true;
-			item.onSelect	= function() { openURL("http://www.widescape.net/widgets/?ref=wW2.2.0menu"); }
-			items.push(item);
-			
-			mainWindow.contextMenuItems	= items;
+			setContextMenuItems();
 		</onContextMenu>
 		
 		<image src="Resources/Empty.png">
@@ -291,17 +259,6 @@
 		<type>text</type>
 		<defaultValue></defaultValue>
 	</preference>
-	
-	<!--<preference name="weatherSource">
-		<title>[ Weather Source: ]</title>
-		<type>popup</type>
-		<option>Weather.com</option>
-		<optionValue>weather.com</optionValue>
-		<option>[ AccuWeather.com ]</option>
-		<optionValue>accuweather.com</optionValue>
-		<defaultValue>weather.com</defaultValue>
-		<description>Select your favorite source for weather data.</description>
-	</preference>-->
 	
 	<preference name="updateTime">
 	<hidden>true</hidden>
@@ -540,7 +497,7 @@
 	<preference name="cityValPref">
 		<hidden>true</hidden>
 		<type>text</type>
-		<defaultValue>GMXX0049</defaultValue>
+		<defaultValue>undefined</defaultValue>
 	</preference>
 
 	<preference name="cityName">
@@ -577,6 +534,12 @@
 		<hidden>true</hidden>
 		<type>text</type>
 		<defaultValue>0</defaultValue>
+	</preference>
+	
+	<preference name="lastVersionCheck">
+		<hidden>true</hidden>
+		<type>text</type>
+		<defaultValue>undefined</defaultValue>
 	</preference>
 
 	<about-box>
