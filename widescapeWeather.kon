@@ -6,26 +6,21 @@
 
 	Version 2.1.19
 	
-	This Widget grabs the latest current weather data from weather.com and builds
+	This Widget grabs the latest current weather data from wunderground.com and builds
 	it into a nice little iconic representation.
 	
-	For more information about the services weather.com offers, 
-	visit their website at: http://www.weather.com
+	For more information about the API wunderground.com offers, 
+	visit their website at: http://www.wunderground.com/weather/api/
 	
 	
-	Original code from: "The Weather" 1.6.6 by Arlo Rose
-	Modified code from: Robert Wünsch
-	Design: widescape / Robert Wünsch
-
-
+	Code, Design and Icons by widescape / Robert Wünsch
+  
 	(c) 2011 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
-	The Weather Widget: (c) 2003 - 2004 Arlo Rose & Perry Clarke
-	
-	
-	*** Please don't steal ***
+	Originally based on The Weather Widget: (c) 2003 - 2004 Arlo Rose & Perry Clarke
 	
 	For icon usage licences see /Resources/WeatherIcons/__Weather Icon Copyright and Permissions__.txt
 	or contact Robert Wünsch at info@widescape.net
+	
 -->
 	<settings>
 		<setting name="defaultTracking" value="rectangle"/>
@@ -545,21 +540,12 @@
 	<about-box>
 		<about-image>Resources/About.png</about-image>
 		<about-text>
-			<data>The Weather Channel®</data>
-			<url>http://www.weather.com/?par=xoap&site=wx_logo&cm_ven=bd_oap&cm_cat=1006341644&cm_pla=HomePage&cm_ite=Logo</url>
-			<font>Trebuchet MS</font>
-			<size>13</size>
-			<hOffset>101</hOffset>
-			<vOffset>178</vOffset>
-			<color>#224D73</color>
-		</about-text>
-		<about-text>
 			<data>www.widescape.net/widgets/</data>
 			<url>http://www.widescape.net/widgets/?ref=wW2.2.0about</url>
 			<font>Trebuchet MS</font>
 			<size>13</size>
 			<hOffset>101</hOffset>
-			<vOffset>233</vOffset>
+			<vOffset>238</vOffset>
 			<color>#224D73</color>
 		</about-text>
 	</about-box>

@@ -8,7 +8,6 @@
 
 	
 	(c) 2011 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
-	The Weather Widget: (c) 2003 - 2004 Pixoria
 */
 
 function scaleWidget (reposition, oldTrayOpens) {

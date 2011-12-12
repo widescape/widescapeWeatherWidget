@@ -6,7 +6,7 @@
  * Weather Management
  * 
  * 
- * The apiKey MUST NOT be used in 3rd party widgets.
+ * The API key MUST NOT be used in 3rd party widgets.
  * If you make your own weather widget, please visit Weather Underground at:
  * http://www.wunderground.com/weather/api/
  * 
@@ -14,7 +14,7 @@
  * and make sure you abide by their license agreement.
  * 
  * (c) 2011 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
- * The Weather Widget: (c) 2003 - 2004 Pixoria
+ * Originally based on The Weather Widget: (c) 2003 - 2004 Pixoria
  */
 var weatherURL = "http://api.wunderground.com/api/";
 var apiKey = "eb6eabce8e630d4e";
