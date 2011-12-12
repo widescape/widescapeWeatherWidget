@@ -328,7 +328,7 @@ function setContextMenuItems() {
 	items.push(item);
 	
 	item		= new MenuItem();
-	item.title		= "Weather data provided by wunderground.com...";
+	item.title		= "Weather data by wunderground.com...";
 	item.enabled	= true;
 	item.onSelect	= function() { openURL("http://www.wunderground.com/"); };
 	items.push(item);
