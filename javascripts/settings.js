@@ -38,6 +38,7 @@ var unitMeasure;
 var MILES_TO_KM = 1.6093440006;
 
 var urlData			= "";
+var weatherLink = null;
 
 var widgetScale					= 1 + Math.round (preferences.widgetSize.value) / 12;
 var trayState						= preferences.trayState.value;

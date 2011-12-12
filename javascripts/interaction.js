@@ -312,7 +312,7 @@ function setContextMenuItems() {
 	item		= new MenuItem();
 	item.title		= "Update weather now";
 	item.enabled	= true;
-	item.onSelect	= function() { weather.src='Resources/WeatherIcons/waiting.png';update(); };
+	item.onSelect	= onClickReload;
 	items.push(item);
 	
 	item		= new MenuItem();
@@ -346,4 +346,18 @@ function setContextMenuItems() {
 	items.push(item);
 	
 	mainWindow.contextMenuItems	= items;
+}
+
+function onClickWeather() {
+	if (weatherLink == null || weatherLink == '') return false;
+	openURL(weatherLink);
+}
+
+function onClickReload() {
+	log("onClickReload()");
+	weather.src		= "Resources/WeatherIcons/waiting.png";
+	weather.onClick = null;
+	updateNow();
+	sleep(150);
+	update();
 }

@@ -87,14 +87,6 @@ function displayConnectionError(error,url,message) {
 	displayError(error,message,clickAction);
 }
 
-function onClickReload() {
-	log("onClickReload()");
-	weather.src		= "Resources/WeatherIcons/waiting.png";
-	updateNow();
-	sleep(150);
-	update();
-}
-
 function parseAndCheckFetchedData(fetch,alertPassively) {
 	log("parseAndCheckFetchedData()");
 	

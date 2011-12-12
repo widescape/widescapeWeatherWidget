@@ -245,6 +245,9 @@ function updateWeather() {
 		var fetchedSunriseHour = xml.evaluate("string(response/moon_phase/sunrise/hour)");
 		var fetchedSunriseMinute = xml.evaluate("string(response/moon_phase/sunrise/minute)");
 		
+		var fetchedForecastUrl = xml.evaluate("string(response/current_observation/forecast_url)");
+		weatherLink		= fetchedForecastUrl == '' ? null : fetchedForecastUrl;
+		
 		if (fetchedTemp == null) fetchedTemp = "";
 		
 		var localTime = new Date();
@@ -278,6 +281,7 @@ function updateWeather() {
 		
 		newConditionLogText = '\nMain: ' + fetchedCode + ': ' + fetchedCondPhrase + ' (' + iconName + '.png)';
 		weather.src		= "Resources/WeatherIcons/" + iconName + ".png";
+		weather.onClick = onClickWeather;
 		
 		if (fetchedTemp == "N/A") fetchedTemp = "?";
 		theTemp.data = fetchedTemp + "°";
@@ -304,11 +308,11 @@ function updateWeather() {
 			theCondition = fetchedCondPhrase;
 		}
 	
-		if ( fetchedHmid == "N/A" ) {
-			theHumidity = "Humidity: Unknown";
-		} else {
-			theHumidity = "Humidity: " + fetchedHmid;
-		}
+		//if ( fetchedHmid == "N/A" ) {
+		//	theHumidity = "Humidity: Unknown";
+		//} else {
+		//	theHumidity = "Humidity: " + fetchedHmid;
+		//}
 	
 		if (fetchedVis == "Unlimited") {
 			visData = "Unlimited Visibility";
@@ -318,17 +322,17 @@ function updateWeather() {
 			visData = "Visibility: " + fetchedVis + " " + unitDistance;
 		}
 	
-		if ( fetchedPres == "N/A" ) {
-			thePressure = "Pressure: Unknown";
-		} else {
-			thePressure = "Pressure: " + fetchedPres + " " + unitPres;
-		}
+		//if ( fetchedPres == "N/A" ) {
+		//	thePressure = "Pressure: Unknown";
+		//} else {
+		//	thePressure = "Pressure: " + fetchedPres + " " + unitPres;
+		//}
 		
-		if ( fetchedDewPoint == "N/A" ) {
-			theDewPoint = "Dewpoint: Unknown";
-		} else {
-			theDewPoint = "Dewpoint: " + fetchedDewPoint + "°" + unitTemp;
-		}
+		//if ( fetchedDewPoint == "N/A" ) {
+		//	theDewPoint = "Dewpoint: Unknown";
+		//} else {
+		//	theDewPoint = "Dewpoint: " + fetchedDewPoint + "°" + unitTemp;
+		//}
 		
 		if (fetchedWindDir == "CALM") {
 			windData = "Calm Winds";
@@ -390,10 +394,10 @@ function updateWeather() {
 		var toolTipData =	theCondition + "\n" +
 						theFeelsLike +
 						"\n" +
-						theHumidity + "\n" +
+						//theHumidity + "\n" +
 						visData + "\n" +
-						thePressure + "\n" +
-						theDewPoint + "\n" +
+						//thePressure + "\n" +
+						//theDewPoint + "\n" +
 						windData + "\n" +
 						"\n" +
 						"Updated at " + formattedDateAndTime(observationTime, false);

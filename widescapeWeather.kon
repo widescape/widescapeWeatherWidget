@@ -105,7 +105,16 @@
 				<vOffset>0</vOffset>
 				<colorize>#FFFFFF</colorize>
 			</image>
-			
+		
+			<image src="Resources/Empty.png">
+				<name>weather</name>
+				<hOffset>0</hOffset>
+				<vOffset>0</vOffset>
+				<width>45</width>
+				<height>33</height>
+				<colorize>#FFFFFF</colorize>
+			</image>
+
 			<image src="Resources/trayButton-closed.png">
 				<name>trayButton</name>
 				<hOffset>35</hOffset>
@@ -116,15 +125,6 @@
 				<opacity>0</opacity>
 				<tracking>rectangle</tracking>
 				<onMouseUp> startMoveTray (); </onMouseUp>
-			</image>
-		
-			<image src="Resources/Empty.png">
-				<name>weather</name>
-				<hOffset>0</hOffset>
-				<vOffset>0</vOffset>
-				<width>45</width>
-				<height>33</height>
-				<colorize>#FFFFFF</colorize>
 			</image>
 		
 			<text>
