@@ -540,6 +540,15 @@
 	<about-box>
 		<about-image>Resources/About.png</about-image>
 		<about-text>
+			<data>                    </data>
+			<url>http://www.wunderground.com</url>
+			<font>Trebuchet MS</font>
+			<size>35</size>
+			<hOffset>85</hOffset>
+			<vOffset>185</vOffset>
+			<color>#224D73</color>
+		</about-text>
+		<about-text>
 			<data>www.widescape.net/widgets/</data>
 			<url>http://www.widescape.net/widgets/?ref=wW2.2.0about</url>
 			<font>Trebuchet MS</font>
