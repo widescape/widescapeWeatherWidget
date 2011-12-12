@@ -26,7 +26,7 @@ var fadeInterval		= 0.02;	// Interval for the button fading
 var fadeCounter		= 0;		// Counter for the button fading
 var fadeDuration		= 10;		// Duration for the button fading
 
-var scaleSwitch		= 1.51;
+var scaleSwitch		= 1.51; // Switch layout at this scale
 var scaleModName		= "Small";
 var sliding			= "horizontal";
 
@@ -37,8 +37,6 @@ var unitPres;
 var unitMeasure;
 var MILES_TO_KM = 1.6093440006;
 
-var urlData			= "";
-var weatherLink = null;
 
 var widgetScale					= 1 + Math.round (preferences.widgetSize.value) / 12;
 var trayState						= preferences.trayState.value;
@@ -53,10 +51,7 @@ var forecastText		= new Array();
 var forecastImage		= new Array();
 
 var globalWeather		= "";
-var globalForecasts	= "";
-var globalLinks		= "";
-
-var updateCount		= 0;
+var weatherLink = null;
 
 var metrics			= new Object();
 
