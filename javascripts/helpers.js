@@ -123,6 +123,7 @@ function parseAndCheckFetchedData(fetch,alertPassively) {
 			}
 			else {
 				alert("We were unable to find the location \""+oldUserDisplayPref+"\".\n\nIf your location can't be found, try a entering a larger neighboring city.");
+				showWidgetPreferences();
 			}
 			preferences.userDisplayPref.value = oldUserDisplayPref;
 			return false;
