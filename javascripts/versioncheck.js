@@ -1,7 +1,7 @@
 /*
  * widescapeWeather widget
  * 
- * 2.2.0rc
+ * 2.2
  * 
  * Version Check
  * 
@@ -64,7 +64,9 @@ function isWidgetUpdateAvailable(widget_version,newest_version) {
 	var newest_version_arr = newest_version.split(/\./);
 	
 	for (var i=0; i<Math.max(widget_version_arr.length,newest_version_arr.length); i++) {
-		if (Number(widget_version_arr[i]) < Number(newest_version_arr[i])) return true;
+		var widget_sub_version = widget_version_arr[i] ? widget_version_arr[i] : 0;
+		var newest_sub_version = newest_version_arr[i] ? newest_version_arr[i] : 0;
+		if (widget_sub_version < newest_sub_version) return true;
 	}
 	return false;
 }

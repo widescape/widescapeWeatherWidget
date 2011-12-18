@@ -2,7 +2,7 @@
 	
 	widescapeWeather Widget
 
-	Version 2.2.0rc
+	Version 2.2
 	
 	This Widget grabs the latest current weather data from wunderground.com and builds
 	it into a nice little iconic representation.

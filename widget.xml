@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <metadata>
 	<name>widescapeWeather</name>
-	<version>2.2.0rc</version>
+	<version>2.2</version>
 	<identifier>78605a40-3e4c-11dd-ae16-0800200c9a66</identifier>
 	<image usage="dock" src="Resources/DockIcon.png"/>
 	<image usage="security" src="Resources/Icon150.png"/>

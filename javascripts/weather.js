@@ -1,7 +1,7 @@
 /*
  * widescapeWeather Widget
  * 
- * Version 2.2.0rc
+ * Version 2.2
  * 
  * Weather Management
  * 
