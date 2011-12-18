@@ -4,7 +4,7 @@
 	
 	widescapeWeather Widget
 
-	Version 2.1.19
+	Version 2.2.0rc
 	
 	This Widget grabs the latest current weather data from wunderground.com and builds
 	it into a nice little iconic representation.
@@ -24,7 +24,7 @@
 -->
 	<settings>
 		<setting name="defaultTracking" value="rectangle"/>
-		<setting name="debug" value="on"/>
+		<setting name="debug" value="off"/>
 	</settings>
 	
 	<window title="widescapeWeather">
@@ -550,7 +550,7 @@
 		</about-text>
 		<about-text>
 			<data>www.widescape.net/widgets/</data>
-			<url>http://www.widescape.net/widgets/?ref=weather-2.1.19-about</url>
+			<url>http://www.widescape.net/widgets/?ref=weather-2.2.0rc-about</url>
 			<font>Trebuchet MS</font>
 			<size>13</size>
 			<hOffset>101</hOffset>

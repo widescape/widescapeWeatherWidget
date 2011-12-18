@@ -2,7 +2,7 @@
 	
 	widescapeWeather Widget
 
-	Version 2.1.19
+	Version 2.2.0rc
 	
 	Helpers
 
