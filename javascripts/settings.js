@@ -16,6 +16,9 @@ var widgetName		= "widescapeWeather";
 var widgetFocused		= true;	// Whether or not the widget has the user's focus - true when starting
 var widgetStartUp 	= true;	// True when the widget starts
 
+var lastVersionCheck;	
+var versionCheckPeriod = 3 * 24 * 60 * 60 * 1000; // 3 days
+
 var movementInterval	= 0.02;	// Interval for the movement timer
 var movementCounter	= 0;		// Counter for the tray movement
 var movementDurationFast= 20;		// Duration for the fast tray movement

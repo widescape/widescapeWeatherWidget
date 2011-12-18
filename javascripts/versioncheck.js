@@ -8,9 +8,6 @@
  * (c) 2011 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
  */
 
-var lastVersionCheck;	
-var threeDays = 3 * 24 * 60 * 60 * 1000;
-
 // Checks for an update of this Widget
 function checkVersion(checkNow) {
 	//sleep (300);
@@ -21,7 +18,7 @@ function checkVersion(checkNow) {
 	}
 	
 	// Skips version check if it was last checked less than 3 days ago
-	if (checkNow != true && !isNaN(lastVersionCheck) && new Date().getTime() < lastVersionCheck + threeDays) return false;
+	if (checkNow != true && !isNaN(lastVersionCheck) && new Date().getTime() < lastVersionCheck + versionCheckPeriod) return false;
 	
 	var _url	= "http://www.widescape.net/widgets/checkversion/widescapeWeather.xml?version=" + widget.version;
 	//log(_url);
@@ -39,7 +36,7 @@ function checkVersion(checkNow) {
 
 function onVersionFetchedActively(fetch) {
 	if (!onVersionFetchedPassively(fetch)) {
-		alert("Your widget is up to date.")
+		alert("Your widget is up to date.", "Yeah!");
 	}
 }
 

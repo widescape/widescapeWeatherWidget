@@ -213,7 +213,7 @@
 	</window><!-- mainWindow -->
 				
 	<action trigger="onLoad" file="javascripts/widescapeWeather.js"/>
-	<timer name="updateTimer" interval="14400" ticking="false"> update(); </timer>
+	<timer name="updateTimer" interval="7200" ticking="false"> update(); </timer>
 	<timer name="timeTimer" interval="1" ticking="false"> updateTime(); saveWindowPosition(); </timer>
 
 	<action trigger="onWakeFromSleep">
@@ -550,7 +550,7 @@
 		</about-text>
 		<about-text>
 			<data>www.widescape.net/widgets/</data>
-			<url>http://www.widescape.net/widgets/?ref=wW2.2.0about</url>
+			<url>http://www.widescape.net/widgets/?ref=weather-2.1.19-about</url>
 			<font>Trebuchet MS</font>
 			<size>13</size>
 			<hOffset>101</hOffset>
