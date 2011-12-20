@@ -101,6 +101,11 @@ function onLocationDataFetched(fetch) {
 	if (!result) return false;
 
 	// Assumes the result contains location data.
+	var city = result.evaluate("string(response/location/city)");
+	var l = result.evaluate("string(response/location/l)");
+	preferences.cityValPref.value = l.replace('/q/zmw:','');
+	preferences.cityName.value = city;
+	
 	savePreferences();
 	update();
 }
