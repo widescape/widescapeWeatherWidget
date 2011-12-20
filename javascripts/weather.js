@@ -26,8 +26,6 @@ function fetchWeather() {
 	var cityVal = preferences.cityValPref.value;
 	var userCity = cityVal ? "zmw:"+cityVal : userLocation;
 	
-	log('isLocationValid('+userLocation+') => '+isLocationValid(userLocation));
-	
 	if (!isLocationValid(userLocation)) {
 		displayError( "Location missing", "You haven't entered a location yet. Click here to enter a location.", showWidgetPreferences);
 		return false;

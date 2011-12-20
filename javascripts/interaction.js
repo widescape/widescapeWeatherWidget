@@ -237,7 +237,7 @@ function willChangePreferences () {
 
 // Called when preferences were changed
 function preferencesChanged () {
-	//log ("onPreferencesChanged ()");
+	log ("onPreferencesChanged ()");
 	
 	// Apply changed preferences
 	applyPreferences (false, oldTrayOpens);
@@ -248,6 +248,10 @@ function preferencesChanged () {
 	if (!isLocationValid(preferences.userLocation.value) || preferences.userLocation.value != oldUserLocation) {
 		chooseLocation(isLocationValid(preferences.userLocation.value));
 	}
+	else if (preferences.firstUse.value == 'true') {
+		preferences.firstUse.value = 'false';
+		update();
+	}
 	else {
 		// Update the scale and design
 		updateWeather();
@@ -255,15 +259,11 @@ function preferencesChanged () {
 	
 	// Remember current setting of trayOpens
 	oldTrayOpens	= preferences.trayOpens.value;
-	
-	if (preferences.firstUse.value == 'true') {
-		preferences.firstUse.value = 'false';
-	}
 }
 
 // Called when preferences were cancelled
 function preferencesCancelled () {
-	//log ("preferencesCancelled ()");
+	log ("preferencesCancelled ()");
 	updateNow();
 	
 	// Choose the city to update the weather accordingly
