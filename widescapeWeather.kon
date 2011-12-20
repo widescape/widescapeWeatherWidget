@@ -24,7 +24,7 @@
 -->
 	<settings>
 		<setting name="defaultTracking" value="rectangle"/>
-		<setting name="debug" value="on"/>
+		<setting name="debug" value="off"/>
 	</settings>
 	
 	<window title="widescapeWeather">

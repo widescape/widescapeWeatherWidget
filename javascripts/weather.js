@@ -270,7 +270,7 @@ function updateWeather() {
 		if (fetchedTemp == null) fetchedTemp = "";
 		
 		var localTime = new Date();
-		var localTimeTimezoneOffset = localTime.getTimezoneOffset();
+		var localTimeTimezoneOffset = -localTime.getTimezoneOffset();
 		
 		observationTime = new Date(fetchedObservationTime*1000);
 		
@@ -287,12 +287,18 @@ function updateWeather() {
 		sunriseDatetime.setMinutes(fetchedSunriseMinute);
 		
 		// Gets the time zone of the selected location
-		var fetchedLocationTimezoneHours = Number(fetchedLocationTimeRfc822.substr(-4,2));
+		var fetchedLocationTimezoneHours = Number(fetchedLocationTimeRfc822.substr(-5,3));
 		var fetchedLocationTimezoneMinutes = Number(fetchedLocationTimeRfc822.substr(-2,2));
-		fetchedLocationTimezoneOffset = -fetchedLocationTimezoneHours * 60 - fetchedLocationTimezoneMinutes;
+		fetchedLocationTimezoneOffset = fetchedLocationTimezoneHours * 60 + fetchedLocationTimezoneMinutes;
+		
+		//log("fetchedLocationTimeRfc822: "+fetchedLocationTimeRfc822);
+		//log("localTimeTimezoneOffset: "+localTimeTimezoneOffset);
+		//log("fetchedLocationTimezoneOffset: "+fetchedLocationTimezoneOffset);
 		
 		// Calculates the offset between the local time and the time at the location
-		localLocationTimeOffset = localTimeTimezoneOffset - fetchedLocationTimezoneOffset;
+		localLocationTimeOffset = fetchedLocationTimezoneOffset - localTimeTimezoneOffset;
+		
+		//log("localLocationTimeOffset: "+localLocationTimeOffset);
 		
 		var dayTime = (currentDatetime.getTime() > sunriseDatetime.getTime() && currentDatetime.getTime() < sunsetDatetime.getTime()) ? 'day' : 'night';
 		
