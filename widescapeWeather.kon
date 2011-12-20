@@ -229,7 +229,7 @@
 	<action trigger="onPreferencesChanged"> preferencesChanged(); </action>
 	<action trigger="onUnload"> saveWindowPosition(); </action>
 
-	<preference name="userDisplayPref">
+	<preference name="userLocation">
 		<title>Location:</title>
 		<type>text</type>
 		<defaultValue>Hamburg, Germany</defaultValue>
@@ -492,7 +492,7 @@
 	<preference name="cityValPref">
 		<hidden>true</hidden>
 		<type>text</type>
-		<defaultValue>undefined</defaultValue>
+		<defaultValue></defaultValue>
 	</preference>
 
 	<preference name="cityName">
@@ -535,6 +535,12 @@
 		<hidden>true</hidden>
 		<type>text</type>
 		<defaultValue>undefined</defaultValue>
+	</preference>
+	
+	<preference name="firstUse">
+		<hidden>true</hidden>
+		<type>text</type>
+		<defaultValue>true</defaultValue>
 	</preference>
 
 	<about-box>

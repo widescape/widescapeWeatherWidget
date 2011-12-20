@@ -118,14 +118,13 @@ function parseAndCheckFetchedData(fetch,alertPassively) {
 		// Checks if no location was found.
 		if (xml.evaluate("string(response/error/type)") == "querynotfound") {
 			if (alertPassively) {
-				var message = "We were unable to find the location \""+oldUserDisplayPref+"\".\n\nClick here to change the location.";
+				var message = "We were unable to find the location \""+preferences.userLocation.value+"\".\n\nClick here to change the location.";
 				displayError("querynotfound",message,showWidgetPreferences);
 			}
 			else {
-				alert("We were unable to find the location \""+oldUserDisplayPref+"\".\n\nIf your location can't be found, try a entering a larger neighboring city.");
+				alert("We were unable to find the location \""+preferences.userLocation.value+"\".\n\nIf your location can't be found, try a entering a larger neighboring city.");
 				showWidgetPreferences();
 			}
-			preferences.userDisplayPref.value = oldUserDisplayPref;
 			return false;
 		}
 		// Handles any other error.
@@ -149,4 +148,8 @@ function parseAndCheckFetchedData(fetch,alertPassively) {
 	// Assumes the result is valid and correct.
 	//log("URL fetched successfully: "+fetch.location);
 	return xml;
+}
+
+function isLocationValid(location) {
+	return !(location == undefined || location == '');
 }

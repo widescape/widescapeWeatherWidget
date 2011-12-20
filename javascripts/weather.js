@@ -22,9 +22,16 @@ var apiKey = "eb6eabce8e630d4e";
 //	Asynchronically fetches the weather data from Weather Underground.
 function fetchWeather() {
 	log("fetchWeather()");
-	var userCity = preferences.userDisplayPref.value;
+	var userLocation = preferences.userLocation.value;
 	var cityVal = preferences.cityValPref.value;
-	if (cityVal) userCity = "zmw:"+cityVal;
+	var userCity = cityVal ? "zmw:"+cityVal : userLocation;
+	
+	log('isLocationValid('+userLocation+') => '+isLocationValid(userLocation));
+	
+	if (!isLocationValid(userLocation)) {
+		displayError( "Location missing", "You haven't entered a location yet. Click here to enter a location.", showWidgetPreferences);
+		return false;
+	}
 	
 	var _url = weatherURL + apiKey + "/conditions/forecast/astronomy/q/" + escape(userCity) + ".xml";
 	
@@ -44,8 +51,8 @@ function fetchWeather() {
 function onWeatherDataFetched(fetch) {
 	log("onWeatherDataFetched()");
 	
-	// Checks location data (false = alert passively)
-	var result = parseAndCheckFetchedData(fetch,false);
+	// Checks location data (true = alert passively)
+	var result = parseAndCheckFetchedData(fetch,true);
 	if (!result) return false;
 	
 	// Assumes the result contains weather data.
@@ -55,33 +62,28 @@ function onWeatherDataFetched(fetch) {
 	updateWeather();
 }
 
-// Receives the fetched weather data and looks for errors.
-function onLocationDataFetched(fetch) {
-	log("onLocationDataFetched()");
-	
-	// Checks location data (false = actively)
-	var result = parseAndCheckFetchedData(fetch,true);
-	if (!result) return false;
-	
-	// Assumes the result contains location data.
-	savePreferences();
-	update();
-}
-
 // Fetches matching locations
-function chooseLocation() {
-	log("chooseLocation()");
+function chooseLocation(alertActively) {
+	log("chooseLocation(alertActively => "+alertActively+")");
 	
 	var idArray = new Array();
 	var cityArray = new Array();
 	var locationCount = 0;
-	var newCityName = preferences.userDisplayPref.value;
+	var newCityName = preferences.userLocation.value;
+	
+	if (!isLocationValid(newCityName) && alertActively) {
+		displayError( "Location missing", "You haven't entered a location yet. Click here to enter a location.", showWidgetPreferences);
+		return false;
+	}
 	
 	// Displays the entered city name right now
 	preferences.cityName.value = newCityName;
 	scaleWidget();
 	
 	var _url = weatherURL + apiKey + "/geolookup/q/" + escape(newCityName) + ".xml";
+	
+	log("Trying to fetch: "+_url);
+	
 	var urlFetch = new URL();
 	urlFetch.location = _url;
 	try {
@@ -90,6 +92,19 @@ function chooseLocation() {
 	catch (error) {
 		displayConnectionError(error,_url);
 	}
+}
+
+// Receives the fetched location data and looks for errors.
+function onLocationDataFetched(fetch) {
+	log("onLocationDataFetched()");
+
+	// Checks location data (false = actively)
+	var result = parseAndCheckFetchedData(fetch,false);
+	if (!result) return false;
+
+	// Assumes the result contains location data.
+	savePreferences();
+	update();
 }
 
 // Offers the fetched locations to the user.
@@ -148,11 +163,11 @@ function showLocationOptions(xml) {
 		
 		// Checks if action was canceled
 		if (formResults == null) {
-			preferences.userDisplayPref.value = oldUserDisplayPref;
+			preferences.userLocation.value = oldUserLocation;
 			preferences.cityName.value = oldCityName;
 		}
 		else {
-			preferences.userDisplayPref.value = formResults[0];
+			preferences.userLocation.value = formResults[0];
 			preferences.cityValPref.value = locationZmws[formResults[0]];
 			preferences.cityName.value = locationCities[formResults[0]];
 		}
@@ -160,14 +175,14 @@ function showLocationOptions(xml) {
 	// Assumes that only 1 location was returned
 	// Directly assigns the fetched location
 	else {
-		preferences.userDisplayPref.value = locationOptions[0];
+		preferences.userLocation.value = locationOptions[0];
 		preferences.cityValPref.value = locationZmws[locationOptions[0]];
 		preferences.cityName.value = locationCities[locationOptions[0]];
 	}
 	
 	scaleWidget();
 	
-	//log("preferences.userDisplayPref: "+preferences.userDisplayPref.value);
+	//log("preferences.userLocation: "+preferences.userLocation.value);
 	//log("preferences.cityValPref: "+preferences.cityValPref.value);
 	
 	savePreferences();
@@ -247,6 +262,7 @@ function updateWeather() {
 		
 		var fetchedForecastUrl = xml.evaluate("string(response/current_observation/forecast_url)");
 		weatherLink		= fetchedForecastUrl == '' ? null : fetchedForecastUrl;
+		forecastLink	= weatherLink + '#conds_details_fct';
 		
 		if (fetchedTemp == null) fetchedTemp = "";
 		

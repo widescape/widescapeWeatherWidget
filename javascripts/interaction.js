@@ -226,9 +226,11 @@ function displayForecast (switchTo) {
 function willChangePreferences () {
 	//log ("onWillChangePreferences ()");
 	
-	selectedTheme				= preferences.theme.value;
-	oldUserDisplayPref	= preferences.userDisplayPref.value;
-	oldCityName					= preferences.cityName.value;
+	selectedTheme		= preferences.theme.value;
+	oldUserLocation	= preferences.userLocation.value;
+	oldCityName			= preferences.cityName.value;
+	
+	widget.onPreferencesCancelled = preferencesCancelled;
 	
 	saveWindowPosition();
 }
@@ -243,8 +245,8 @@ function preferencesChanged () {
 	updateNow();
 	
 	// Choose the city to update the weather accordingly
-	if (preferences.userDisplayPref.value != oldUserDisplayPref) {
-		chooseLocation();
+	if (!isLocationValid(preferences.userLocation.value) || preferences.userLocation.value != oldUserLocation) {
+		chooseLocation(isLocationValid(preferences.userLocation.value));
 	}
 	else {
 		// Update the scale and design
@@ -254,6 +256,26 @@ function preferencesChanged () {
 	// Remember current setting of trayOpens
 	oldTrayOpens	= preferences.trayOpens.value;
 	
+	if (preferences.firstUse.value == 'true') {
+		preferences.firstUse.value = 'false';
+	}
+}
+
+// Called when preferences were cancelled
+function preferencesCancelled () {
+	//log ("preferencesCancelled ()");
+	updateNow();
+	
+	// Choose the city to update the weather accordingly
+	if (!isLocationValid(preferences.userLocation.value)) {
+		chooseLocation(true);
+	}
+	else {
+		if (preferences.firstUse.value == 'true') {
+			preferences.firstUse.value = 'false';
+			update();
+		}
+	}
 }
 
 // Called when the widget gains the user's focus
@@ -350,6 +372,11 @@ function setContextMenuItems() {
 function onClickWeather() {
 	if (weatherLink == null || weatherLink == '') return false;
 	openURL(weatherLink);
+}
+
+function onClickForecast() {
+	if (forecastLink == null || forecastLink == '') return false;
+	openURL(forecastLink);
 }
 
 function onClickReload() {

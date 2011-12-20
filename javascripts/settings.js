@@ -45,7 +45,7 @@ var widgetScale					= 1 + Math.round (preferences.widgetSize.value) / 12;
 var trayState						= preferences.trayState.value;
 var showToolTips				= true;
 var oldTrayOpens				= preferences.trayOpens.value;
-var oldUserDisplayPref	= preferences.userDisplayPref.value;
+var oldUserLocation			= preferences.userLocation.value;
 var oldCityName					= preferences.cityName.value;
 var basePositionX				= Number(preferences.windowX.value == 'undefined' ? mainWindow.hOffset : preferences.windowX.value) + Number(preferences.baseAddition.value);
 var basePositionY				= Number(preferences.windowY.value == 'undefined' ? mainWindow.vOffset : preferences.windowY.value);
@@ -55,6 +55,7 @@ var forecastImage		= new Array();
 
 var globalWeather		= "";
 var weatherLink = null;
+var forecastLink = null;
 
 var metrics			= new Object();
 
