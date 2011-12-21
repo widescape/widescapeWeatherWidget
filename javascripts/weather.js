@@ -459,14 +459,20 @@ function updateForecasts(currentDayTime) {
 	
 	var forecastXML = xml.evaluate("response/forecast/simpleforecast/forecastdays/forecastday");
 	
+	var modTemp = 'fahrenheit';
+	
+	if (preferences.unitsPref.value == 1) {
+		modTemp = 'celsius';
+	}
+	
 	for (i = 0; i < 4; i++) {
 		
 		var dayXML = forecastXML.item(i);
 		var day;
 		var dayDate = dayXML.evaluate("string(date/epoch)");
 		var dayText = dayXML.evaluate("string(conditions)");
-		var hiTemp = dayXML.evaluate("string(high/celsius)");
-		var lowTemp = dayXML.evaluate("string(low/celsius)");
+		var hiTemp = dayXML.evaluate("string(high/"+modTemp+")");
+		var lowTemp = dayXML.evaluate("string(low/"+modTemp+")");
 		var probPrec = Math.round(dayXML.evaluate("string(pop)")); // Probability of Precipitation
 		var weatherCode = dayXML.evaluate("string(icon)");
 		
