@@ -2,7 +2,7 @@
 	
 	widescapeWeather Widget
 
-	Version 2.2
+	Version 2.2.1
 	
 	Design
 
