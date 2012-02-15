@@ -468,6 +468,13 @@ function updateForecasts(currentDayTime) {
 	for (i = 0; i < 4; i++) {
 		
 		var dayXML = forecastXML.item(i);
+		
+		if (!dayXML) {
+			forecastImage[i][0].src = "Resources/Empty.png";
+			log("Error: Day "+i+" missing in forecast XML");
+			continue;
+		}
+		
 		var day;
 		var dayDate = dayXML.evaluate("string(date/epoch)");
 		var dayText = dayXML.evaluate("string(conditions)");
