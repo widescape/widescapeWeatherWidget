@@ -250,6 +250,7 @@ function preferencesChanged () {
 	}
 	else if (preferences.firstUse.value == 'true') {
 		preferences.firstUse.value = 'false';
+		log("Call update() after preferences.firstUse within preferencesChanged");
 		update();
 	}
 	else {
@@ -273,6 +274,7 @@ function preferencesCancelled () {
 	else {
 		if (preferences.firstUse.value == 'true') {
 			preferences.firstUse.value = 'false';
+			log("Call update() after preferences.firstUse within preferencesCancelled");
 			update();
 		}
 	}
@@ -385,5 +387,6 @@ function onClickReload() {
 	weather.onClick = null;
 	updateNow();
 	sleep(150);
+	log("Call update() within onClickReload");
 	update();
 }

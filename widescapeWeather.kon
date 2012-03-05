@@ -24,7 +24,7 @@
 -->
 	<settings>
 		<setting name="defaultTracking" value="rectangle"/>
-		<setting name="debug" value="off"/>
+		<setting name="debug" value="on"/>
 	</settings>
 	
 	<window title="widescapeWeather">
@@ -213,13 +213,17 @@
 	</window><!-- mainWindow -->
 				
 	<action trigger="onLoad" file="javascripts/widescapeWeather.js"/>
-	<timer name="updateTimer" interval="7200" ticking="false"> update(); </timer>
+	<timer name="updateTimer" interval="7200" ticking="false"> 
+	  log("Call update() within updateTimer");
+	  update(); 
+	</timer>
 	<timer name="timeTimer" interval="1" ticking="false"> updateTime(); saveWindowPosition(); </timer>
 
 	<action trigger="onWakeFromSleep">
 		// Putting in a pause because some desktops
 		// take a while to reconnect after waking up.
 		sleep(7000);
+		log("Call update() within onWakeFromSleep");
 		update();
 	</action>
 	

@@ -95,6 +95,7 @@ function init () {
 	else {
 		// Fetch the data
 		// And update the weather
+		log("Call update() within init");
 		update();
 	}
 }

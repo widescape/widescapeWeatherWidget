@@ -107,6 +107,7 @@ function onLocationDataFetched(fetch) {
 	preferences.cityName.value = city;
 	
 	savePreferences();
+	log("Call update() within onLocationDataFetched");
 	update();
 }
 
@@ -189,6 +190,7 @@ function showLocationOptions(xml) {
 	//log("preferences.cityValPref: "+preferences.cityValPref.value);
 	
 	savePreferences();
+	log("Call update() after savePreferences within showLocationOptions");
 	update();
 }
 
