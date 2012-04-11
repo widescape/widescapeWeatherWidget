@@ -489,6 +489,9 @@ function updateForecasts(currentDayTime) {
 		
 		dayText = dayText.replace(/ \/ /g,"/");
 		
+		// BUG: If time zone is set to IST (Indian Standard Time) AND location is "Hoogeveen" 
+		// AND preference "Date and Time of [Selected Location]" is set, the forecast day labels 
+		// are one day too early (e.g. Thursday instead of Wednesday)
 		if (i == 0) {
 			dayTime = currentDayTime;
 			day = dayTime == 'day' ? 'Today' : 'Tonight';
