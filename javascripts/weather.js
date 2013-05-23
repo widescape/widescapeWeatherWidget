@@ -448,9 +448,7 @@ function updateForecasts(currentDayTime) {
 		var dayXML = forecastXML.item(i);
 		
 		if (!dayXML) {
-		  // TODO: Change to text - DONE
 			forecastText[i][1].data = "";
-			//forecastImage[i][0].src = "Resources/Empty.png";
 			log("Error: Day "+i+" missing in forecast XML");
 			continue;
 		}
@@ -480,9 +478,7 @@ function updateForecasts(currentDayTime) {
 		displayTinyIcons(weatherCode, dayText, dayTime, i);
 
 		forecastText[i][0].data	= hiTemp + "°";
-		// TODO: Change to text - DONE
 		forecastText[i][1].data	= day;
-		//forecastImage[i][0].src	= "Resources/Day-" + day + ".png";
 		
 		var tooltipText = "";
 		var tooltipContainsPop = false;
