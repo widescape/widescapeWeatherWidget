@@ -21,10 +21,10 @@ function formattedDate(date) {
 	switch(preferences.dateFormat.value) {
 		
 		case "D, M d":
-			return weekDays[date.getDay()]+", "+months[date.getMonth()]+" "+date.getDate();
+			return widget.getLocalizedString("date.abbr_day_names."+date.getDay())+", "+widget.getLocalizedString("date.abbr_month_names."+date.getMonth())+" "+date.getDate();
 		
 		case "D, d. M":
-			return weekDays[date.getDay()]+", "+date.getDate()+". "+months[date.getMonth()];
+			return widget.getLocalizedString("date.abbr_day_names."+date.getDay())+", "+date.getDate()+". "+widget.getLocalizedString("date.abbr_month_names."+date.getMonth());
 		
 		case "yyyy-mm-dd":
 			return date.getFullYear()+"-"+twoDigits(date.getMonth()+1)+"-"+twoDigits(date.getDate());

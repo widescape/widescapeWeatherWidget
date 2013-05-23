@@ -38,18 +38,22 @@ function init () {
 		
 		forecastImage[obj] = new Array();
 		
-		forecastImage[obj][0] = new Image(); // Image for Day Name
+		// TODO: Change to text
+		//forecastImage[obj][0] = new Image(); // Image for Day Name
 		forecastImage[obj][1] = new Image(); // Image for Weather Icon
 
-		forecastImage[obj][0].src = "Resources/Day-" + dayPlaceHolders[obj] + ".png";
+    // TODO: Change to text
+		//forecastImage[obj][0].src = "Resources/Day-" + dayPlaceHolders[obj] + ".png";
 		forecastImage[obj][1].src = "Resources/WeatherIcons/waiting.png";
 		forecastImage[obj][1].onClick = onClickForecast;
 
-		forecastImage[obj][0].zOrder = obj + 140;
+    // TODO: Change to text
+		//forecastImage[obj][0].zOrder = obj + 140;
 		forecastImage[obj][1].zOrder = obj + 150;
 		
 		tray.addSubview(forecastText[obj][0]);
-		tray.addSubview(forecastImage[obj][0]);
+		// TODO: Change to text
+		//tray.addSubview(forecastImage[obj][0]);
 		tray.addSubview(forecastImage[obj][1]);
 	}
 	

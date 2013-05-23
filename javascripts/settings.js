@@ -206,8 +206,6 @@ themes.transparent.windowOpacity		= 255;
 
 var observationTime = new Date();
 var localLocationTimeOffset = 0;
-var months		= new Array ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
-var weekDays	= new Array ("Sun","Mon","Tue","Wed","Thu","Fri","Sat");
 
 // Switch old time format preference to new
 if (preferences.timeFormat.value != 0) {

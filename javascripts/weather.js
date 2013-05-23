@@ -472,7 +472,8 @@ function updateForecasts(currentDayTime) {
 		var dayXML = forecastXML.item(i);
 		
 		if (!dayXML) {
-			forecastImage[i][0].src = "Resources/Empty.png";
+		  // TODO: Change to text
+			//forecastImage[i][0].src = "Resources/Empty.png";
 			log("Error: Day "+i+" missing in forecast XML");
 			continue;
 		}
@@ -494,15 +495,16 @@ function updateForecasts(currentDayTime) {
 		// are one day too early (e.g. Thursday instead of Wednesday)
 		if (i == 0) {
 			dayTime = currentDayTime;
-			day = dayTime == 'day' ? 'Today' : 'Tonight';
+			day = dayTime == 'day' ? widget.getLocalizedString("date.today") : widget.getLocalizedString("date.tonight");
 		}
 		else {
-			day = weekDays[new Date(dayDate*1000).getDay()];
+			day = widget.getLocalizedString("date.abbr_day_names."+new Date(dayDate*1000).getDay());
 		}
 		displayTinyIcons(weatherCode, dayText, dayTime, i);
 
 		forecastText[i][0].data	= hiTemp + "°";
-		forecastImage[i][0].src	= "Resources/Day-" + day + ".png";
+		// TODO: Change to text
+		//forecastImage[i][0].src	= "Resources/Day-" + day + ".png";
 		
 		var tooltipText = "";
 		var tooltipContainsPop = false;

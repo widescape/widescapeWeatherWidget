@@ -1,0 +1,24 @@
+
+"date.today" = "Today";
+"date.tonight" = "Tonight";
+
+"date.abbr_day_names.0" = "Sun";
+"date.abbr_day_names.1" = "Mon";
+"date.abbr_day_names.2" = "Tue";
+"date.abbr_day_names.3" = "Wed";
+"date.abbr_day_names.4" = "Thu";
+"date.abbr_day_names.5" = "Fri";
+"date.abbr_day_names.6" = "Sat";
+
+"date.abbr_month_names.0" = "Jan";
+"date.abbr_month_names.1" = "Feb";
+"date.abbr_month_names.2" = "Mar";
+"date.abbr_month_names.3" = "Apr";
+"date.abbr_month_names.4" = "May";
+"date.abbr_month_names.5" = "Jun";
+"date.abbr_month_names.6" = "Jul";
+"date.abbr_month_names.7" = "Aug";
+"date.abbr_month_names.8" = "Sep";
+"date.abbr_month_names.9" = "Oct";
+"date.abbr_month_names.10" = "Nov";
+"date.abbr_month_names.11" = "Dec";
