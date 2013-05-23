@@ -4,8 +4,8 @@
 
 "date.today" = "Today";
 "date.tonight" = "Tonight";
-"date.day"      = "Day";
-"date.night"    = "Night";
+"date.day" = "Day";
+"date.night" = "Night";
 
 "date.abbr_day_names.0" = "Sun";
 "date.abbr_day_names.1" = "Mon";

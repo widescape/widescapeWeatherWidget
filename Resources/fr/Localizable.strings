@@ -2,10 +2,10 @@
 "api.wunderground.locales.en" = "EN";
 "api.wunderground.locales.fr" = "FR";
 
-"date.today" = "Ajdh.";
-"date.tonight" = "C. nuit";
-"date.day"      = "Jour";
-"date.night"    = "Nuit";
+"date.today" = "Ajd.";
+"date.tonight" = "Ce soir";
+"date.day" = "Jour";
+"date.night" = "Nuit";
 
 "date.abbr_day_names.0" = "Dim";
 "date.abbr_day_names.1" = "Lun";
@@ -22,22 +22,22 @@
 "date.abbr_month_names.4" = "Mai";
 "date.abbr_month_names.5" = "Juin";
 "date.abbr_month_names.6" = "Juil";
-"date.abbr_month_names.7" = "Aou";
+"date.abbr_month_names.7" = "Août";
 "date.abbr_month_names.8" = "Sep";
 "date.abbr_month_names.9" = "Oct";
 "date.abbr_month_names.10" = "Nov";
-"date.abbr_month_names.11" = "Dec";
+"date.abbr_month_names.11" = "Déc";
 
-"weather.conditions.unknown" = "Unknown Weather Condition";
+"weather.conditions.unknown" = "Conditions météo inconnues";
 "weather.conditions.chance_of" = "Risque de %{precipitation}";
 "weather.conditions.precipitation" = "précipitations";
-"weather.conditions.updated_at" = "Mise à";
+"weather.conditions.updated_at" = "Mise à jour";
 
 "weather.conditions.visibility.absolute" = "Visibilité";
 "weather.conditions.visibility.unknown" = "Visibilité inconnue";
-"weather.conditions.visibility.unlimited" = "Visibilité illimité";
+"weather.conditions.visibility.unlimited" = "Visibilité illimitée";
 
-"weather.conditions.winds.calm" = "Les vents calmes";
+"weather.conditions.winds.calm" = "Vent(s) calme(s)";
 "weather.conditions.winds.variable" = "Vents changeants";
 "weather.conditions.winds.wind_from" = "Vent du";
 "weather.conditions.winds.directions.N" = "Nord";
@@ -49,4 +49,4 @@
 "weather.conditions.winds.directions.W" = "Ouest";
 "weather.conditions.winds.directions.NW" = "Nord-Ouest";
 "weather.conditions.winds.at" = "à";
-"weather.conditions.winds.with_gusts_up_to" = "avec de rafales jusqu'à";
+"weather.conditions.winds.with_gusts_up_to" = "avec des rafales jusqu'à";

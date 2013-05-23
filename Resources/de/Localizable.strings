@@ -2,10 +2,10 @@
 "api.wunderground.locales.en" = "EN";
 "api.wunderground.locales.fr" = "FR";
 
-"date.today"    = "Heute";
-"date.tonight"  = "Nachts";
-"date.day"      = "Tagsüber";
-"date.night"    = "Nachts";
+"date.today" = "Heute";
+"date.tonight" = "Nachts";
+"date.day" = "Tagsüber";
+"date.night" = "Nachts";
 
 "date.abbr_day_names.0" = "Son";
 "date.abbr_day_names.1" = "Mon";
