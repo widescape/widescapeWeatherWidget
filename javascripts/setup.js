@@ -36,23 +36,38 @@ function init () {
 		
 		forecastText[obj][0].zOrder	= 80 + obj;
 		
+		// TODO: Change to text - DONE
+		forecastText[obj][1]		= new Text();
+		forecastText[obj][1].font		= "Trebuchet MS";
+		forecastText[obj][1].color		= preferences.textColor.value;
+		forecastText[obj][1].style		= "bold";
+		forecastText[obj][1].opacity		= 255;
+		forecastText[obj][1].size		= (metrics.temp.size - 4) * widgetScale + 3;
+		forecastText[obj][1].alignment	= "left";
+		
+		forecastText[obj][1].data		= "";
+		
+		forecastText[obj][1].zOrder	= 140 + obj;
+		
 		forecastImage[obj] = new Array();
 		
-		// TODO: Change to text
+		// TODO: Change to text - DONE
 		//forecastImage[obj][0] = new Image(); // Image for Day Name
 		forecastImage[obj][1] = new Image(); // Image for Weather Icon
 
-    // TODO: Change to text
+    // TODO: Change to text - DONE
 		//forecastImage[obj][0].src = "Resources/Day-" + dayPlaceHolders[obj] + ".png";
 		forecastImage[obj][1].src = "Resources/WeatherIcons/waiting.png";
 		forecastImage[obj][1].onClick = onClickForecast;
 
-    // TODO: Change to text
+    // TODO: Change to text - DONE
 		//forecastImage[obj][0].zOrder = obj + 140;
 		forecastImage[obj][1].zOrder = obj + 150;
 		
 		tray.addSubview(forecastText[obj][0]);
-		// TODO: Change to text
+		
+		// TODO: Change to text - DONE
+		tray.addSubview(forecastText[obj][1]);
 		//tray.addSubview(forecastImage[obj][0]);
 		tray.addSubview(forecastImage[obj][1]);
 	}

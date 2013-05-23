@@ -84,7 +84,8 @@ function moveTray () {
 			thisOpacityMod	= Math.min (Math.max (thisOpacityMod, 0), 1);
 			
 			forecastText[obj][0].opacity	= thisOpacityMod * preferences.textOpacity.value;
-			// TODO: Change to text
+			// TODO: Change to text - DONE
+			forecastText[obj][1].opacity	= thisOpacityMod * preferences.textOpacity.value;
 			//forecastImage[obj][0].opacity	= thisOpacityMod * preferences.textOpacity.value;
 			forecastImage[obj][1].opacity	= thisOpacityMod * 255;
 		}
@@ -118,7 +119,8 @@ function moveTray () {
 			thisOpacityMod	= Math.min (Math.max (thisOpacityMod, 0), 255);
 			
 			forecastText[obj][0].opacity	= thisOpacityMod * preferences.textOpacity.value;
-			// TODO: Change to text
+			// TODO: Change to text - DONE
+			forecastText[obj][1].opacity	= thisOpacityMod * preferences.textOpacity.value;
 			//forecastImage[obj][0].opacity	= thisOpacityMod * preferences.textOpacity.value;
 			forecastImage[obj][1].opacity	= thisOpacityMod * 255;
 		}
@@ -209,7 +211,9 @@ function displayForecast (switchTo) {
 		for (obj = 0; obj < 4; obj++) {
 			forecastText[obj][0].color	= preferences.textColor.value;
 			forecastText[obj][0].opacity	= preferences.textOpacity.value;
-			// TODO: Change to text
+			// TODO: Change to text - DONE
+			forecastText[obj][1].color	= preferences.textColor.value;
+			forecastText[obj][1].opacity	= preferences.textOpacity.value;
 			//forecastImage[obj][0].colorize= preferences.textColor.value;
 			//forecastImage[obj][0].opacity = preferences.textOpacity.value;
 			forecastImage[obj][1].colorize= preferences.iconColor.value;
@@ -219,7 +223,8 @@ function displayForecast (switchTo) {
 	else {
 		for (obj = 0; obj < 4; obj++) {
 			forecastText[obj][0].opacity	= 0;
-			// TODO: Change to text
+			// TODO: Change to text - DONE
+			forecastText[obj][1].opacity	= 0;
 			//forecastImage[obj][0].opacity = 0;
 			forecastImage[obj][1].opacity = 0;
 		}

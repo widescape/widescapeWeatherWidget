@@ -157,10 +157,8 @@ metrics.forecast.tmp.hOffset	= 14;
 metrics.forecast.tmp.vOffset	= 11;
 
 metrics.forecast.day	= new Object();
-metrics.forecast.day.width	= 28;
-metrics.forecast.day.height	= 8;
-metrics.forecast.day.hOffset	= 0;
-metrics.forecast.day.vOffset	= 24;
+metrics.forecast.day.hOffset	= 3;
+metrics.forecast.day.vOffset	= 30;
 
 metrics.forecast.img	= new Object();
 metrics.forecast.img.width	= 45;

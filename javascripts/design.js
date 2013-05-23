@@ -150,12 +150,14 @@ function scaleWidget (reposition, oldTrayOpens) {
 			forecastWidth = ((metrics.base.width + trayInnerHOffset) * obj + trayInnerHOffset) + (obj + 1) * baseWidthMod;
 			
 			forecastText[obj][0].hOffset	= (metrics.forecast.tmp.hOffset + forecastWidth) * widgetScale;
-			// TODO: Change to text
+			// TODO: Change to text - DONE
+			forecastText[obj][1].hOffset	= (metrics.forecast.day.hOffset + forecastWidth) * widgetScale;
 			//forecastImage[obj][0].hOffset	= (metrics.forecast.day.hOffset + forecastWidth) * widgetScale;
 			forecastImage[obj][1].hOffset	= (metrics.forecast.img.hOffset + forecastWidth) * widgetScale;
 			
 			forecastText[obj][0].vOffset	= metrics.forecast.tmp.vOffset * widgetScale;
-			// TODO: Change to text
+			// TODO: Change to text - DONE
+			forecastText[obj][1].vOffset	= metrics.forecast.day.vOffset * widgetScale;
 			//forecastImage[obj][0].vOffset	= metrics.forecast.day.vOffset * widgetScale;
 			forecastImage[obj][1].vOffset	= metrics.forecast.img.vOffset * widgetScale;
 		}
@@ -216,12 +218,14 @@ function scaleWidget (reposition, oldTrayOpens) {
 			forecastHeight = ((metrics.base.height + trayInnerVOffset) * obj + trayInnerVOffset) + (obj + 1) * baseHeightMod;
 			
 			forecastText[obj][0].hOffset	= metrics.forecast.tmp.hOffset * widgetScale;
-			// TODO: Change to text
+			// TODO: Change to text - DONE
+			forecastText[obj][1].hOffset	= metrics.forecast.day.hOffset * widgetScale;
 			//forecastImage[obj][0].hOffset	= metrics.forecast.day.hOffset * widgetScale;
 			forecastImage[obj][1].hOffset	= metrics.forecast.img.hOffset * widgetScale;
 			
 			forecastText[obj][0].vOffset	= (metrics.forecast.tmp.vOffset + forecastHeight) * widgetScale;
-			// TODO: Change to text
+			// TODO: Change to text - DONE
+			forecastText[obj][1].vOffset	= (metrics.forecast.day.vOffset + forecastHeight) * widgetScale;
 			//forecastImage[obj][0].vOffset	= (metrics.forecast.day.vOffset + forecastHeight) * widgetScale;
 			forecastImage[obj][1].vOffset	= (metrics.forecast.img.vOffset + forecastHeight) * widgetScale;
 			
@@ -236,11 +240,12 @@ function scaleWidget (reposition, oldTrayOpens) {
 		
 		forecastText[obj][0].size	= (metrics.temp.size - 4) * widgetScale + 3;
 		
-		// TODO: Change to text
+		// TODO: Change to text - DONE
+		forecastText[obj][1].size	= (metrics.temp.size - 4) * widgetScale + 3;
 		//forecastImage[obj][0].width	= metrics.forecast.day.width * widgetScale;
 		forecastImage[obj][1].width	= metrics.forecast.img.width * widgetScale;
 		
-		// TODO: Change to text
+		// TODO: Change to text - DONE
 		//forecastImage[obj][0].height	= metrics.forecast.day.height * widgetScale;
 		forecastImage[obj][1].height	= metrics.forecast.img.height * widgetScale;
 	}
@@ -539,13 +544,15 @@ function colorWidget () {
 	for (obj = 0; obj < 4; obj++) {
 		
 		forecastText[obj][0].opacity	= preferences.textOpacity.value;
-		// TODO: Change to text
+		// TODO: Change to text - DONE
+		forecastText[obj][1].opacity	= preferences.textOpacity.value;
 		//forecastImage[obj][0].opacity	= preferences.textOpacity.value;
 		forecastImage[obj][1].opacity	= preferences.iconOpacity.value;
 		
 		forecastText[obj][0].color	= preferences.textColor.value;
-		// TODO: Change to text
-		//forecastImage[obj][0].colorize= preferences.textColor.value;
+		// TODO: Change to text - DONE
+		forecastText[obj][1].color	= preferences.textColor.value;
+    //forecastImage[obj][0].colorize= preferences.textColor.value;
 		forecastImage[obj][1].colorize= preferences.iconColor.value;
 	}
 }
