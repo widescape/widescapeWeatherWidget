@@ -2,7 +2,7 @@
 	
 	widescapeWeather Widget
 
-	Version 2.2.1
+	Version 2.3.0.rc1
 	
 	This Widget grabs the latest current weather data from wunderground.com and builds
 	it into a nice little iconic representation.
@@ -13,7 +13,7 @@
 	
 	Code, Design and Icons by widescape / Robert Wünsch
   
-	(c) 2011 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+	(c) 2013 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
 	Originally based on The Weather Widget: (c) 2003 - 2004 Arlo Rose & Perry Clarke
 	
 	For icon usage licences see /Resources/WeatherIcons/__Weather Icon Copyright and Permissions__.txt

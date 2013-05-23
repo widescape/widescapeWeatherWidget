@@ -2,12 +2,12 @@
 	
 	widescapeWeather Widget
 
-	Version 2.2.1
+	Version 2.3.0.rc1
 	
 	Settings
 
 	
-	(c) 2011 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+	(c) 2013 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
 	Originally based on The Weather Widget: (c) 2003 - 2004 Pixoria
 */
 

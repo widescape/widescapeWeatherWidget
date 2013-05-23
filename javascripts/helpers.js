@@ -2,12 +2,12 @@
 	
 	widescapeWeather Widget
 
-	Version 2.2.1
+	Version 2.3.0.rc1
 	
 	Helpers
 
 	
-	(c) 2011 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+	(c) 2013 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
 */
 
 // Converts a number to a two digit string

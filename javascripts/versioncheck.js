@@ -1,11 +1,11 @@
 /*
  * widescapeWeather widget
  * 
- * 2.2.1
+ * 2.3.0.rc1
  * 
  * Version Check
  * 
- * (c) 2011 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+ * (c) 2013 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
  */
 
 // Checks for an update of this Widget
