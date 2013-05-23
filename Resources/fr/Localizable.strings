@@ -1,0 +1,52 @@
+"api.wunderground.locales.de" = "DL";
+"api.wunderground.locales.en" = "EN";
+"api.wunderground.locales.fr" = "FR";
+
+"date.today" = "Ajdh.";
+"date.tonight" = "C. nuit";
+"date.day"      = "Jour";
+"date.night"    = "Nuit";
+
+"date.abbr_day_names.0" = "Dim";
+"date.abbr_day_names.1" = "Lun";
+"date.abbr_day_names.2" = "Mar";
+"date.abbr_day_names.3" = "Mer";
+"date.abbr_day_names.4" = "Jeu";
+"date.abbr_day_names.5" = "Ven";
+"date.abbr_day_names.6" = "Sam";
+
+"date.abbr_month_names.0" = "Jan";
+"date.abbr_month_names.1" = "Fév";
+"date.abbr_month_names.2" = "Mar";
+"date.abbr_month_names.3" = "Avr";
+"date.abbr_month_names.4" = "Mai";
+"date.abbr_month_names.5" = "Juin";
+"date.abbr_month_names.6" = "Juil";
+"date.abbr_month_names.7" = "Aou";
+"date.abbr_month_names.8" = "Sep";
+"date.abbr_month_names.9" = "Oct";
+"date.abbr_month_names.10" = "Nov";
+"date.abbr_month_names.11" = "Dec";
+
+"weather.conditions.unknown" = "Unknown Weather Condition";
+"weather.conditions.chance_of" = "Risque de %{precipitation}";
+"weather.conditions.precipitation" = "précipitations";
+"weather.conditions.updated_at" = "Mise à";
+
+"weather.conditions.visibility.absolute" = "Visibilité";
+"weather.conditions.visibility.unknown" = "Visibilité inconnue";
+"weather.conditions.visibility.unlimited" = "Visibilité illimité";
+
+"weather.conditions.winds.calm" = "Les vents calmes";
+"weather.conditions.winds.variable" = "Vents changeants";
+"weather.conditions.winds.wind_from" = "Vent du";
+"weather.conditions.winds.directions.N" = "Nord";
+"weather.conditions.winds.directions.NE" = "Nord-Est";
+"weather.conditions.winds.directions.E" = "Est";
+"weather.conditions.winds.directions.SE" = "Sud-Est";
+"weather.conditions.winds.directions.S" = "Sud";
+"weather.conditions.winds.directions.SW" = "Sud-Ouest";
+"weather.conditions.winds.directions.W" = "Ouest";
+"weather.conditions.winds.directions.NW" = "Nord-Ouest";
+"weather.conditions.winds.at" = "à";
+"weather.conditions.winds.with_gusts_up_to" = "avec de rafales jusqu'à";
