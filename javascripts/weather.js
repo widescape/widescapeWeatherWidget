@@ -1,7 +1,7 @@
 /*
  * widescapeWeather Widget
  * 
- * Version 2.3.0.rc1
+ * Version 2.3.0.rc2
  * 
  * Weather Management
  * 
@@ -364,27 +364,17 @@ function updateWeather() {
 		//	theDewPoint = "Dewpoint: " + fetchedDewPoint + "°" + unitTemp;
 		//}
 		
-		if (fetchedWindDir == "CALM") {
+		if (fetchedWindDir.match(/calm/i)) {
 			windData = widget.getLocalizedString("weather.conditions.winds.calm");
 		}
 		else {
 
-			if (fetchedWindDir == "VAR") {
+			if (fetchedWindDir.match(/var/i)) {
 				windData = widget.getLocalizedString("weather.conditions.winds.variable") + " ";
 			}
 			else {
-				windData = widget.getLocalizedString("weather.conditions.winds.wind_from") + " ";
-					
-				if (fetchedWindDir.length == 1 || fetchedWindDir.length == 2) {
-					dirArray = [fetchedWindDir];
-				} else {
-					dirArray = [fetchedWindDir.substr(0,1), fetchedWindDir.substr(1,2)];
-				}
-			
-				for (item in dirArray) {
-				  windData += widget.getLocalizedString("weather.conditions.winds.directions." + dirArray[item]) + " ";
-				}
-			
+				windDirection = widget.getLocalizedString("weather.conditions.winds.directions." + fetchedWindDir);
+				windData = widget.getLocalizedString("weather.conditions.winds.wind_from").replace(/%{direction}/, windDirection) + " ";
 			}
 		
 			windData += widget.getLocalizedString("weather.conditions.winds.at") + " " + fetchedWindSpeed + " " + unitSpeed;

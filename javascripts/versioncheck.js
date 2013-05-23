@@ -1,7 +1,7 @@
 /*
  * widescapeWeather widget
  * 
- * 2.3.0.rc1
+ * 2.3.0.rc2
  * 
  * Version Check
  * 
@@ -20,7 +20,7 @@ function checkVersion(checkNow) {
 	// Skips version check if it was last checked less than 3 days ago
 	if (checkNow != true && !isNaN(lastVersionCheck) && new Date().getTime() < lastVersionCheck + versionCheckPeriod) return false;
 	
-	var _url	= "http://www.widescape.net/widgets/checkversion/widescapeWeather.xml?version=" + widget.version;
+	var _url	= "http://www.widescape.net/widgets/checkversion/widescapeWeather" + (widget.version.match(/\.rc\d+/) ? '.rc' : '') + ".xml?version=" + widget.version;
 	//log(_url);
 	
 	var urlFetch = new URL();
