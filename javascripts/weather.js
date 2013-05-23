@@ -33,6 +33,7 @@ function fetchWeather() {
 	
 	var locale = widget.locale.substr(0, 2);
 	var apiLocale = widget.getLocalizedString("api.wunderground.locales."+locale);
+	if (apiLocale.match(/api\.wunderground\.locales\./)) apiLocale = "EN";
 	var _url = weatherURL + apiKey + "/lang:" + escape(apiLocale) + "/conditions/forecast/astronomy/q/" + escape(userCity) + ".xml";
 	
 	log("Trying to fetch: "+_url);

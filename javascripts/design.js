@@ -62,7 +62,7 @@ function scaleWidget (reposition, oldTrayOpens) {
 				infoSizeMod = 5;
 				theDate.style = "";
 			}
-			else theDate.style = "bold";
+			else theDate.style.fontWeight = "bold";
 			theDate.size	= (metrics.info[infoCount].Size - infoSizeMod) * widgetScale + infoSizeMod;
 			theDateWidth	= metrics.dateFormatWidthFactor[ preferences.dateFormat.value ] * theDate.size;
 			infoCount++;
@@ -72,7 +72,7 @@ function scaleWidget (reposition, oldTrayOpens) {
 				infoSizeMod = 5;
 				theTime.style = "";
 			}
-			else theTime.style = "bold";
+			else theTime.style.fontWeight = "bold";
 			theTime.size	= (metrics.info[infoCount].Size - infoSizeMod) * widgetScale + infoSizeMod;
 			theTimeWidth	= metrics.timeFormatWidthFactor[ (preferences.showSeconds.value == 1 ? 's': 'm') + Number(preferences.use24hours.value) ] * theTime.size;
 		}
@@ -231,7 +231,7 @@ function scaleWidget (reposition, oldTrayOpens) {
 	for (obj = 0; obj < 4; obj++) {
 		
 		forecastText[obj][0].size	= (metrics.temp.size - 4) * widgetScale + 3;
-		forecastText[obj][1].size	= (metrics.temp.size - 4) * widgetScale + 3;
+		forecastText[obj][1].size	= (metrics.forecast.day.size - 4) * widgetScale + 3;
 		forecastImage[obj][1].width	= metrics.forecast.img.width * widgetScale;
 		forecastImage[obj][1].height	= metrics.forecast.img.height * widgetScale;
 	}

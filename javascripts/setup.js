@@ -27,7 +27,7 @@ function init () {
 		forecastText[obj][0]		= new Text();
 		forecastText[obj][0].font		= "Trebuchet MS";
 		forecastText[obj][0].color		= preferences.textColor.value;
-		forecastText[obj][0].style		= "bold";
+		forecastText[obj][0].style.fontWeight		= "bold";
 		forecastText[obj][0].opacity		= 255;
 		forecastText[obj][0].size		= (metrics.temp.size - 4) * widgetScale + 3;
 		forecastText[obj][0].alignment	= "center";
@@ -39,9 +39,9 @@ function init () {
 		forecastText[obj][1]		= new Text();
 		forecastText[obj][1].font		= "Trebuchet MS";
 		forecastText[obj][1].color		= preferences.textColor.value;
-		forecastText[obj][1].style		= "bold";
+		forecastText[obj][1].style.fontWeight = "bold";
 		forecastText[obj][1].opacity		= 255;
-		forecastText[obj][1].size		= (metrics.temp.size - 4) * widgetScale + 3;
+		forecastText[obj][1].size		= (metrics.forecast.day.size - 4) * widgetScale + 3;
 		forecastText[obj][1].alignment	= "left";
 		
 		forecastText[obj][1].data		= "";

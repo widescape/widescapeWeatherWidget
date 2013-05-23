@@ -157,6 +157,7 @@ metrics.forecast.tmp.hOffset	= 14;
 metrics.forecast.tmp.vOffset	= 11;
 
 metrics.forecast.day	= new Object();
+metrics.forecast.day.size = 9;
 metrics.forecast.day.hOffset	= 3;
 metrics.forecast.day.vOffset	= 30;
 
