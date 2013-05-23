@@ -66,7 +66,10 @@ function isWidgetUpdateAvailable(widget_version,newest_version) {
 	for (var i=0; i<Math.max(widget_version_arr.length,newest_version_arr.length); i++) {
 		var widget_sub_version = widget_version_arr[i] ? widget_version_arr[i] : 0;
 		var newest_sub_version = newest_version_arr[i] ? newest_version_arr[i] : 0;
+		if (("" + widget_sub_version).match(/[^0-9]/)) widget_sub_version = -1000 + Number(("" + widget_sub_version).replace(/[^0-9]/g, ''));
+		if (("" + newest_sub_version).match(/[^0-9]/)) newest_sub_version = -1000 + Number(("" + newest_sub_version).replace(/[^0-9]/g, ''));
 		if (widget_sub_version < newest_sub_version) return true;
+		else if (widget_sub_version > newest_sub_version) return false;
 	}
 	return false;
 }
