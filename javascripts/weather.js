@@ -31,7 +31,9 @@ function fetchWeather() {
 		return false;
 	}
 	
-	var _url = weatherURL + apiKey + "/conditions/forecast/astronomy/q/" + escape(userCity) + ".xml";
+	var locale = widget.locale.substr(0, 2);
+	var apiLocale = widget.getLocalizedString("api.wunderground.locales."+locale);
+	var _url = weatherURL + apiKey + "/lang:" + escape(apiLocale) + "/conditions/forecast/astronomy/q/" + escape(userCity) + ".xml";
 	
 	log("Trying to fetch: "+_url);
 	
@@ -209,10 +211,10 @@ function updateWeather() {
 		var modPressure = 'in';
 		
 		unitTemp = "F";
-		unitDistance = "miles";
+		unitDistance = "mi";
 		unitSpeed = "mph";
-		unitPres = "Inches";
-		unitMeasure = "Inches";
+		unitPres = "in";
+		unitMeasure = "in";
 		
 		if (preferences.unitsPref.value == 1) {
 			modTemp = 'c';
@@ -221,10 +223,10 @@ function updateWeather() {
 			modPressure = 'mb';
 			
 			unitTemp = "C";
-			unitDistance = "kilometers";
+			unitDistance = "km";
 			unitSpeed = "km/h";
-			unitPres = "Millibars";
-			unitMeasure = "Millimeters";
+			unitPres = "mb";
+			unitMeasure = "mm";
 		}
 		
 		var xml = globalWeather;
@@ -330,7 +332,7 @@ function updateWeather() {
 		var windData = "";
 	
 		if ( fetchedCondPhrase == "N/A" ) {
-			theCondition = "Unknown Weather Condition";
+			theCondition = widget.getLocalizedString("weather.conditions.unknown");
 		} else {
 			theCondition = fetchedCondPhrase;
 		}
@@ -342,11 +344,11 @@ function updateWeather() {
 		//}
 	
 		if (fetchedVis == "Unlimited") {
-			visData = "Unlimited Visibility";
+			visData = widget.getLocalizedString("weather.conditions.visibility.unlimited");
 		} else if (fetchedVis == "N/A") {
-			visData = "Visibility: Unknown";
+			visData = widget.getLocalizedString("weather.conditions.visibility.unknown");
 		} else {
-			visData = "Visibility: " + fetchedVis + " " + unitDistance;
+			visData = widget.getLocalizedString("weather.conditions.visibility.absolute") + ": " + fetchedVis + " " + unitDistance;
 		}
 	
 		//if ( fetchedPres == "N/A" ) {
@@ -362,15 +364,15 @@ function updateWeather() {
 		//}
 		
 		if (fetchedWindDir == "CALM") {
-			windData = "Calm Winds";
+			windData = widget.getLocalizedString("weather.conditions.winds.calm");
 		}
 		else {
 
 			if (fetchedWindDir == "VAR") {
-				windData = "Variable winds ";
+				windData = widget.getLocalizedString("weather.conditions.winds.variable") + " ";
 			}
 			else {
-				windData = "Wind from ";
+				windData = widget.getLocalizedString("weather.conditions.winds.wind_from") + " ";
 					
 				if (fetchedWindDir.length == 1 || fetchedWindDir.length == 2) {
 					dirArray = [fetchedWindDir];
@@ -379,41 +381,15 @@ function updateWeather() {
 				}
 			
 				for (item in dirArray) {
-					switch (dirArray[item]) {
-						case "N":
-							windData += "North ";
-							break;			
-						case "S":
-							windData += "South ";
-							break;			
-						case "E":
-							windData += "East ";
-							break;			
-						case "W":
-							windData += "West ";
-							break;			
-						case "NE":
-							windData += "Northeast ";
-							break;			
-						case "SE":
-							windData += "Southeast ";
-							break;			
-						case "NW":
-							windData += "Northwest ";
-							break;			
-						case "SW":
-							windData += "Southwest ";
-							break;			
-					}
-			
+				  windData += widget.getLocalizedString("weather.conditions.winds.directions." + dirArray[item]) + " ";
 				}
 			
 			}
 		
-			windData += "at " + fetchedWindSpeed + " " + unitSpeed;
+			windData += widget.getLocalizedString("weather.conditions.winds.at") + " " + fetchedWindSpeed + " " + unitSpeed;
 		
 			if (fetchedWindGust != "0"){
-				windData += "\nwith gusts up to " + fetchedWindGust + " " + unitSpeed;
+				windData += "\n" + widget.getLocalizedString("weather.conditions.winds.with_gusts_up_to") + " " + fetchedWindGust + " " + unitSpeed;
 			}
 
 		}	
@@ -427,7 +403,7 @@ function updateWeather() {
 						//theDewPoint + "\n" +
 						windData + "\n" +
 						"\n" +
-						"Updated at " + formattedDateAndTime(observationTime, false);
+						widget.getLocalizedString("weather.conditions.updated_at") + " " + formattedDateAndTime(observationTime, false);
 	
 		if (showToolTips) {
 			weather.tooltip = toolTipData;
@@ -511,17 +487,17 @@ function updateForecasts(currentDayTime) {
 		
 		if (showToolTips) {
 			tooltipText = dayText;
-			if (dayText.match(/chance/i)) {
+			if (weatherCode.match(/chance/i)) {
 				tooltipText += ": "+probPrec+"%";
 				tooltipContainsPop = true;
 			}
 			if (i != 0) {
-				tooltipText += "\nDay: " + hiTemp + "°"+unitTemp + "\nNight: " + lowTemp + "°"+unitTemp;
+				tooltipText += "\n" + widget.getLocalizedString("date.day") + ": " + hiTemp + "°"+unitTemp + "\n" + widget.getLocalizedString("date.night") + ": " + lowTemp + "°"+unitTemp;
 			}
 			if (!tooltipContainsPop) {
 				if (i != 0) tooltipText += "\n";
-				tooltipText += "\nChance of ";
-				tooltipText += dayText.match(/rain|drizzle|snow|ice|hail/i) ? dayText : "Precipitation";
+				precipitation = weatherCode.match(/rain|drizzle|snow|ice|hail/i) ? dayText : widget.getLocalizedString("weather.conditions.precipitation");
+        tooltipText += "\n" + widget.getLocalizedString("weather.conditions.chance_of").replace(/%{precipitation}/, precipitation);
 				tooltipText += ": "+probPrec+"%";
 			}
 		}

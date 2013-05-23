@@ -1,6 +1,11 @@
+"api.wunderground.locales.de" = "DL";
+"api.wunderground.locales.en" = "EN";
+"api.wunderground.locales.fr" = "FR";
 
 "date.today" = "Today";
 "date.tonight" = "Tonight";
+"date.day"      = "Day";
+"date.night"    = "Night";
 
 "date.abbr_day_names.0" = "Sun";
 "date.abbr_day_names.1" = "Mon";
@@ -22,3 +27,26 @@
 "date.abbr_month_names.9" = "Oct";
 "date.abbr_month_names.10" = "Nov";
 "date.abbr_month_names.11" = "Dec";
+
+"weather.conditions.unknown" = "Unknown Weather Condition";
+"weather.conditions.chance_of" = "Chance of %{precipitation}";
+"weather.conditions.precipitation" = "precipitation";
+"weather.conditions.updated_at" = "Updated at";
+
+"weather.conditions.visibility.absolute" = "Visibility";
+"weather.conditions.visibility.unknown" = "Unknown visibility";
+"weather.conditions.visibility.unlimited" = "Unlimited visibility";
+
+"weather.conditions.winds.calm" = "Calm winds";
+"weather.conditions.winds.variable" = "Changing winds";
+"weather.conditions.winds.wind_from" = "Wind from";
+"weather.conditions.winds.directions.N" = "North";
+"weather.conditions.winds.directions.NE" = "Northeast";
+"weather.conditions.winds.directions.E" = "East";
+"weather.conditions.winds.directions.SE" = "Southeast";
+"weather.conditions.winds.directions.S" = "South";
+"weather.conditions.winds.directions.SW" = "Southwest";
+"weather.conditions.winds.directions.W" = "West";
+"weather.conditions.winds.directions.NW" = "Northwest";
+"weather.conditions.winds.at" = "at";
+"weather.conditions.winds.with_gusts_up_to" = "with gusts up to";
