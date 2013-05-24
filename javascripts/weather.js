@@ -1,7 +1,7 @@
 /*
  * widescapeWeather Widget
  * 
- * Version 2.3.0.rc2
+ * Version 2.3.0.rc3
  * 
  * Weather Management
  * 
@@ -373,8 +373,21 @@ function updateWeather() {
 				windData = widget.getLocalizedString("weather.conditions.winds.variable") + " ";
 			}
 			else {
-				windDirection = widget.getLocalizedString("weather.conditions.winds.directions." + fetchedWindDir);
-				windData = widget.getLocalizedString("weather.conditions.winds.wind_from").replace(/%{direction}/, windDirection) + " ";
+			  var windDirNorth  = 360/16;
+			  var windDirSpan   = 360/8;
+			  var windDirCode;
+			  if      (fetchedWindPoint < windDirNorth)                   windDirCode = 'N';
+			  else if (fetchedWindPoint < windDirNorth + windDirSpan)     windDirCode = 'NE';
+			  else if (fetchedWindPoint < windDirNorth + windDirSpan * 2) windDirCode = 'E';
+			  else if (fetchedWindPoint < windDirNorth + windDirSpan * 3) windDirCode = 'SE';
+			  else if (fetchedWindPoint < windDirNorth + windDirSpan * 4) windDirCode = 'S';
+			  else if (fetchedWindPoint < windDirNorth + windDirSpan * 5) windDirCode = 'SW';
+			  else if (fetchedWindPoint < windDirNorth + windDirSpan * 6) windDirCode = 'W';
+			  else if (fetchedWindPoint < windDirNorth + windDirSpan * 7) windDirCode = 'NW';
+			  else                                                        windDirCode = 'N';
+			  windDirection = widget.getLocalizedString("weather.conditions.winds.directions." + windDirCode);
+				log(fetchedWindPoint + "°/" + fetchedWindDir + " => " + windDirCode + " => " + windDirection);
+        windData = widget.getLocalizedString("weather.conditions.winds.wind_from").replace(/%{direction}/, windDirection) + " ";
 			}
 		
 			windData += widget.getLocalizedString("weather.conditions.winds.at") + " " + fetchedWindSpeed + " " + unitSpeed;

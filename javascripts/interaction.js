@@ -2,7 +2,7 @@
 	
 	widescapeWeather Widget
 
-	Version 2.3.0.rc2
+	Version 2.3.0.rc3
 	
 	Interaction
 
@@ -361,7 +361,7 @@ function setContextMenuItems() {
 	item		= new MenuItem();
 	item.title		= "Visit developer's website...";
 	item.enabled	= true;
-	item.onSelect	= function() { openURL("http://www.widescape.net/widgets/?ref=weather-2.3.0.rc2-menu"); };
+	item.onSelect	= function() { openURL("http://www.widescape.net/widgets/?ref=weather-2.3.0.rc3-menu"); };
 	items.push(item);
 	
 	item		= new MenuItem();
