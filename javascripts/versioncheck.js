@@ -87,7 +87,7 @@ function promptForVersionUpdate(xml,widget_version,newest_version) {
 	if (typeof action == "undefined" || action == "") action = "OK";
 	if (typeof url == "undefined" || url == "") url = "http://www.widescape.net/widgets";
 	
-	var alertResult = alert(title + "\n\n" + text, action, "Later");
+	var alertResult = alert(title + "\n\n" + text.replace(/\{n\}/g, "\n"), action, "Later");
 	if (alertResult == 2) {
 		preferences.lastVersionCheck.value = new Date().getTime();
 	}
