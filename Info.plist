@@ -3,10 +3,10 @@
 <plist version="2">
 <dict>
 	<key>CFBundleGetInfoString</key>
-	<string>2.3.0.rc3
+	<string>2.3.0
 by widescape
 www.widescape.net/widgets</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.3.0.rc3</string>
+	<string>2.3.0</string>
 </dict>
 </plist>
