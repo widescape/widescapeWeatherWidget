@@ -111,7 +111,7 @@ function applyPreferences (startUp, oldTrayOpens) {
 	//log ("applyPreferences ()");
 	
 	// Set the update check interval according to the showSeconds setting
-	updateTimer.interval = preferences.updateTime.value;
+	//updateTimer.interval = preferences.updateTime.value;
 	timeTimer.ticking = preferences.showDate.value == 1 || preferences.showTime.value == 1;
 	
 	// Set the colors and opacities to a requested theme
