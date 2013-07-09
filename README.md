@@ -14,10 +14,9 @@ This free widget grabs the latest current weather data from [wunderground.com](h
 
 The widget requires the discontinued Yahoo! Widget Engine (Konfabulator), which can be inofficially downloaded here: [Mac version](http://widescape.net/widgets/downloads/yahoo-widgets-4.5.2.dmg), [Windows version](http://widescape.net/widgets/downloads/yahoo-widgets-4.5.2.exe).
 
-[Information about the Wunderground API](http://www.wunderground.com/weather/api).
-
 ## Credits
 
+* **Wunderground** for their nice [Wunderground API](http://www.wunderground.com/weather/api).
 * **Pierre Bédat** for his idea to localize the widget and his great help with the french translation.
 
 ## Contributing
@@ -32,4 +31,5 @@ If you want to make improvements to this widget:
 ## Disclaimer & License
 
 Created by Robert Wünsch, [www.widescape.net](http://www.widescape.net)
+
 © All rights reserved. Contributions are welcome and will by fully credited.
