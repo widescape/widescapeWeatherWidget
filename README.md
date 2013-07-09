@@ -12,7 +12,7 @@ This free widget grabs the latest current weather data from [wunderground.com](h
 
 ## Requirements
 
-The widget requires the discontinued Yahoo! Widget Engine (Konfabulator), which can be inofficially downloaded here: [Mac version](http://widescape.net/widgets/downloads/yahoo-widgets-4.5.2.dmg), [Windows version](http://widescape.net/widgets/downloads/yahoo-widgets-4.5.2.exe).
+The widget requires the **discontinued Yahoo! Widget Engine** (Konfabulator), which can be inofficially downloaded here: [Mac version](http://widescape.net/widgets/downloads/yahoo-widgets-4.5.2.dmg), [Windows version](http://widescape.net/widgets/downloads/yahoo-widgets-4.5.2.exe).
 
 ## Credits
 
