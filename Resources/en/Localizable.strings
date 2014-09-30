@@ -1,12 +1,15 @@
-"api.wunderground.locales.de" = "DL";
-"api.wunderground.locales.en" = "EN";
-"api.wunderground.locales.fr" = "FR";
+/* For instructions see https://github.com/widescape/widescapeWeatherWidget#localization */
 
+/* Appears below the weather icons. */
 "date.today" = "Today";
+/* Appears below the weather icons. */
 "date.tonight" = "Tonight";
+/* Appears in tooltip as: "Day: 22°C" */
 "date.day" = "Day";
+/* Appears in tooltip as: "Night: 16°C" */
 "date.night" = "Night";
 
+/* Appears below the weather icons. */
 "date.abbr_day_names.0" = "Sun";
 "date.abbr_day_names.1" = "Mon";
 "date.abbr_day_names.2" = "Tue";
@@ -15,6 +18,9 @@
 "date.abbr_day_names.5" = "Fri";
 "date.abbr_day_names.6" = "Sat";
 
+/* Appears in the info section of the widget for certain date formats.
+ * See Widget Preferences > Info Text > Date Format.
+ */
 "date.abbr_month_names.0" = "Jan";
 "date.abbr_month_names.1" = "Feb";
 "date.abbr_month_names.2" = "Mar";
@@ -28,17 +34,30 @@
 "date.abbr_month_names.10" = "Nov";
 "date.abbr_month_names.11" = "Dec";
 
+/* Appears in tooltip as: "Unknown Weather Condition" */
 "weather.conditions.unknown" = "Unknown Weather Condition";
+/* Appears in tooltip as: "Chance of rain: 60%"
+ * %{precipitation} will be replaced by the widget with the correct precipitation type. */
 "weather.conditions.chance_of" = "Chance of %{precipitation}";
+/* Appears in tooltip as: "Chance of precipitation: 60%"
+ * Used if no valid precipitation type is provided by the weather data source. */
 "weather.conditions.precipitation" = "precipitation";
+/* Appears in tooltip as: "Updated at 14/30/09 16:42" */
 "weather.conditions.updated_at" = "Updated at";
 
+/* Appears in tooltip as: "Visibility: 5 km" */
 "weather.conditions.visibility.absolute" = "Visibility";
+/* Appears in tooltip as: "Unknown visibility" */
 "weather.conditions.visibility.unknown" = "Unknown visibility";
+/* Appears in tooltip as: "Unlimited visibility" */
 "weather.conditions.visibility.unlimited" = "Unlimited visibility";
 
+/* Appears in tooltip as: "Calm winds" */
 "weather.conditions.winds.calm" = "Calm winds";
+/* Appears in tooltip as: "Changing winds at 3 km/h" */
 "weather.conditions.winds.variable" = "Changing winds";
+/* Appears in tooltip as: "Wind from north-east at 12 km/h"
+ * %{direction} will be replaced by the widget with the correct wind direction. */
 "weather.conditions.winds.wind_from" = "Wind from %{direction}";
 "weather.conditions.winds.directions.N" = "north";
 "weather.conditions.winds.directions.NNE" = "north-north-east";
@@ -56,5 +75,12 @@
 "weather.conditions.winds.directions.WNW" = "west-north-west";
 "weather.conditions.winds.directions.NW" = "north-west";
 "weather.conditions.winds.directions.NNW" = "north-north-west";
+/* Appears in tooltip as: "Wind from north-east at 12 km/h" */
 "weather.conditions.winds.at" = "at";
+/* Appears in tooltip as: "Wind from north-east with gusts up to 50 km/h" */
 "weather.conditions.winds.with_gusts_up_to" = "with gusts up to";
+
+/* Don't change the following lines */
+"api.wunderground.locales.de" = "DL";
+"api.wunderground.locales.en" = "EN";
+"api.wunderground.locales.fr" = "FR";
