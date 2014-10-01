@@ -18,7 +18,8 @@ The widget requires the **discontinued Yahoo! Widget Engine** (Konfabulator), wh
 
 * **Wunderground** for their nice [Wunderground API](http://www.wunderground.com/weather/api).
 * **[Yuval Kogman](https://github.com/nothingmuch)** for his support in the old Konfabulator times of the widget.
-* **Pierre Bédat** for his idea to localize the widget and his great help with the french translation.
+* **Pierre Bédat** for his idea to localize the widget and his great help with the French translation.
+* **[Allan Nyholm Nielsen](https://github.com/allannyholm)** for the Danish translation.
 
 ## Contributing
 
