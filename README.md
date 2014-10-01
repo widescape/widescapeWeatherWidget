@@ -24,18 +24,20 @@ The widget requires the **discontinued Yahoo! Widget Engine** (Konfabulator), wh
 
 If you want to make improvements to this widget:
 
-* Fork the project on GitHub.
-* Make your feature addition or bug fix.
-* Commit with Git.
-* Send a pull request.
+1. Fork the project on GitHub.
+2. Make your feature addition or bug fix.
+3. Commit with Git.
+4. Send a pull request.
 
 ## Localization
 
 Want the widget to support your language? 
 
-* Make a localized copy of the [English language file](https://github.com/widescape/widescapeWeatherWidget/blob/release/Resources/en/Localizable.strings).
-* Submit the file in a fork (see Contribution, above) or [submit it as a new issue](https://github.com/widescape/widescapeWeatherWidget/issues).
-* Your localization will then be released with the next widget version.
+1. Create a copy of the [English language file](https://github.com/widescape/widescapeWeatherWidget/blob/release/Resources/en/Localizable.strings) and put it in its own language folder in ```Resources``` with the language's shortcode as the folder name. For example ```Resources/sp/Localizable.strings``` for a *Spanish* translation (shortcode ```sp```). Only use language shortcodes listed on http://www.wunderground.com/weather/api/d/docs?d=language-support.
+2. Adjust the translations in your new file.
+3. Submit the file in a fork (see Contribution, above) or [submit it as a new issue](https://github.com/widescape/widescapeWeatherWidget/issues).
+
+Your localization will then be released with the next widget version.
 
 **Note:** The localization file only requires translations for the widget texts listed in the localization file. 
 The weather conditions like "rain" or "sunny" are provided by Weather Underground and are already translated into many languages: http://www.wunderground.com/weather/api/d/docs?d=language-support.
