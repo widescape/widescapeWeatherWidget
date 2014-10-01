@@ -481,7 +481,7 @@ function updateForecasts(currentDayTime) {
 		}
 		displayTinyIcons(weatherCode, dayText, dayTime, i);
 
-		forecastText[i][0].data	= hiTemp + "°";
+		forecastText[i][0].data	= (dayTime == 'day' ? hiTemp : lowTemp) + "°";
 		forecastText[i][1].data	= day;
 		
 		var tooltipText = "";
