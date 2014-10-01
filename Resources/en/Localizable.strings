@@ -1,22 +1,22 @@
 /* For instructions see https://github.com/widescape/widescapeWeatherWidget#localization */
 
 /* Appears below the weather icons. */
-"date.today" = "Today";
+"date.today" = "I dag";
 /* Appears below the weather icons. */
-"date.tonight" = "Tonight";
+"date.tonight" = "I aften";
 /* Appears in tooltip as: "Day: 22°C" */
-"date.day" = "Day";
+"date.day" = "Dag";
 /* Appears in tooltip as: "Night: 16°C" */
-"date.night" = "Night";
+"date.night" = "Nat";
 
 /* Appears below the weather icons. */
-"date.abbr_day_names.0" = "Sun";
-"date.abbr_day_names.1" = "Mon";
-"date.abbr_day_names.2" = "Tue";
-"date.abbr_day_names.3" = "Wed";
-"date.abbr_day_names.4" = "Thu";
-"date.abbr_day_names.5" = "Fri";
-"date.abbr_day_names.6" = "Sat";
+"date.abbr_day_names.0" = "Søn";
+"date.abbr_day_names.1" = "Man";
+"date.abbr_day_names.2" = "Tir";
+"date.abbr_day_names.3" = "Ons";
+"date.abbr_day_names.4" = "Tor";
+"date.abbr_day_names.5" = "Fre";
+"date.abbr_day_names.6" = "Lør";
 
 /* Appears in the info section of the widget for certain date formats.
  * See Widget Preferences > Info Text > Date Format.
@@ -25,60 +25,60 @@
 "date.abbr_month_names.1" = "Feb";
 "date.abbr_month_names.2" = "Mar";
 "date.abbr_month_names.3" = "Apr";
-"date.abbr_month_names.4" = "May";
+"date.abbr_month_names.4" = "Maj";
 "date.abbr_month_names.5" = "Jun";
 "date.abbr_month_names.6" = "Jul";
 "date.abbr_month_names.7" = "Aug";
 "date.abbr_month_names.8" = "Sep";
-"date.abbr_month_names.9" = "Oct";
+"date.abbr_month_names.9" = "Okt";
 "date.abbr_month_names.10" = "Nov";
 "date.abbr_month_names.11" = "Dec";
 
 /* Appears in tooltip as: "Unknown Weather Condition" */
-"weather.conditions.unknown" = "Unknown Weather Condition";
+"weather.conditions.unknown" = "Ukendt vejrsituation";
 /* Appears in tooltip as: "Chance of rain: 60%"
  * %{precipitation} will be replaced by the widget with the correct precipitation type. */
-"weather.conditions.chance_of" = "Chance of %{precipitation}";
+"weather.conditions.chance_of" = "Chance for %{precipitation}";
 /* Appears in tooltip as: "Chance of precipitation: 60%"
  * Used if no valid precipitation type is provided by the weather data source. */
-"weather.conditions.precipitation" = "precipitation";
+"weather.conditions.precipitation" = "Nedbør";
 /* Appears in tooltip as: "Updated at 14/30/09 16:42" */
-"weather.conditions.updated_at" = "Updated at";
+"weather.conditions.updated_at" = "Opdateret";
 
 /* Appears in tooltip as: "Visibility: 5 km" */
-"weather.conditions.visibility.absolute" = "Visibility";
+"weather.conditions.visibility.absolute" = "Sigtbarhed";
 /* Appears in tooltip as: "Unknown visibility" */
-"weather.conditions.visibility.unknown" = "Unknown visibility";
+"weather.conditions.visibility.unknown" = "Ukendt sigtbarhed";
 /* Appears in tooltip as: "Unlimited visibility" */
-"weather.conditions.visibility.unlimited" = "Unlimited visibility";
+"weather.conditions.visibility.unlimited" = "Ubegrænset sigtbarhed";
 
 /* Appears in tooltip as: "Calm winds" */
-"weather.conditions.winds.calm" = "Calm winds";
+"weather.conditions.winds.calm" = "Rolig vind";
 /* Appears in tooltip as: "Changing winds at 3 km/h" */
-"weather.conditions.winds.variable" = "Changing winds";
+"weather.conditions.winds.variable" = "Skiftende vind";
 /* Appears in tooltip as: "Wind from north-east at 12 km/h"
  * %{direction} will be replaced by the widget with the correct wind direction. */
-"weather.conditions.winds.wind_from" = "Wind from %{direction}";
-"weather.conditions.winds.directions.N" = "north";
-"weather.conditions.winds.directions.NNE" = "north-north-east";
-"weather.conditions.winds.directions.NE" = "north-east";
-"weather.conditions.winds.directions.ENE" = "east-north-east";
-"weather.conditions.winds.directions.E" = "east";
-"weather.conditions.winds.directions.ESE" = "east-south-east";
-"weather.conditions.winds.directions.SE" = "south-east";
-"weather.conditions.winds.directions.SSE" = "south-south-east";
-"weather.conditions.winds.directions.S" = "south";
-"weather.conditions.winds.directions.SSW" = "south-south-west";
-"weather.conditions.winds.directions.SW" = "south-west";
-"weather.conditions.winds.directions.WSW" = "west-south-west";
-"weather.conditions.winds.directions.W" = "west";
-"weather.conditions.winds.directions.WNW" = "west-north-west";
-"weather.conditions.winds.directions.NW" = "north-west";
-"weather.conditions.winds.directions.NNW" = "north-north-west";
+"weather.conditions.winds.wind_from" = "Vind fra %{direction}";
+"weather.conditions.winds.directions.N" = "Nord";
+"weather.conditions.winds.directions.NNE" = "Nordnordøst";
+"weather.conditions.winds.directions.NE" = "Nordøst";
+"weather.conditions.winds.directions.ENE" = "Østnordøst";
+"weather.conditions.winds.directions.E" = "Øst";
+"weather.conditions.winds.directions.ESE" = "Østsydøst";
+"weather.conditions.winds.directions.SE" = "Sydøst";
+"weather.conditions.winds.directions.SSE" = "Sydsydøst";
+"weather.conditions.winds.directions.S" = "Syd";
+"weather.conditions.winds.directions.SSW" = "Sydsydvest";
+"weather.conditions.winds.directions.SW" = "Sydvest";
+"weather.conditions.winds.directions.WSW" = "Vestsydvest";
+"weather.conditions.winds.directions.W" = "Vest";
+"weather.conditions.winds.directions.WNW" = "Vestnordvest";
+"weather.conditions.winds.directions.NW" = "Nordvest";
+"weather.conditions.winds.directions.NNW" = "Nordnordvest";
 /* Appears in tooltip as: "Wind from north-east at 12 km/h" */
-"weather.conditions.winds.at" = "at";
+"weather.conditions.winds.at" = "ved";
 /* Appears in tooltip as: "Wind from north-east with gusts up to 50 km/h" */
-"weather.conditions.winds.with_gusts_up_to" = "with gusts up to";
+"weather.conditions.winds.with_gusts_up_to" = "Med stød op til";
 
 /* Don't change the following lines */
 "api.wunderground.locales.de" = "DL";
