@@ -1,11 +1,11 @@
 /*
  * widescapeWeather widget
  * 
- * 2.3.0
+ * 2.4.0-rc1
  * 
  * Version Check
  * 
- * (c) 2013 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+ * (c) 2014 widescape / Robert Wünsch - info@widescape.com - www.widescape.com
  */
 
 // Checks for an update of this Widget
@@ -85,7 +85,7 @@ function promptForVersionUpdate(xml,widget_version,newest_version) {
 	if (typeof title == "undefined" || title == "") title = "New widget version available. Do you want to update now?";
 	if (typeof text == "undefined" || text == "") text = "Newest version available: "+newest_version+" (your version: " + widget_version + ").";
 	if (typeof action == "undefined" || action == "") action = "OK";
-	if (typeof url == "undefined" || url == "") url = "http://www.widescape.net/widgets";
+	if (typeof url == "undefined" || url == "") url = "http://www.widescape.com";
 	
 	var alertResult = alert(title + "\n\n" + text.replace(/\{n\}/g, "\n"), action, "Later");
 	if (alertResult == 2) {

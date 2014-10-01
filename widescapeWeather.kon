@@ -4,7 +4,7 @@
 	
 	widescapeWeather Widget
 
-	Version 2.3.0
+	Version 2.4.0-rc1
 	
 	This Widget grabs the latest current weather data from wunderground.com and builds
 	it into a nice little iconic representation.
@@ -15,11 +15,11 @@
 	
 	Code, Design and Icons by widescape / Robert Wünsch
   
-	(c) 2013 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+	(c) 2014 widescape / Robert Wünsch - info@widescape.com - www.widescape.com
 	Originally based on The Weather Widget: (c) 2003 - 2004 Arlo Rose & Perry Clarke
 	
 	For icon usage licences see /Resources/WeatherIcons/__Weather Icon Copyright and Permissions__.txt
-	or contact Robert Wünsch at info@widescape.net
+	or contact Robert Wünsch at info@widescape.com
 	
 -->
 	<settings>
@@ -559,14 +559,15 @@
 			<color>#224D73</color>
 		</about-text>
 		<about-text>
-			<data>www.widescape.net/widgets/</data>
-			<url>http://www.widescape.net/widgets/?ref=weather-2.3.0-about</url>
+			<data>www.widescape.com</data>
+			<url>http://www.widescape.com/?ref=weather-2.4.0-rc1-about</url>
 			<font>Trebuchet MS</font>
 			<size>13</size>
 			<hOffset>101</hOffset>
 			<vOffset>238</vOffset>
 			<color>#224D73</color>
 		</about-text>
+    <about-image>Resources/Credits.png</about-image>
 	</about-box>
 
 </widget>

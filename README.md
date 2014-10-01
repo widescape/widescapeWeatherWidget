@@ -45,6 +45,6 @@ The weather conditions like "rain" or "sunny" are provided by Weather Undergroun
 
 ## Disclaimer & License
 
-Created by Robert Wünsch, [www.widescape.net](http://www.widescape.net)
+Created by Robert Wünsch, [www.widescape.com](http://www.widescape.com)
 
 © All rights reserved. Contributions are welcome and will by fully credited.

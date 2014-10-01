@@ -1,7 +1,7 @@
 /*
  * widescapeWeather Widget
  * 
- * Version 2.3.0
+ * Version 2.4.0-rc1
  * 
  * Weather Management
  * 
@@ -13,7 +13,7 @@
  * You'll need to sign up for an account, 
  * and make sure you abide by their license agreement.
  * 
- * (c) 2013 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+ * (c) 2014 widescape / Robert Wünsch - info@widescape.com - www.widescape.com
  * Originally based on The Weather Widget: (c) 2003 - 2004 Pixoria
  */
 var weatherURL = "http://api.wunderground.com/api/";

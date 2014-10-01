@@ -2,12 +2,12 @@
 	
 	widescapeWeather Widget
 
-	Version 2.3.0
+	Version 2.4.0-rc1
 	
 	Setup
 
 	
-	(c) 2013 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+	(c) 2014 widescape / Robert Wünsch - info@widescape.com - www.widescape.com
 	Originally based on The Weather Widget: (c) 2003 - 2004 Pixoria
 */
 
@@ -95,7 +95,7 @@ function init () {
 	
 	// First use?
 	if (preferences.firstUse.value == 'true') {
-		alert("Welcome to the widescapeWeather widget 2.3.0!\n\nUseful tips:\n\n1. You can get more information on your weather by clicking any weather icon. Weather data is kindly provided by the nice folks at Weather Underground (wunderground.com).\n\n2. To drag the widget around, hold the CTRL key while dragging (CMD key on Macs).\n\n3. To access the settings, right-click on the widget.\n\nLet's go there now to enter your location!");
+		alert("Welcome to the widescapeWeather widget 2.4.0-rc1!\n\nUseful tips:\n\n1. You can get more information on your weather by clicking any weather icon. Weather data is kindly provided by the nice folks at Weather Underground (wunderground.com).\n\n2. To drag the widget around, hold the CTRL key while dragging (CMD key on Macs).\n\n3. To access the settings, right-click on the widget.\n\nLet's go there now to enter your location!");
 		showWidgetPreferences();
 	}
 	else {

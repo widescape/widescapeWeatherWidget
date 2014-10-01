@@ -2,12 +2,12 @@
 	
 	widescapeWeather Widget
 
-	Version 2.3.0
+	Version 2.4.0-rc1
 	
 	Interaction
 
 	
-	(c) 2013 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+	(c) 2014 widescape / Robert Wünsch - info@widescape.com - www.widescape.com
 */
 
 // Initiates the tray movement
@@ -361,7 +361,7 @@ function setContextMenuItems() {
 	item		= new MenuItem();
 	item.title		= "Visit developer's website...";
 	item.enabled	= true;
-	item.onSelect	= function() { openURL("http://www.widescape.net/widgets/?ref=weather-2.3.0-menu"); };
+	item.onSelect	= function() { openURL("http://www.widescape.com/?ref=weather-2.4.0-rc1-menu"); };
 	items.push(item);
 	
 	item		= new MenuItem();

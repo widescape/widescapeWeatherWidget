@@ -2,12 +2,12 @@
 	
 	widescapeWeather Widget
 
-	Version 2.3.0
+	Version 2.4.0-rc1
 	
 	Helpers
 
 	
-	(c) 2013 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
+	(c) 2014 widescape / Robert Wünsch - info@widescape.com - www.widescape.com
 */
 
 function convertKonfabulatorLocaleToWundergroundLocale(locale) {
@@ -111,7 +111,7 @@ function parseAndCheckFetchedData(fetch,alertPassively) {
 		var xml = XMLDOM.parse(result);
 	}
 	catch (error) {
-		displayConnectionError(error,fetch.location,"Retrieved XML could not be parsed. Please contact support at www.widescape.net/widgets");
+		displayConnectionError(error,fetch.location,"Retrieved XML could not be parsed. Please contact the support at www.widescape.com");
 		return false;
 	}
 	
