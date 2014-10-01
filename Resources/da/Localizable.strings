@@ -1,0 +1,61 @@
+/*  
+ * Localization Instructions:
+ *
+ *  Always use the English language file as the master for your own localization!
+ *
+ */
+
+"date.today" = "I dag";
+"date.tonight" = "I aften";
+"date.day" = "Dag";
+"date.night" = "Nat";
+
+"date.abbr_day_names.0" = "Søn";
+"date.abbr_day_names.1" = "Man";
+"date.abbr_day_names.2" = "Tir";
+"date.abbr_day_names.3" = "Ons";
+"date.abbr_day_names.4" = "Tor";
+"date.abbr_day_names.5" = "Fre";
+"date.abbr_day_names.6" = "Lør";
+
+"date.abbr_month_names.0" = "Jan";
+"date.abbr_month_names.1" = "Feb";
+"date.abbr_month_names.2" = "Mar";
+"date.abbr_month_names.3" = "Apr";
+"date.abbr_month_names.4" = "Maj";
+"date.abbr_month_names.5" = "Jun";
+"date.abbr_month_names.6" = "Jul";
+"date.abbr_month_names.7" = "Aug";
+"date.abbr_month_names.8" = "Sep";
+"date.abbr_month_names.9" = "Okt";
+"date.abbr_month_names.10" = "Nov";
+"date.abbr_month_names.11" = "Dec";
+
+"weather.conditions.unknown" = "Ukendt vejrsituation";
+"weather.conditions.chance_of" = "Chance for %{precipitation}";
+"weather.conditions.precipitation" = "nedbør";
+"weather.conditions.updated_at" = "Opdateret";
+"weather.conditions.visibility.absolute" = "Sigtbarhed";
+"weather.conditions.visibility.unknown" = "Ukendt sigtbarhed";
+"weather.conditions.visibility.unlimited" = "Ubegrænset sigtbarhed";
+"weather.conditions.winds.calm" = "Rolig vind";
+"weather.conditions.winds.variable" = "Skiftende vind";
+"weather.conditions.winds.wind_from" = "Vind fra %{direction}";
+"weather.conditions.winds.directions.N" = "nord";
+"weather.conditions.winds.directions.NNE" = "nordnordøst";
+"weather.conditions.winds.directions.NE" = "nordøst";
+"weather.conditions.winds.directions.ENE" = "østnordøst";
+"weather.conditions.winds.directions.E" = "øst";
+"weather.conditions.winds.directions.ESE" = "østsydøst";
+"weather.conditions.winds.directions.SE" = "sydøst";
+"weather.conditions.winds.directions.SSE" = "sydsydøst";
+"weather.conditions.winds.directions.S" = "syd";
+"weather.conditions.winds.directions.SSW" = "sydsydvest";
+"weather.conditions.winds.directions.SW" = "sydvest";
+"weather.conditions.winds.directions.WSW" = "vestsydvest";
+"weather.conditions.winds.directions.W" = "vest";
+"weather.conditions.winds.directions.WNW" = "vestnordvest";
+"weather.conditions.winds.directions.NW" = "nordvest";
+"weather.conditions.winds.directions.NNW" = "nordnordvest";
+"weather.conditions.winds.at" = "ved";
+"weather.conditions.winds.with_gusts_up_to" = "med vindstød op til";

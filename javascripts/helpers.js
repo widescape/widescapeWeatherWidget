@@ -10,6 +10,15 @@
 	(c) 2013 widescape / Robert Wünsch - info@widescape.net - www.widescape.net
 */
 
+function convertKonfabulatorLocaleToWundergroundLocale(locale) {
+  switch (locale) {
+  case 'de': return 'DL';
+  case 'da': return 'DK';
+  case 'fr': return 'FR';
+  }
+  return 'EN';
+}
+
 // Converts a number to a two digit string
 function twoDigits(num) {
 	if (num < 10) return "0" + num.toString ();

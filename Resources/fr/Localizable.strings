@@ -1,6 +1,9 @@
-"api.wunderground.locales.de" = "DL";
-"api.wunderground.locales.en" = "EN";
-"api.wunderground.locales.fr" = "FR";
+/*  
+ * Localization Instructions:
+ *
+ *  Always use the English language file as the master for your own localization!
+ *
+ */
 
 "date.today" = "Ajd.";
 "date.tonight" = "Ce soir";

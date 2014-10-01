@@ -118,8 +118,3 @@
 /* This part is used to glue the wind_from sentence to the speed of gusts,
  * resulting in (example): "Wind from north-east with gusts up to 50 km/h"
  */
-
-/* Don't change the following lines */
-"api.wunderground.locales.de" = "DL";
-"api.wunderground.locales.en" = "EN";
-"api.wunderground.locales.fr" = "FR";
