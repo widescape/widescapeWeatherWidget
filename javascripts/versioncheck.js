@@ -1,7 +1,7 @@
 /*
  * widescapeWeather widget
  * 
- * 2.4.0-rc1
+ * 2.4.0
  * 
  * Version Check
  * 

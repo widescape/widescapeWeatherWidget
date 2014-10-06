@@ -1,6 +1,6 @@
 /*!
  * widescapeWeather Icons
- * Copyright 2005-2011, Robert Wuensch
+ * Copyright 2003-2014, Robert Wuensch
  * http://www.widescape.com
  * 
  * Licensed under Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License
