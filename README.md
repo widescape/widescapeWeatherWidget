@@ -1,4 +1,4 @@
-# widescapeWeather Widget
+# widescapeWeather
 
 This free widget grabs the latest current weather data from [wunderground.com](http://www.wunderground.com/?apiref=b11cc7e8585de883) and displays it in a nice and minimal way.
 
