@@ -10,4 +10,4 @@ The widget requires the *discontinued* Yahoo! Widget Engine (Konfabulator), whic
 
 ## Open Source & Contributions
 
-See the public GitHub repository https://github.com/widescape/widescapeWeatherWidget.
+See the public GitHub repository [github.com/widescape/widescapeWeatherWidget](https://github.com/widescape/widescapeWeatherWidget).
