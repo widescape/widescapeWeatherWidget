@@ -6,6 +6,6 @@
         <title>There is an update available for the widescapeWeather widget!</title>
         <text>Version 2.4 provides translated weather information for Danish - thanks to Allan Nyholm Nielsen!{n}{n}Want support for your language? Visit www.widescape.com/faq -- Cheers, Robert</text>
         <action>Download the new version</action>
-        <url>http://www.widescape.net/widgets/downloads/widescapeWeather2.4.zip</url>
+        <url>https://widescape.github.io/widescapeWeatherWidget/downloads/widescapeWeather2.4.zip</url>
     </update_dialog>
 </version_check>
